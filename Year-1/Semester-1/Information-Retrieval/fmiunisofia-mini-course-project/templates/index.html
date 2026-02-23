@@ -1,0 +1,87 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Mini Search Engine</title>
+  <style>
+    body { font-family: Arial; margin: 24px; }
+    select { padding: 8px; }
+    .row { margin-bottom: 10px; display: flex; gap: 10px; align-items: center; }
+    .hit { padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin: 10px 0; }
+    .meta { color: #666; font-size: 12px; margin-top: 4px; }
+    mark { background: #fffd75; }
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-left: 8px;
+    }
+    .checkbox-group input {margin: 0;}
+.row {
+  margin-bottom: 10px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.search-input {
+  padding: 8px;
+  flex: 1;
+  min-width: 260px;
+}
+
+select { padding: 8px; }
+
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.checkbox-group input { margin: 0; }
+
+  </style>
+</head>
+<body>
+  <h2>Mini Search Engine (SemEval Task 10 – TXT Corpus)</h2>
+
+  <form method="get">
+    <div class="row">
+      <input name="q" placeholder="Type a query..." value="{{ q }}" />
+
+      <select name="lang">
+        <option value="ALL" {% if lang == "ALL" %}selected{% endif %}>All</option>
+        <option value="EN" {% if lang == "EN" %}selected{% endif %}>English</option>
+        <option value="RU" {% if lang == "RU" %}selected{% endif %}>Russian</option>
+      </select>
+
+<div class="checkbox-group">
+  <input type="checkbox" name="fuzzy" value="1" {% if fuzzy %}checked{% endif %}>
+  <label>Fuzzy (typos)</label>
+</div>
+
+<div class="checkbox-group">
+  <input type="checkbox" name="exact" value="1" {% if exact %}checked{% endif %}>
+  <label>Exact phrase</label>
+</div>
+
+      <button type="submit">Search</button>
+    </div>
+  </form>
+
+  {% if results %}
+    <h3>Results</h3>
+    {% for r in results %}
+      <div class="hit">
+        <div><b>{{ r.title }}</b></div>
+        <div class="meta">
+          score={{ r.score }} | lang={{ r.language }} | file={{ r.path }}
+        </div>
+        <div>{{ r.snippet|safe }}</div>
+        <a href="/similar?id={{ r.id }}">More like this</a>
+      </div>
+    {% endfor %}
+  {% endif %}
+</body>
+</html>

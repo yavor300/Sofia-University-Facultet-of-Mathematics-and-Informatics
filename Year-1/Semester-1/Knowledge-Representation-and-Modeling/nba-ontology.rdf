@@ -1,0 +1,827 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4/"
+     xml:base="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4/"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:xml="http://www.w3.org/XML/1998/namespace"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:untitled-ontology-4="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#">
+    <owl:Ontology rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Object Properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#coachesTeam -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#coachesTeam">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Coach"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Team"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#draftedBy -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#draftedBy">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Player"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Team"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#hasPosition -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#hasPosition">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Player"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Position"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#hasRosterPlayer -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#hasRosterPlayer">
+        <owl:inverseOf rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#playsFor"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Team"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Player"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#hasWon -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#hasWon">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#BasketballProfessional"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Achievement"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#hasWonAward -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#hasWonAward">
+        <rdfs:subPropertyOf rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#hasWon"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#BasketballProfessional"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Award"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#isInOrganization -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#isInOrganization">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#TransitiveProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Organization"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Organization"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#playsFor -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#playsFor">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Player"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Team"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#playsInDivision -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#playsInDivision">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#NBATeam"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Division"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Data properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#age -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#age">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Player"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#assistsPerGame -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#assistsPerGame">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Player"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#pointsPerGame -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#pointsPerGame">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Player"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#reboundsPerGame -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#reboundsPerGame">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Player"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#threePointPercentage -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#threePointPercentage">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Player"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#winPercentage -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#winPercentage">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#NBATeam"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Achievement -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Achievement"/>
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#AtlanticDivisionTeam -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#AtlanticDivisionTeam">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#NBATeam"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#playsInDivision"/>
+                        <owl:hasValue rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#AtlanticDivision"/>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#NBATeam"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Award -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Award">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Achievement"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#BasketballProfessional -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#BasketballProfessional"/>
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#CelticsPlayer -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#CelticsPlayer">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Player"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#playsFor"/>
+                        <owl:hasValue rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#BostonCeltics"/>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Player"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Champion -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Champion">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Player"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#hasWon"/>
+                        <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Championship"/>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Player"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#ChampionCoach -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#ChampionCoach">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Coach"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#hasWon"/>
+                        <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Championship"/>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Coach"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Championship -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Championship">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Achievement"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Coach -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Coach">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#BasketballProfessional"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#ContenderTeam -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#ContenderTeam">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#NBATeam"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#winPercentage"/>
+                        <owl:someValuesFrom>
+                            <rdfs:Datatype>
+                                <owl:onDatatype rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+                                <owl:withRestrictions rdf:parseType="Collection">
+                                    <rdf:Description>
+                                        <xsd:minInclusive rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">0.60</xsd:minInclusive>
+                                    </rdf:Description>
+                                </owl:withRestrictions>
+                            </rdfs:Datatype>
+                        </owl:someValuesFrom>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#NBATeam"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Division -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Division">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Organization"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#EasternConferenceTeam -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#EasternConferenceTeam">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#NBATeam"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#EliteShooter -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#EliteShooter">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Player"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#threePointPercentage"/>
+                        <owl:someValuesFrom>
+                            <rdfs:Datatype>
+                                <owl:onDatatype rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+                                <owl:withRestrictions rdf:parseType="Collection">
+                                    <rdf:Description>
+                                        <xsd:minInclusive rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">0.40</xsd:minInclusive>
+                                    </rdf:Description>
+                                </owl:withRestrictions>
+                            </rdfs:Datatype>
+                        </owl:someValuesFrom>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Player"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#League -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#League">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Organization"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#NBALeague -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#NBALeague">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#League"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#NBATeam -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#NBATeam">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Team"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Organization -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Organization"/>
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Player -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Player">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#BasketballProfessional"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Position -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Position">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:oneOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Center"/>
+                    <rdf:Description rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#PointGuard"/>
+                    <rdf:Description rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#PowerForward"/>
+                    <rdf:Description rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#ShootingGuard"/>
+                    <rdf:Description rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#SmallForward"/>
+                </owl:oneOf>
+            </owl:Class>
+        </owl:equivalentClass>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#PureGuard -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#PureGuard">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Player"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#hasPosition"/>
+                        <owl:allValuesFrom>
+                            <owl:Class>
+                                <owl:oneOf rdf:parseType="Collection">
+                                    <rdf:Description rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#PointGuard"/>
+                                    <rdf:Description rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#ShootingGuard"/>
+                                </owl:oneOf>
+                            </owl:Class>
+                        </owl:allValuesFrom>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Player"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#StatLine -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#StatLine"/>
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Team -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Team">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Organization"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#TripleDoublePlayer -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#TripleDoublePlayer">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Player"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#assistsPerGame"/>
+                        <owl:someValuesFrom>
+                            <rdfs:Datatype>
+                                <owl:onDatatype rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+                                <owl:withRestrictions rdf:parseType="Collection">
+                                    <rdf:Description>
+                                        <xsd:minInclusive rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">10</xsd:minInclusive>
+                                    </rdf:Description>
+                                </owl:withRestrictions>
+                            </rdfs:Datatype>
+                        </owl:someValuesFrom>
+                    </owl:Restriction>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#pointsPerGame"/>
+                        <owl:someValuesFrom>
+                            <rdfs:Datatype>
+                                <owl:onDatatype rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+                                <owl:withRestrictions rdf:parseType="Collection">
+                                    <rdf:Description>
+                                        <xsd:minInclusive rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">10</xsd:minInclusive>
+                                    </rdf:Description>
+                                </owl:withRestrictions>
+                            </rdfs:Datatype>
+                        </owl:someValuesFrom>
+                    </owl:Restriction>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#reboundsPerGame"/>
+                        <owl:someValuesFrom>
+                            <rdfs:Datatype>
+                                <owl:onDatatype rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+                                <owl:withRestrictions rdf:parseType="Collection">
+                                    <rdf:Description>
+                                        <xsd:minInclusive rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">10</xsd:minInclusive>
+                                    </rdf:Description>
+                                </owl:withRestrictions>
+                            </rdfs:Datatype>
+                        </owl:someValuesFrom>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Player"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#VeteranPlayer -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#VeteranPlayer">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Player"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#age"/>
+                        <owl:someValuesFrom>
+                            <rdfs:Datatype>
+                                <owl:onDatatype rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+                                <owl:withRestrictions rdf:parseType="Collection">
+                                    <rdf:Description>
+                                        <xsd:minInclusive rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">32</xsd:minInclusive>
+                                    </rdf:Description>
+                                </owl:withRestrictions>
+                            </rdfs:Datatype>
+                        </owl:someValuesFrom>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Player"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#VeteranRingChaser -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#VeteranRingChaser">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#VeteranPlayer"/>
+                    <owl:Class>
+                        <owl:complementOf rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Champion"/>
+                    </owl:Class>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#playsFor"/>
+                        <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#ContenderTeam"/>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Player"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#WesternConferenceTeam -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#WesternConferenceTeam">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#NBATeam"/>
+    </owl:Class>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Individuals
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#AtlanticDivision -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#AtlanticDivision">
+        <rdf:type rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Division"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#BostonCeltics -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#BostonCeltics">
+        <rdf:type rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#EasternConferenceTeam"/>
+        <untitled-ontology-4:playsInDivision rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#AtlanticDivision"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Center -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Center">
+        <rdf:type rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Position"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#CentralDivision -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#CentralDivision">
+        <rdf:type rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Division"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#ClevelandCavaliers -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#ClevelandCavaliers">
+        <rdf:type rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#EasternConferenceTeam"/>
+        <untitled-ontology-4:playsInDivision rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#CentralDivision"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#DenverNuggets -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#DenverNuggets">
+        <rdf:type rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#WesternConferenceTeam"/>
+        <untitled-ontology-4:playsInDivision rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#NorthwestDivision"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#GiannisAntetokounmpo -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#GiannisAntetokounmpo">
+        <rdf:type rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Player"/>
+        <untitled-ontology-4:draftedBy rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#MilwaukeeBucks"/>
+        <untitled-ontology-4:hasPosition rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#PowerForward"/>
+        <untitled-ontology-4:hasWon rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#NBAChampionship"/>
+        <untitled-ontology-4:playsFor rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#MilwaukeeBucks"/>
+        <untitled-ontology-4:age rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">30</untitled-ontology-4:age>
+        <untitled-ontology-4:assistsPerGame rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">6.2</untitled-ontology-4:assistsPerGame>
+        <untitled-ontology-4:pointsPerGame rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">30.1</untitled-ontology-4:pointsPerGame>
+        <untitled-ontology-4:reboundsPerGame rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">11.5</untitled-ontology-4:reboundsPerGame>
+        <untitled-ontology-4:threePointPercentage rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">0.30</untitled-ontology-4:threePointPercentage>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#GoldenStateWarriors -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#GoldenStateWarriors">
+        <rdf:type rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#WesternConferenceTeam"/>
+        <untitled-ontology-4:playsInDivision rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#PacificDivision"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#JaysonTatum -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#JaysonTatum">
+        <rdf:type rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Player"/>
+        <untitled-ontology-4:draftedBy rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#BostonCeltics"/>
+        <untitled-ontology-4:hasPosition rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#SmallForward"/>
+        <untitled-ontology-4:playsFor rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#BostonCeltics"/>
+        <untitled-ontology-4:age rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">26</untitled-ontology-4:age>
+        <untitled-ontology-4:assistsPerGame rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">4.9</untitled-ontology-4:assistsPerGame>
+        <untitled-ontology-4:pointsPerGame rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">27.2</untitled-ontology-4:pointsPerGame>
+        <untitled-ontology-4:reboundsPerGame rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">8.1</untitled-ontology-4:reboundsPerGame>
+        <untitled-ontology-4:threePointPercentage rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">0.38</untitled-ontology-4:threePointPercentage>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#LebronJames -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#LebronJames">
+        <rdf:type rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Player"/>
+        <untitled-ontology-4:draftedBy rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#ClevelandCavaliers"/>
+        <untitled-ontology-4:hasPosition rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#SmallForward"/>
+        <untitled-ontology-4:hasWon rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#NBAChampionship"/>
+        <untitled-ontology-4:playsFor rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#LosAngelesLakers"/>
+        <untitled-ontology-4:age rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">39</untitled-ontology-4:age>
+        <untitled-ontology-4:assistsPerGame rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">7.4</untitled-ontology-4:assistsPerGame>
+        <untitled-ontology-4:pointsPerGame rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">25.3</untitled-ontology-4:pointsPerGame>
+        <untitled-ontology-4:pointsPerGame rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">7.2</untitled-ontology-4:pointsPerGame>
+        <untitled-ontology-4:threePointPercentage rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">0.35</untitled-ontology-4:threePointPercentage>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#LosAngelesLakers -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#LosAngelesLakers">
+        <rdf:type rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#WesternConferenceTeam"/>
+        <untitled-ontology-4:playsInDivision rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#PacificDivision"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#MVP_Award -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#MVP_Award">
+        <rdf:type rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Award"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#MilwaukeeBucks -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#MilwaukeeBucks">
+        <rdf:type rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#EasternConferenceTeam"/>
+        <untitled-ontology-4:playsInDivision rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#CentralDivision"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#NBAChampionship -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#NBAChampionship">
+        <rdf:type rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Championship"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#NikolaJokic -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#NikolaJokic">
+        <rdf:type rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Player"/>
+        <untitled-ontology-4:draftedBy rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#DenverNuggets"/>
+        <untitled-ontology-4:hasPosition rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Center"/>
+        <untitled-ontology-4:hasWon rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#MVP_Award"/>
+        <untitled-ontology-4:hasWon rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#NBAChampionship"/>
+        <untitled-ontology-4:playsFor rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#DenverNuggets"/>
+        <untitled-ontology-4:age rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">29</untitled-ontology-4:age>
+        <untitled-ontology-4:assistsPerGame rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">10.2</untitled-ontology-4:assistsPerGame>
+        <untitled-ontology-4:pointsPerGame rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">26.4</untitled-ontology-4:pointsPerGame>
+        <untitled-ontology-4:reboundsPerGame rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">12.1</untitled-ontology-4:reboundsPerGame>
+        <untitled-ontology-4:threePointPercentage rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">0.36</untitled-ontology-4:threePointPercentage>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#NorthwestDivision -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#NorthwestDivision">
+        <rdf:type rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Division"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#PacificDivision -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#PacificDivision">
+        <rdf:type rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Division"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#PointGuard -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#PointGuard">
+        <rdf:type rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Position"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#PowerForward -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#PowerForward">
+        <rdf:type rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Position"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#ShootingGuard -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#ShootingGuard">
+        <rdf:type rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Position"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#SmallForward -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#SmallForward">
+        <rdf:type rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Position"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#StephenCurry -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#StephenCurry">
+        <rdf:type rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Player"/>
+        <untitled-ontology-4:draftedBy rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#GoldenStateWarriors"/>
+        <untitled-ontology-4:hasPosition rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#PointGuard"/>
+        <untitled-ontology-4:hasWon rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#NBAChampionship"/>
+        <untitled-ontology-4:playsFor rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#GoldenStateWarriors"/>
+        <untitled-ontology-4:age rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">35</untitled-ontology-4:age>
+        <untitled-ontology-4:pointsPerGame rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">29.4</untitled-ontology-4:pointsPerGame>
+        <untitled-ontology-4:threePointPercentage rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">0.42</untitled-ontology-4:threePointPercentage>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#SteveKerr -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#SteveKerr">
+        <rdf:type rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#Coach"/>
+        <untitled-ontology-4:coachesTeam rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#GoldenStateWarriors"/>
+        <untitled-ontology-4:hasWon rdf:resource="http://www.semanticweb.org/yavor/ontologies/2026/0/untitled-ontology-4#NBAChampionship"/>
+    </owl:NamedIndividual>
+</rdf:RDF>
+
+
+
+<!-- Generated by the OWL API (version 4.5.29.2024-05-13T12:11:03Z) https://github.com/owlcs/owlapi -->
+
