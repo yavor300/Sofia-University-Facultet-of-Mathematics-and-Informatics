@@ -4,5 +4,4 @@
 [submodule "Year-1/Semester-1/Information-Retrieval/fmi-semantic-search"]
 	path = Year-1/Semester-1/Information-Retrieval/fmi-semantic-search
 	url = https://github.com/yavor300/fmiunisofia-semantic-search.git
-[submodule "Year-1/Semester-1/Natural-Language-Processing/fmiunisofia-nlp-sentiment-analysis"]
-	path = Year-1/Semester-1/Natural-Language-Processing/fmiunisofia-nlp-sentiment-analysis
+
