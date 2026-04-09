@@ -1,0 +1,25 @@
+project_name: finmmeval-homework-01
+task: financial-exam-qa
+language: english
+dataset:
+  source: finmmeval
+  hf_repo: Tomas08119993/finmmeval-cfa-cpa
+  english_only: true
+  cache_dir: data/raw/hf_cache
+  bbf_repo: bharatgenai/BhashaBench-Finance
+  bbf_language: English
+  bbf_split: test
+  bbf_question_type: MCQ
+paths:
+  processed_data: data/processed/english_questions.jsonl
+  model: models/option_pair_classifier.joblib
+  metrics: results/dev_metrics.json
+  split: results/split.json
+  submission: results/submission.csv
+training:
+  seed: 42
+  dev_size: 0.2
+  max_features: 40000
+  ngram_min: 1
+  ngram_max: 2
+  c_value: 1.0

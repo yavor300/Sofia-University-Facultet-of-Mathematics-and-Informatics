@@ -1,0 +1,13 @@
+.venv/
+__pycache__/
+*.pyc
+
+data/raw/hf_cache/
+models/
+results/dev_metrics.json
+results/evaluation.json
+results/split.json
+results/submission.csv
+results/
+data/
+assignment.md
