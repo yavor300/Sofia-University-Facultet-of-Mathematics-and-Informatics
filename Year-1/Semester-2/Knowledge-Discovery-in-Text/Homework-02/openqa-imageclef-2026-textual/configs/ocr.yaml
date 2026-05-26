@@ -32,8 +32,8 @@ preprocessing:
 
 language_mapping:
   default:
-    easyocr: [en, bg]
-    tesseract: eng+bul
+    easyocr: [en, bg, hr, it, rs_latin]
+    tesseract: eng+bul+hrv+ita+srp+srp_latn
     paddleocr: en
   English:
     easyocr: [en]
@@ -42,6 +42,22 @@ language_mapping:
   Bulgarian:
     easyocr: [bg, en]
     tesseract: bul+eng
+    paddleocr: en
+  Chinese:
+    easyocr: [ch_sim, en]
+    tesseract: chi_sim+eng
+    paddleocr: ch
+  Croatian:
+    easyocr: [hr, en]
+    tesseract: hrv+eng
+    paddleocr: en
+  Italian:
+    easyocr: [it, en]
+    tesseract: ita+eng
+    paddleocr: it
+  Serbian:
+    easyocr: [rs_latin, en]
+    tesseract: srp+srp_latn+eng
     paddleocr: en
   German:
     easyocr: [de, en]

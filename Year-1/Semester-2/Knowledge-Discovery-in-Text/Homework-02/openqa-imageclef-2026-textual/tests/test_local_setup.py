@@ -63,7 +63,11 @@ def test_normalize_language_handles_aliases_and_missing_values() -> None:
 def test_ocr_language_for_engine_uses_builtin_fallbacks() -> None:
     assert ocr_language_for_engine("easyocr", "Bulgarian") == ["bg", "en"]
     assert ocr_language_for_engine("tesseract", "bg") == "bul+eng"
-    assert ocr_language_for_engine("easyocr", None) == ["en", "bg"]
+    assert ocr_language_for_engine("tesseract", "Chinese") == "chi_sim+eng"
+    assert ocr_language_for_engine("tesseract", "Croatian") == "hrv+eng"
+    assert ocr_language_for_engine("tesseract", "Italian") == "ita+eng"
+    assert ocr_language_for_engine("tesseract", "Serbian") == "srp+srp_latn+eng"
+    assert ocr_language_for_engine("easyocr", None) == ["en", "bg", "hr", "it", "rs_latin"]
     assert ocr_language_for_engine("paddleocr", "unknown-language") == "en"
 
 

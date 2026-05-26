@@ -19,29 +19,41 @@ from openqa_textual.image_utils import to_rgb
 LANGUAGE_TO_EASYOCR = {
     "English": ["en"],
     "Bulgarian": ["bg", "en"],
+    "Chinese": ["ch_sim", "en"],
+    "Croatian": ["hr", "en"],
     "German": ["de", "en"],
     "French": ["fr", "en"],
+    "Italian": ["it", "en"],
+    "Serbian": ["rs_latin", "en"],
     "Spanish": ["es", "en"],
 }
 
 LANGUAGE_TO_TESSERACT = {
     "English": "eng",
     "Bulgarian": "bul+eng",
+    "Chinese": "chi_sim+eng",
+    "Croatian": "hrv+eng",
     "German": "deu+eng",
     "French": "fra+eng",
+    "Italian": "ita+eng",
+    "Serbian": "srp+srp_latn+eng",
     "Spanish": "spa+eng",
 }
 
 LANGUAGE_TO_PADDLEOCR = {
     "English": "en",
     "Bulgarian": "en",
+    "Chinese": "ch",
+    "Croatian": "en",
     "German": "german",
     "French": "fr",
+    "Italian": "it",
+    "Serbian": "en",
     "Spanish": "es",
 }
 
-DEFAULT_EASYOCR_LANGUAGES = ["en", "bg"]
-DEFAULT_TESSERACT_LANGUAGE = "eng+bul"
+DEFAULT_EASYOCR_LANGUAGES = ["en", "bg", "hr", "it", "rs_latin"]
+DEFAULT_TESSERACT_LANGUAGE = "eng+bul+hrv+ita+srp+srp_latn"
 DEFAULT_PADDLEOCR_LANGUAGE = "en"
 
 LANGUAGE_ALIASES = {
@@ -52,6 +64,15 @@ LANGUAGE_ALIASES = {
     "bul": "Bulgarian",
     "bulgarian": "Bulgarian",
     "български": "Bulgarian",
+    "zh": "Chinese",
+    "zho": "Chinese",
+    "chi": "Chinese",
+    "chinese": "Chinese",
+    "中文": "Chinese",
+    "hr": "Croatian",
+    "hrv": "Croatian",
+    "croatian": "Croatian",
+    "hrvatski": "Croatian",
     "de": "German",
     "deu": "German",
     "ger": "German",
@@ -62,6 +83,14 @@ LANGUAGE_ALIASES = {
     "fre": "French",
     "french": "French",
     "français": "French",
+    "it": "Italian",
+    "ita": "Italian",
+    "italian": "Italian",
+    "italiano": "Italian",
+    "sr": "Serbian",
+    "srp": "Serbian",
+    "serbian": "Serbian",
+    "српски": "Serbian",
     "es": "Spanish",
     "spa": "Spanish",
     "spanish": "Spanish",
