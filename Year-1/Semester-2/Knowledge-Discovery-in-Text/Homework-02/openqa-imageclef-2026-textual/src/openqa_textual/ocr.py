@@ -337,22 +337,45 @@ def ocr_language_for_engine(
     normalized_engine = engine_name.lower()
     normalized_language = normalize_language(language)
 
-    config_value = _configured_ocr_language(normalized_engine, normalized_language, ocr_config or {})
+    config_value = _configured_ocr_language(
+        normalized_engine,
+        normalized_language,
+        ocr_config or {},
+        include_default=False,
+    )
     if config_value:
         return config_value
 
     if normalized_engine == "easyocr":
         if normalized_language and normalized_language in LANGUAGE_TO_EASYOCR:
             return LANGUAGE_TO_EASYOCR[normalized_language]
-        return DEFAULT_EASYOCR_LANGUAGES
+        default_value = _configured_ocr_language(
+            normalized_engine,
+            normalized_language,
+            ocr_config or {},
+            include_default=True,
+        )
+        return default_value or DEFAULT_EASYOCR_LANGUAGES
     if normalized_engine == "tesseract":
         if normalized_language and normalized_language in LANGUAGE_TO_TESSERACT:
             return LANGUAGE_TO_TESSERACT[normalized_language]
-        return DEFAULT_TESSERACT_LANGUAGE
+        default_value = _configured_ocr_language(
+            normalized_engine,
+            normalized_language,
+            ocr_config or {},
+            include_default=True,
+        )
+        return default_value or DEFAULT_TESSERACT_LANGUAGE
     if normalized_engine == "paddleocr":
         if normalized_language and normalized_language in LANGUAGE_TO_PADDLEOCR:
             return LANGUAGE_TO_PADDLEOCR[normalized_language]
-        return DEFAULT_PADDLEOCR_LANGUAGE
+        default_value = _configured_ocr_language(
+            normalized_engine,
+            normalized_language,
+            ocr_config or {},
+            include_default=True,
+        )
+        return default_value or DEFAULT_PADDLEOCR_LANGUAGE
 
     raise ValueError(f"Unknown OCR engine for language mapping: {engine_name}")
 
@@ -361,6 +384,7 @@ def _configured_ocr_language(
     engine_name: str,
     language: str | None,
     ocr_config: dict[str, Any],
+    include_default: bool = True,
 ) -> str | list[str] | None:
     mapping = ocr_config.get("language_mapping", {})
     if not isinstance(mapping, dict):
@@ -370,6 +394,9 @@ def _configured_ocr_language(
         mapped_value = mapping[language].get(engine_name)
         if mapped_value:
             return mapped_value
+
+    if not include_default:
+        return None
 
     default_mapping = mapping.get("default") or mapping.get("__default__")
     if isinstance(default_mapping, dict):

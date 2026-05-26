@@ -79,6 +79,7 @@ def test_ocr_language_for_engine_allows_config_default_override() -> None:
     }
     assert ocr_language_for_engine("easyocr", None, config) == ["en"]
     assert ocr_language_for_engine("tesseract", "Klingon", config) == "eng"
+    assert ocr_language_for_engine("tesseract", "Chinese", config) == "chi_sim+eng"
 
 
 def test_ocr_engine_base_interface_raises_not_implemented() -> None:
