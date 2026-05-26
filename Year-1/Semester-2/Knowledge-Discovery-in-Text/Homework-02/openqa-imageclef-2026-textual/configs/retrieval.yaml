@@ -1,0 +1,17 @@
+index:
+  path: data/processed/train_retrieval_index.jsonl
+  embedding_cache: data/processed/embeddings
+
+bm25:
+  enabled: true
+  top_k: 5
+
+dense:
+  enabled: false
+  model_name: intfloat/multilingual-e5-base
+  top_k: 5
+
+hybrid:
+  bm25_weight: 0.5
+  dense_weight: 0.5
+

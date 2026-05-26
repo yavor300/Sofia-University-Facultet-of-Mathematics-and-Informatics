@@ -1,0 +1,57 @@
+default_engine: tesseract
+default_preprocess_variant: resize_only
+cache_dir: ${OCR_CACHE_DIR:-data/ocr_cache}
+
+engines:
+  tesseract:
+    enabled: true
+    # Optional. Leave null to use PATH, or set to a full executable path.
+    # Linux/WSL example: /usr/bin/tesseract
+    # Windows example: /mnt/c/Program Files/Tesseract-OCR/tesseract.exe
+    cmd: null
+    lang: eng
+    config: "--psm 6"
+  easyocr:
+    enabled: false
+    languages:
+      - en
+    gpu: false
+  paddleocr:
+    enabled: false
+    lang: en
+    use_gpu: false
+
+preprocessing:
+  variants:
+    - raw
+    - resize_only
+    - contrast
+    - binarized
+  min_width: 1000
+  padding: 20
+
+language_mapping:
+  default:
+    easyocr: [en, bg]
+    tesseract: eng+bul
+    paddleocr: en
+  English:
+    easyocr: [en]
+    tesseract: eng
+    paddleocr: en
+  Bulgarian:
+    easyocr: [bg, en]
+    tesseract: bul+eng
+    paddleocr: en
+  German:
+    easyocr: [de, en]
+    tesseract: deu+eng
+    paddleocr: german
+  French:
+    easyocr: [fr, en]
+    tesseract: fra+eng
+    paddleocr: fr
+  Spanish:
+    easyocr: [es, en]
+    tesseract: spa+eng
+    paddleocr: es

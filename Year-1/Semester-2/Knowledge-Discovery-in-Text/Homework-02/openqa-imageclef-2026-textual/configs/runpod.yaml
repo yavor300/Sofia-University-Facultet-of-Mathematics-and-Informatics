@@ -1,0 +1,21 @@
+paths:
+  model_cache_dir: /workspace/models
+  data_cache_dir: /workspace/data
+  ocr_cache_dir: /workspace/data/ocr_cache
+
+system_packages:
+  - git
+  - git-lfs
+  - unzip
+  - tesseract-ocr
+  - libgl1
+  - libglib2.0-0
+
+recommended_gpus:
+  inference:
+    - RTX 4090
+    - L40S
+  finetuning:
+    - A100 40GB
+    - A100 80GB
+

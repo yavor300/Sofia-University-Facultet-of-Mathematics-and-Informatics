@@ -1,0 +1,4 @@
+# Optional GPU-specific packages. Match these to the CUDA/PyTorch image in use.
+bitsandbytes
+paddlepaddle-gpu
+

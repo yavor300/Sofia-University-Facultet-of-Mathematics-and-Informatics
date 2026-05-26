@@ -1,0 +1,151 @@
+# ImageCLEF 2026 - Multimodal Reasoning
+
+This repository provides baseline implementations and supporting materials for the ImageCLEF 2026 Multimodal Reasoning competition, including run scripts, evaluation utilities, and example files to help participants get started. The competition evaluates multimodal models on challenging vision-based exam problems through two distinct tasks:
+
+1. **Multiple-Choice Question Answering (MCQ)** – Classification
+2. **Open Question Answering (OpenQA)** – Generative
+
+The baselines use Vision-Language Models (VLMs) in zero-shot or few-shot settings.
+
+# Submission Instructions
+
+- The submission must include a **JSON file** with predictions in the format described in the GitHub repository.
+- The JSON file must be **zipped** before submission.
+- The **ZIP and JSON filenames can be any name**.
+- Make sure there is **no more than one JSON file inside the ZIP**.
+- Please refer to the **Submission Format** sections below and ensure you follow all rules before your first submission.
+
+## **IMPORTANT: Evaluation Rules**
+
+- **Final results will NOT be visible on the leaderboard during the Test phase.**
+- **You will NOT receive any feedback until the end of the evaluation phase.**
+- **We will evaluate only the LAST successful submission for each team.**
+
+# 🏆 Competition Tasks
+
+## 2️⃣ Open Question Answering (OpenQA)
+
+**Task Type:** Generative
+
+### 📘 Task Overview
+
+Given an image of a question without predefined answer options, the system must:
+
+- Extract and understand the question from the image.
+- Reason over both textual and visual content.
+- Generate a free-form textual answer.
+
+Unlike MCQ, there are no fixed answer choices — the model must generate the correct response.
+
+### 📄 OpenQA Submission Format
+
+The submission file MUST follow this JSON format:
+
+- `id`: Unique identifier (matching a sample from the Test set)
+- `answers`: List of generated answers (1 or more, depending on the question requirements)
+- `language`: Question language
+
+### 🔒 Rules
+
+- Submission size MUST match the Test set size. If you want to only submit for a single language, then leave questions in other language with emtpy answers - `"answers": [""]`
+- No duplicate IDs.
+- The `answers` field must contain only the list of generated answers (no explanations unless explicitly allowed in official guidelines).
+- File must be valid JSON.
+
+### ✅ Example (OpenQA)
+
+```json
+[
+  {
+    "question_id": "3ac9d21e-1ab3-4f21-92fa-1f2390abc123",
+    "answers": [
+      "Photosynthesis"
+    ]
+    "language": "English"
+  },
+  {
+    "question_id": "9fd21c44-77d2-4cdd-81d3-812fbc991111",
+    "answers": [
+      "42",
+      "$\frac{3}{5}$"
+    ]
+    "language": "English"
+  }
+]
+```
+
+## Evaluation
+
+This repository provides separate evaluation scripts for **MCQ** and **OpenQA**.
+
+### 2) OpenQA Evaluation (Automatic Metrics)
+
+Use `src/evaluation/evaluate_qa.py` to compute text-generation metrics:
+
+```bash
+python src/evaluation/evaluate_qa.py \
+  --pred_file ./pred.json \
+  --gold_file ./gold.json
+```
+
+Optional COMET batch size:
+
+````bash
+python src/evaluation/evaluate_qa.py \
+  --pred_file ./pred.json \
+  --gold_file ./gold.json \
+  --batch_size_comet 64
+
+Optional output path:
+
+```bash
+python src/evaluation/evaluate_qa.py \
+  --pred_file ./pred.json \
+  --gold_file ./gold.json \
+  --out_file ./metrics_summary.json
+````
+
+```
+
+**Expected fields:**
+
+- Gold file: `question_id`, `question`, `answer` (`image_id` is optional)
+- Prediction file: `question_id`, `answers`
+
+The script computes and reports task-level averages for:
+
+- `bleu_scores` (`bleu-1` to `bleu-4`) and `bleu_avg`
+- `rouge_scores` (`rouge-1`, `rouge-2`, `rouge-l`)
+- `meteor`
+- `comet`
+
+Output is printed to stdout and saved as a single summary JSON (default path):
+
+- `2026/src/evaluation/automatic_metrics/metrics.json`
+
+---
+
+## 📁 File Structure
+
+```
+
+ImageCLEF-MultimodalReasoning-2026/
+├── README.md
+├── requirements.txt
+├── run.sh
+└── src/
+└── evaluation/
+├── evaluate_mcq.py
+├── evaluate_qa.py
+├── example_maths_english.json
+└── automatic_metrics/
+└── metrics.json
+
+```
+
+## 📌 Official Resources
+
+For complete task descriptions, datasets, evaluation scripts, and submission guidelines, refer to the official task website:
+
+👉 https://mbzuai-nlp.github.io/ImageCLEF-MultimodalReasoning/2026/
+```

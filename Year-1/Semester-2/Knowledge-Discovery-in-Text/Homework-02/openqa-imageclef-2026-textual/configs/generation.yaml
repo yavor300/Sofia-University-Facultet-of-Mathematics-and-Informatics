@@ -1,0 +1,14 @@
+model:
+  name: Qwen/Qwen2.5-7B-Instruct
+  cache_dir: ${MODEL_CACHE_DIR:-data/models}
+  load_in_4bit: false
+
+generation:
+  temperature: 0.0
+  do_sample: false
+  max_new_tokens: 64
+  num_beams: 1
+
+prompt:
+  answer_only: true
+

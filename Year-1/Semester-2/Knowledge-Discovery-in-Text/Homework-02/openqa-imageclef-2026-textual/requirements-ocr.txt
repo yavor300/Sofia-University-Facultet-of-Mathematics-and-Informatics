@@ -1,0 +1,5 @@
+# Optional OCR engines. Install only the engines enabled in configs/ocr.yaml.
+pytesseract
+easyocr
+paddleocr
+

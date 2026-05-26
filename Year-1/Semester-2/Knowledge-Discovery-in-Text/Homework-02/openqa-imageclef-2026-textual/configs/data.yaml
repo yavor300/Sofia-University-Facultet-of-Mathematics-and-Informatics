@@ -1,0 +1,13 @@
+dataset:
+  name: SU-FMI-AI/ImageCLEF-MR2026-OpenQA-Textual
+  cache_dir: ${DATA_CACHE_DIR:-data/raw}
+  splits:
+    train: train
+    dev: validation
+    test: test
+
+paths:
+  processed_dir: data/processed
+  reports_dir: data/reports
+  submissions_dir: data/submissions
+

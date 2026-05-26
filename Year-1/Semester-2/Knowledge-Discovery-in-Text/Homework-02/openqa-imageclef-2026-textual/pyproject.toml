@@ -1,0 +1,55 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "openqa-imageclef-2026-textual"
+version = "0.1.0"
+description = "Image-to-text OpenQA pipeline for ImageCLEF-MR2026 OpenQA Textual."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "datasets",
+  "huggingface_hub",
+  "pandas",
+  "numpy",
+  "pillow",
+  "opencv-python",
+  "scikit-image",
+  "scikit-learn",
+  "rapidfuzz",
+  "tqdm",
+  "pyyaml",
+  "jsonschema",
+  "transformers",
+  "accelerate",
+  "peft",
+  "trl",
+  "torch",
+  "sentence-transformers",
+  "faiss-cpu",
+  "rank-bm25",
+  "nltk",
+  "rouge-score",
+  "sacrebleu",
+  "bert-score",
+  "python-dotenv",
+  "rich",
+]
+
+[project.optional-dependencies]
+dev = ["pytest", "ruff"]
+ocr = ["pytesseract", "easyocr", "paddleocr"]
+gpu = ["bitsandbytes", "paddlepaddle-gpu"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
