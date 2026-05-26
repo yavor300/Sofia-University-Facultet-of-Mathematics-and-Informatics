@@ -47,6 +47,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--cache-dir", help="Override Hugging Face dataset cache directory.")
     parser.add_argument("--split", default="train", help="Dataset split or configured alias.")
     parser.add_argument("--n", type=int, default=30, help="Number of images/samples to process.")
+    parser.add_argument("--all", action="store_true", help="Process the full input directory or dataset split.")
     parser.add_argument("--ocr-cache-dir", type=Path, help="Override OCR cache directory from config.")
     parser.add_argument("--no-cache", action="store_true", help="Do not read or write OCR cache files.")
     parser.add_argument(
@@ -281,7 +282,7 @@ def ensemble_engine_configs(ocr_config: dict[str, Any]) -> list[tuple[str, dict[
 
 def iter_inputs(args: argparse.Namespace) -> Iterator[dict[str, Any]]:
     if args.input_dir:
-        yield from iter_input_dir(args.input_dir, args.n)
+        yield from iter_input_dir(args.input_dir, None if args.all else args.n)
         return
 
     data_config = load_yaml_config(args.data_config)
@@ -296,7 +297,7 @@ def iter_inputs(args: argparse.Namespace) -> Iterator[dict[str, Any]]:
     dataset = load_dataset_splits(dataset_name, cache_dir=cache_dir)
     split_name = resolve_split_name(args.split, dataset, split_aliases)
     split = dataset[split_name]
-    limit = min(max(args.n, 0), len(split))
+    limit = len(split) if args.all else min(max(args.n, 0), len(split))
 
     for index in range(limit):
         sample = split[index]
@@ -310,13 +311,15 @@ def iter_inputs(args: argparse.Namespace) -> Iterator[dict[str, Any]]:
         }
 
 
-def iter_input_dir(input_dir: Path, n: int) -> Iterator[dict[str, Any]]:
+def iter_input_dir(input_dir: Path, n: int | None) -> Iterator[dict[str, Any]]:
     manifest = load_input_manifest(input_dir)
     image_paths = [
         path
         for path in sorted(input_dir.iterdir())
         if path.suffix.lower() in {".png", ".jpg", ".jpeg", ".bmp", ".tif", ".tiff"}
-    ][: max(n, 0)]
+    ]
+    if n is not None:
+        image_paths = image_paths[: max(n, 0)]
 
     for index, path in enumerate(image_paths):
         metadata = manifest.get(str(path.resolve()), manifest.get(path.stem, {}))
