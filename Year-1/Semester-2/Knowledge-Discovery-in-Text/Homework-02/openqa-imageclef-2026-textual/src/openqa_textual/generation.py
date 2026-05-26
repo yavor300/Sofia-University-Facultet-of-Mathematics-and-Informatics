@@ -140,8 +140,21 @@ class LocalLLMGenerator:
             generation_kwargs=generation_kwargs,
         )
 
-    def generate(self, question: str, language: str | None = None) -> GenerationResult:
-        prompt = build_openqa_prompt(question=question, language=language)
+    def generate(
+        self,
+        question: str,
+        language: str | None = None,
+        retrieved_examples: list[dict[str, Any]] | None = None,
+    ) -> GenerationResult:
+        prompt = (
+            build_rag_openqa_prompt(
+                question=question,
+                language=language,
+                retrieved_examples=retrieved_examples or [],
+            )
+            if retrieved_examples
+            else build_openqa_prompt(question=question, language=language)
+        )
         model_input = format_prompt_for_model(self.tokenizer, prompt)
         inputs = self.tokenizer(model_input, return_tensors="pt")
 
@@ -165,6 +178,8 @@ class LocalLLMGenerator:
             metadata={
                 "baseline": self.name,
                 "model": self.model_name,
+                "prompt_type": "rag" if retrieved_examples else "zero_shot",
+                "retrieved_example_count": len(retrieved_examples or []),
                 "raw_answer": raw_answer,
                 "prompt": model_input,
             },
@@ -188,6 +203,49 @@ def build_openqa_prompt(question: str, language: str | None = None) -> list[dict
             "content": f"Language: {language or 'English'}\nQuestion: {question}\n\nFinal answer:",
         },
     ]
+
+
+def build_rag_openqa_prompt(
+    question: str,
+    language: str | None = None,
+    retrieved_examples: list[dict[str, Any]] | None = None,
+) -> list[dict[str, str]]:
+    """Build a few-shot RAG prompt from retrieved train examples."""
+
+    examples = format_rag_examples(retrieved_examples or [])
+    user_parts = [
+        "Examples:",
+        examples or "(No relevant examples retrieved.)",
+        f"Current question language: {language or 'English'}",
+        f"Current OCR question: {question}",
+        "",
+        "Final answer:",
+    ]
+    return [
+        {
+            "role": "system",
+            "content": (
+                "You are answering exam-style open questions extracted from images by OCR. "
+                "The OCR text may contain minor errors. "
+                "Use the examples only as guidance. Do not copy an answer unless the question is equivalent. "
+                "Return only the final answer."
+            ),
+        },
+        {"role": "user", "content": "\n\n".join(user_parts)},
+    ]
+
+
+def format_rag_examples(examples: list[dict[str, Any]]) -> str:
+    """Format retrieved records as Q/A few-shot examples."""
+
+    blocks = []
+    for example in examples:
+        question = str(example.get("ocr_question") or example.get("question") or "").strip()
+        answer = str(example.get("gold_answer") or example.get("answer") or "").strip()
+        if not question and not answer:
+            continue
+        blocks.append(f"Q: {question}\nA: {answer}")
+    return "\n\n".join(blocks)
 
 
 def format_prompt_for_model(tokenizer: Any, messages: list[dict[str, str]]) -> str:

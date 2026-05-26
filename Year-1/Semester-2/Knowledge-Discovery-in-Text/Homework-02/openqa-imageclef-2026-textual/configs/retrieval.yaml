@@ -15,3 +15,6 @@ hybrid:
   bm25_weight: 0.5
   dense_weight: 0.5
 
+rag:
+  method: bm25
+  top_k: 3

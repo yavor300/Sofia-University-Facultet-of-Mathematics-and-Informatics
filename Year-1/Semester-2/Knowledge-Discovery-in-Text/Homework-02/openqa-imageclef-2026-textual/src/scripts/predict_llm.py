@@ -15,6 +15,7 @@ if str(PROJECT_SRC) not in sys.path:
 from openqa_textual.config import load_yaml_config
 from openqa_textual.generation import DEFAULT_GENERATION_KWARGS, LocalLLMGenerator
 from openqa_textual.prediction import create_prediction_record, read_jsonl, write_json, write_jsonl
+from openqa_textual.retrieval import build_retriever, load_retrieval_index
 
 
 def parse_args() -> argparse.Namespace:
@@ -39,6 +40,25 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--max-new-tokens", type=int, help="Override max_new_tokens.")
     parser.add_argument("--text-field", default="clean_question", help="OCR field to answer from.")
     parser.add_argument("--limit", type=int, help="Only process the first N rows.")
+    parser.add_argument("--retrieval-config", default="configs/retrieval.yaml", help="Retrieval config YAML.")
+    parser.add_argument(
+        "--retrieval-index",
+        type=Path,
+        help="Train retrieval index JSONL. Required when --rag-k is greater than 0 unless configured.",
+    )
+    parser.add_argument(
+        "--retrieval-method",
+        choices=["bm25", "dense", "hybrid"],
+        help="Retrieval method for RAG examples.",
+    )
+    parser.add_argument(
+        "--rag-k",
+        type=int,
+        help=(
+            "Number of retrieved examples to include in the prompt. "
+            "Use 1, 3, or 5 for experiments. Set 0 to disable RAG."
+        ),
+    )
     parser.add_argument(
         "--preview-chars",
         type=int,
@@ -90,10 +110,39 @@ def main() -> None:
         rows = rows[: max(args.limit, 0)]
     print(f"Loaded {len(rows)} OCR rows from {args.ocr_jsonl}", flush=True)
 
+    retriever = None
+    retrieval_requested = (
+        args.rag_k is not None or args.retrieval_index is not None or args.retrieval_method is not None
+    )
+    rag_k = 0
+    if retrieval_requested:
+        retrieval_config = load_yaml_config(args.retrieval_config)
+        rag_config = retrieval_config.get("rag", {})
+        rag_k = max(
+            args.rag_k if args.rag_k is not None else int(rag_config.get("top_k", 0)),
+            0,
+        )
+    if rag_k:
+        index_path = args.retrieval_index or Path(
+            retrieval_config.get("index", {}).get("path", "data/processed/train_retrieval_index.jsonl")
+        )
+        if not index_path.exists():
+            raise SystemExit(f"Retrieval index does not exist: {index_path}")
+        retrieval_method = args.retrieval_method or rag_config.get("method") or "bm25"
+        retrieval_records = load_retrieval_index(index_path)
+        retriever = build_retriever(retrieval_method, retrieval_records, config=retrieval_config)
+        print(
+            f"Loaded {len(retrieval_records)} retrieval records from {index_path} "
+            f"using {retrieval_method}; rag_k={rag_k}",
+            flush=True,
+        )
+
     predictions = build_llm_predictions(
         rows,
         generator=generator,
         text_field=args.text_field,
+        retriever=retriever,
+        rag_k=rag_k,
         output=args.output if args.stream else None,
         preview_chars=None if args.show_full_question else args.preview_chars,
     )
@@ -114,6 +163,8 @@ def build_llm_predictions(
     rows: list[dict[str, Any]],
     generator: LocalLLMGenerator,
     text_field: str,
+    retriever: Any | None = None,
+    rag_k: int = 0,
     output: Path | None = None,
     preview_chars: int | None = 100,
 ) -> list[dict[str, Any]]:
@@ -135,7 +186,19 @@ def build_llm_predictions(
                 preview = preview[:preview_chars] + "..."
             print(f"[{index}/{len(rows)}] {question_id}: {preview}", flush=True)
 
-            result = generator.generate(str(question or ""), language=language)
+            retrieved_examples = []
+            if retriever is not None and rag_k > 0:
+                retrieved_examples = [
+                    item
+                    for item in retriever.search(str(question or ""), top_k=rag_k + 1)
+                    if str(item.get("question_id", "")) != question_id
+                ][:rag_k]
+
+            result = generator.generate(
+                str(question or ""),
+                language=language,
+                retrieved_examples=retrieved_examples,
+            )
             prediction = create_prediction_record(
                 question_id=question_id,
                 answers=result.answers,
@@ -145,6 +208,8 @@ def build_llm_predictions(
                     "ocr_text": row.get("ocr_text", ""),
                     "clean_question": str(question or ""),
                     "model": generator.model_name,
+                    "rag_k": rag_k,
+                    "retrieved_examples": _debug_retrieved_examples(retrieved_examples),
                     **result.metadata,
                 },
             )
@@ -160,6 +225,24 @@ def build_llm_predictions(
             output_handle.close()
 
     return predictions
+
+
+def _debug_retrieved_examples(examples: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    compact_examples = []
+    for example in examples:
+        compact_examples.append(
+            {
+                "question_id": example.get("question_id"),
+                "language": example.get("language"),
+                "ocr_question": example.get("ocr_question"),
+                "gold_answer": example.get("gold_answer"),
+                "rank": example.get("rank"),
+                "bm25_score": example.get("bm25_score"),
+                "dense_score": example.get("dense_score"),
+                "hybrid_score": example.get("hybrid_score"),
+            }
+        )
+    return compact_examples
 
 
 if __name__ == "__main__":

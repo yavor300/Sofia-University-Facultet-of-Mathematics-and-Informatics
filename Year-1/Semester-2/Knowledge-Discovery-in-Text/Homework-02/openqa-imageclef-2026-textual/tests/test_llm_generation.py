@@ -1,7 +1,9 @@
 from openqa_textual.generation import (
     LocalLLMGenerator,
     build_openqa_prompt,
+    build_rag_openqa_prompt,
     clean_generated_answer,
+    format_rag_examples,
     format_prompt_for_model,
     sanitize_generation_kwargs,
 )
@@ -63,6 +65,28 @@ def test_build_openqa_prompt_contains_ocr_warning_and_question() -> None:
     assert "Question: What is photosynthesis?" in messages[1]["content"]
 
 
+def test_build_rag_openqa_prompt_contains_examples_and_current_question() -> None:
+    messages = build_rag_openqa_prompt(
+        "What is 2 + 2?",
+        language="English",
+        retrieved_examples=[
+            {
+                "ocr_question": "What is 3 + 3?",
+                "gold_answer": "6",
+            }
+        ],
+    )
+
+    assert "Use the examples only as guidance" in messages[0]["content"]
+    assert "Q: What is 3 + 3?\nA: 6" in messages[1]["content"]
+    assert "Current question language: English" in messages[1]["content"]
+    assert "Current OCR question: What is 2 + 2?" in messages[1]["content"]
+
+
+def test_format_rag_examples_skips_empty_records() -> None:
+    assert format_rag_examples([{}, {"ocr_question": "Q?", "gold_answer": "A"}]) == "Q: Q?\nA: A"
+
+
 def test_clean_generated_answer_removes_prefix_and_explanation() -> None:
     assert clean_generated_answer("Answer: 42\nBecause...") == "42"
 
@@ -89,11 +113,17 @@ def test_local_llm_generator_with_fake_model() -> None:
         generation_kwargs={"max_new_tokens": 8},
     )
 
-    result = generator.generate("What is photosynthesis?", language="English")
+    result = generator.generate(
+        "What is photosynthesis?",
+        language="English",
+        retrieved_examples=[{"ocr_question": "What is a plant process?", "gold_answer": "photosynthesis"}],
+    )
 
     assert result.answers == ["Photosynthesis"]
     assert result.metadata["model"] == "fake/model"
     assert result.metadata["baseline"] == "local_llm_prompted"
+    assert result.metadata["prompt_type"] == "rag"
+    assert result.metadata["retrieved_example_count"] == 1
 
 
 def test_build_llm_predictions_from_ocr_rows() -> None:
