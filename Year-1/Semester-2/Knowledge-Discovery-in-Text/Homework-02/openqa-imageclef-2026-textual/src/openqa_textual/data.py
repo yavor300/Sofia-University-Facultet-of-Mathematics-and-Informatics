@@ -52,6 +52,14 @@ ANSWER_FIELD_CANDIDATES = (
     "references",
 )
 
+QUESTION_FIELD_CANDIDATES = (
+    "question",
+    "clean_question",
+    "question_text",
+    "text",
+    "prompt",
+)
+
 
 def load_dataset_splits(dataset_name: str, cache_dir: str | None = None):
     """Load train/dev/test splits from Hugging Face.
@@ -109,6 +117,16 @@ def get_sample_gold_answer(sample: Mapping[str, Any]) -> str:
         answer = _normalize_answer_value(sample[field_name])
         if answer:
             return answer
+    return ""
+
+
+def get_sample_question_text(sample: Mapping[str, Any]) -> str:
+    """Return clean question text if the dataset exposes it."""
+
+    for field_name in QUESTION_FIELD_CANDIDATES:
+        value = sample.get(field_name)
+        if value is not None and str(value).strip():
+            return str(value).strip()
     return ""
 
 
