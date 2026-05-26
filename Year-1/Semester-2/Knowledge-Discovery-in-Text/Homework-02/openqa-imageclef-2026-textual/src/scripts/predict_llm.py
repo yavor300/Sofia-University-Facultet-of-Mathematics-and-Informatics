@@ -39,6 +39,17 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--max-new-tokens", type=int, help="Override max_new_tokens.")
     parser.add_argument("--text-field", default="clean_question", help="OCR field to answer from.")
     parser.add_argument("--limit", type=int, help="Only process the first N rows.")
+    parser.add_argument(
+        "--preview-chars",
+        type=int,
+        default=100,
+        help="Number of question characters to print in progress logs.",
+    )
+    parser.add_argument(
+        "--show-full-question",
+        action="store_true",
+        help="Print the full question in progress logs.",
+    )
     parser.add_argument("--jsonl", action="store_true", help="Write JSONL rows instead of one JSON list.")
     parser.add_argument(
         "--stream",
@@ -84,6 +95,7 @@ def main() -> None:
         generator=generator,
         text_field=args.text_field,
         output=args.output if args.stream else None,
+        preview_chars=None if args.show_full_question else args.preview_chars,
     )
     if args.stream:
         pass
@@ -103,6 +115,7 @@ def build_llm_predictions(
     generator: LocalLLMGenerator,
     text_field: str,
     output: Path | None = None,
+    preview_chars: int | None = 100,
 ) -> list[dict[str, Any]]:
     predictions: list[dict[str, Any]] = []
     output_handle = None
@@ -117,7 +130,9 @@ def build_llm_predictions(
                 question = row.get("ocr_text", "")
             language = str(row.get("language") or "English")
             question_id = str(row.get("question_id", ""))
-            preview = str(question or "").replace("\n", " ")[:100]
+            preview = str(question or "").replace("\n", " ")
+            if preview_chars is not None and preview_chars >= 0 and len(preview) > preview_chars:
+                preview = preview[:preview_chars] + "..."
             print(f"[{index}/{len(rows)}] {question_id}: {preview}", flush=True)
 
             result = generator.generate(str(question or ""), language=language)
