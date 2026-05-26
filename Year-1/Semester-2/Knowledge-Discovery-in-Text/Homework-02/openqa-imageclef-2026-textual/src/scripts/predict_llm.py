@@ -34,6 +34,7 @@ def parse_args() -> argparse.Namespace:
         help="Local instruction model to use.",
     )
     parser.add_argument("--model-cache-dir", help="Override model cache directory.")
+    parser.add_argument("--adapter-path", help="Optional LoRA/QLoRA adapter path for fine-tuned inference.")
     parser.add_argument("--load-in-4bit", action="store_true", help="Load model with 4-bit quantization.")
     parser.add_argument("--device-map", default="auto", help="Transformers device_map value.")
     parser.add_argument("--torch-dtype", default="auto", help="Transformers torch_dtype value.")
@@ -103,6 +104,7 @@ def main() -> None:
         load_in_4bit=load_in_4bit,
         device_map=args.device_map,
         torch_dtype=args.torch_dtype,
+        adapter_path=args.adapter_path,
         generation_kwargs=generation_config,
     )
     rows = read_jsonl(args.ocr_jsonl)
@@ -208,6 +210,7 @@ def build_llm_predictions(
                     "ocr_text": row.get("ocr_text", ""),
                     "clean_question": str(question or ""),
                     "model": generator.model_name,
+                    "adapter_path": generator.adapter_path,
                     "rag_k": rag_k,
                     "retrieved_examples": _debug_retrieved_examples(retrieved_examples),
                     **result.metadata,

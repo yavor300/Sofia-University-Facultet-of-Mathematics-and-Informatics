@@ -90,11 +90,13 @@ class LocalLLMGenerator:
         model_name: str,
         tokenizer: Any,
         model: Any,
+        adapter_path: str | None = None,
         generation_kwargs: dict[str, Any] | None = None,
     ) -> None:
         self.model_name = model_name
         self.tokenizer = tokenizer
         self.model = model
+        self.adapter_path = adapter_path
         self.generation_kwargs = dict(DEFAULT_GENERATION_KWARGS)
         self.generation_kwargs.update(generation_kwargs or {})
         self.generation_kwargs = sanitize_generation_kwargs(self.generation_kwargs)
@@ -107,6 +109,7 @@ class LocalLLMGenerator:
         load_in_4bit: bool = False,
         device_map: str | None = "auto",
         torch_dtype: str | None = "auto",
+        adapter_path: str | None = None,
         generation_kwargs: dict[str, Any] | None = None,
     ) -> "LocalLLMGenerator":
         """Load a local Hugging Face causal LM for prompted answering."""
@@ -133,10 +136,17 @@ class LocalLLMGenerator:
 
         tokenizer = AutoTokenizer.from_pretrained(model_name, cache_dir=cache_dir)
         model = AutoModelForCausalLM.from_pretrained(model_name, **model_kwargs)
+        if adapter_path:
+            try:
+                from peft import PeftModel
+            except ImportError as exc:
+                raise RuntimeError("peft is required to load a LoRA adapter.") from exc
+            model = PeftModel.from_pretrained(model, adapter_path)
         return cls(
             model_name=model_name,
             tokenizer=tokenizer,
             model=model,
+            adapter_path=adapter_path,
             generation_kwargs=generation_kwargs,
         )
 
@@ -178,6 +188,7 @@ class LocalLLMGenerator:
             metadata={
                 "baseline": self.name,
                 "model": self.model_name,
+                "adapter_path": self.adapter_path,
                 "prompt_type": "rag" if retrieved_examples else "zero_shot",
                 "retrieved_example_count": len(retrieved_examples or []),
                 "raw_answer": raw_answer,
