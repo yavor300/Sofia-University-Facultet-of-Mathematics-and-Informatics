@@ -1,0 +1,15 @@
+{
+  "model_name": "meta-llama/Meta-Llama-3-8B-Instruct",
+  "loaded_size": 12440,
+  "sampled_size": 12440,
+  "train_size": 9952,
+  "dev_size": 2488,
+  "sample_ratio": 1.0,
+  "seed": 42,
+  "dev_size_ratio": 0.2,
+  "metrics": {
+    "evaluated_questions": 2488,
+    "exact_match_accuracy": 0.49638263665594856,
+    "top1_accuracy": 0.49638263665594856
+  }
+}

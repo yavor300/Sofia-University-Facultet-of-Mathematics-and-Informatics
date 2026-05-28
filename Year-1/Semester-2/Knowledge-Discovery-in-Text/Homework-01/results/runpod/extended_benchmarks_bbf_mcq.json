@@ -1,0 +1,52 @@
+{
+  "loaded_size": 12440,
+  "sampled_size": 12440,
+  "train_size": 9952,
+  "dev_size": 2488,
+  "seed": 42,
+  "dev_size_ratio": 0.2,
+  "sample_ratio": 1.0,
+  "models": {
+    "most_common_letter_baseline": {
+      "evaluated_questions": 2488,
+      "exact_match_accuracy": 0.2640675241157556,
+      "top1_accuracy": 0.2640675241157556
+    },
+    "lexical_overlap": {
+      "evaluated_questions": 2488,
+      "exact_match_accuracy": 0.2407556270096463,
+      "top1_accuracy": 0.2407556270096463
+    },
+    "tfidf_logreg_pair": {
+      "evaluated_questions": 2488,
+      "exact_match_accuracy": 0.31270096463022506,
+      "top1_accuracy": 0.31270096463022506
+    },
+    "svm_pair": {
+      "evaluated_questions": 2488,
+      "exact_match_accuracy": 0.31310289389067525,
+      "top1_accuracy": 0.31310289389067525
+    },
+    "mlp_pair": {
+      "evaluated_questions": 2488,
+      "exact_match_accuracy": 0.27692926045016075,
+      "top1_accuracy": 0.27692926045016075
+    },
+    "word2vec_mlp_pair": {
+      "evaluated_questions": 2488,
+      "exact_match_accuracy": 0.30305466237942125,
+      "top1_accuracy": 0.30305466237942125
+    },
+    "multiclass_4d_svm_summary": {
+      "evaluated_questions": 2488,
+      "exact_match_accuracy": 0.284967845659164,
+      "top1_accuracy": 0.284967845659164
+    },
+    "transformer_cross_encoder": {
+      "evaluated_questions": 2488,
+      "exact_match_accuracy": 0.28336012861736337,
+      "top1_accuracy": 0.28336012861736337
+    }
+  },
+  "multiclass_4d_dev_questions": 2488
+}
