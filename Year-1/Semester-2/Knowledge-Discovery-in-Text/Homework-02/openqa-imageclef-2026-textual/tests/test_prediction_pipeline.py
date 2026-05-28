@@ -62,5 +62,5 @@ def test_predict_sample_builds_internal_prediction_with_debug(monkeypatch, tmp_p
     assert prediction["debug"]["model"] == "fake_generator"
 
 
-def test_postprocess_answer_strips_outer_whitespace() -> None:
-    assert predict_script.postprocess_answer("  answer\n") == "answer"
+def test_postprocess_answer_cleans_answer_text() -> None:
+    assert predict_script.postprocess_answer("  Answer: answer\nExplanation: no") == "answer"

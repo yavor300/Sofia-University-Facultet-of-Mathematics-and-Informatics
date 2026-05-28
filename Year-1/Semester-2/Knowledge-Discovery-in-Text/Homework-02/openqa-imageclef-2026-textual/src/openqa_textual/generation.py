@@ -9,6 +9,8 @@ import operator
 import re
 from typing import Any
 
+from openqa_textual.answer_postprocess import clean_answer
+
 
 SUPPORTED_LOCAL_LLM_MODELS = (
     "Qwen/Qwen2.5-7B-Instruct",
@@ -280,12 +282,7 @@ def format_prompt_for_model(tokenizer: Any, messages: list[dict[str, str]]) -> s
 def clean_generated_answer(answer: str) -> str:
     """Clean a short final answer emitted by a prompted model."""
 
-    cleaned = str(answer or "").strip()
-    cleaned = re.sub(r"^(final answer|answer|a)\s*:\s*", "", cleaned, flags=re.IGNORECASE)
-    lines = [line.strip() for line in cleaned.splitlines() if line.strip()]
-    cleaned = lines[0] if lines else ""
-    cleaned = cleaned.strip(" \t\"'")
-    return cleaned
+    return clean_answer(answer)
 
 
 def sanitize_generation_kwargs(kwargs: dict[str, Any]) -> dict[str, Any]:

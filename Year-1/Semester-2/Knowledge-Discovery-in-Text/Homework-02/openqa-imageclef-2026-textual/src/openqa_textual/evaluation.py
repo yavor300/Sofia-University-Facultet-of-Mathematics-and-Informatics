@@ -55,6 +55,263 @@ def score_answer(predicted: str, gold_answer: str | list[str]) -> dict[str, floa
     return max(scores, key=lambda item: (item["normalized_exact_match"], item["token_f1"], item["char_similarity"]))
 
 
+def evaluate_dev_report(
+    predictions: list[dict[str, Any]],
+    gold_records: list[dict[str, Any]],
+    experiment_name: str = "experiment",
+    ocr_engine: str = "",
+    preprocessing: str = "",
+    generation_model: str = "",
+    retrieval: str = "",
+    notes: str = "",
+    include_bertscore: bool = False,
+) -> dict[str, Any]:
+    """Build a Phase 14 single-system evaluation report."""
+
+    gold_by_id = gold_answers_from_records(gold_records)
+    clean_questions_by_id = clean_questions_from_records(gold_records)
+    evaluation = evaluate_predictions(predictions, gold_by_id=gold_by_id, system_name=experiment_name)
+    rows = evaluation["rows"]
+    predictions_by_id = {str(row.get("question_id", "")): row for row in predictions}
+
+    pred_texts = [row["prediction"] for row in rows]
+    gold_texts = [str(row["gold_answer"] or "") for row in rows]
+    metrics = dict(evaluation["summary"])
+    metrics.pop("system", None)
+    metrics.update(corpus_generation_metrics(pred_texts, gold_texts, include_bertscore=include_bertscore))
+
+    ocr_cer = ocr_character_error_rate(predictions_by_id, clean_questions_by_id)
+    if ocr_cer is not None:
+        metrics["ocr_character_error_rate"] = ocr_cer
+
+    return {
+        "experiment_name": experiment_name,
+        "ocr_engine": ocr_engine,
+        "preprocessing": preprocessing,
+        "generation_model": generation_model,
+        "retrieval": retrieval,
+        "metrics": metrics,
+        "by_language": evaluation["by_language"],
+        "rows": rows,
+        "notes": notes,
+    }
+
+
+def corpus_generation_metrics(
+    predictions: list[str],
+    references: list[str],
+    include_bertscore: bool = False,
+) -> dict[str, Any]:
+    """Compute corpus-level BLEU/ROUGE-L/METEOR and optional BERTScore."""
+
+    metrics: dict[str, Any] = {
+        "bleu": corpus_bleu(predictions, references),
+        "rouge_l": rouge_l(predictions, references),
+    }
+    meteor = meteor_score(predictions, references)
+    if meteor is not None:
+        metrics["meteor"] = meteor
+    else:
+        metrics["meteor"] = None
+
+    if include_bertscore:
+        metrics["bertscore_f1"] = bertscore_f1(predictions, references)
+    return metrics
+
+
+def corpus_bleu(predictions: list[str], references: list[str]) -> float:
+    """Return sacreBLEU score normalized to 0..1."""
+
+    if not predictions:
+        return 0.0
+    try:
+        import sacrebleu
+
+        return round(float(sacrebleu.corpus_bleu(predictions, [references]).score) / 100.0, 6)
+    except Exception:
+        return 0.0
+
+
+def rouge_l(predictions: list[str], references: list[str]) -> float:
+    """Return average ROUGE-L F1."""
+
+    if not predictions:
+        return 0.0
+    try:
+        from rouge_score import rouge_scorer
+
+        scorer = rouge_scorer.RougeScorer(["rougeL"], use_stemmer=False)
+        scores = [
+            scorer.score(str(reference), str(prediction))["rougeL"].fmeasure
+            for prediction, reference in zip(predictions, references, strict=False)
+        ]
+        return round(sum(scores) / len(scores), 6) if scores else 0.0
+    except Exception:
+        scores = [
+            _lcs_f1(normalize_answer(prediction), normalize_answer(reference))
+            for prediction, reference in zip(predictions, references, strict=False)
+        ]
+        return round(sum(scores) / len(scores), 6) if scores else 0.0
+
+
+def meteor_score(predictions: list[str], references: list[str]) -> float | None:
+    """Return average METEOR if NLTK resources are available."""
+
+    if not predictions:
+        return 0.0
+    try:
+        from nltk.translate.meteor_score import meteor_score as nltk_meteor_score
+
+        scores = [
+            float(nltk_meteor_score([normalize_answer(reference).split()], normalize_answer(prediction).split()))
+            for prediction, reference in zip(predictions, references, strict=False)
+        ]
+        return round(sum(scores) / len(scores), 6) if scores else 0.0
+    except Exception:
+        return None
+
+
+def bertscore_f1(predictions: list[str], references: list[str]) -> float | None:
+    """Return average BERTScore F1 if bert-score and model weights are available."""
+
+    if not predictions:
+        return 0.0
+    try:
+        from bert_score import score
+
+        _, _, f1 = score(predictions, references, lang="multilingual", verbose=False)
+        return round(float(f1.mean().item()), 6)
+    except Exception:
+        return None
+
+
+def ocr_character_error_rate(
+    predictions_by_id: dict[str, dict[str, Any]],
+    clean_questions_by_id: dict[str, str],
+) -> float | None:
+    """Compute OCR CER from prediction debug text when clean questions are available."""
+
+    distances = 0
+    lengths = 0
+    for question_id, clean_question in clean_questions_by_id.items():
+        if not clean_question:
+            continue
+        prediction = predictions_by_id.get(question_id)
+        if not prediction:
+            continue
+        debug = prediction.get("debug") or {}
+        ocr_question = str(debug.get("clean_question") or debug.get("ocr_text") or "")
+        if not ocr_question:
+            continue
+        normalized_ocr = normalize_answer(ocr_question)
+        normalized_clean = normalize_answer(clean_question)
+        distances += levenshtein_distance(normalized_ocr, normalized_clean)
+        lengths += len(normalized_clean)
+    if lengths == 0:
+        return None
+    return round(distances / lengths, 6)
+
+
+def gold_answers_from_records(records: list[dict[str, Any]]) -> dict[str, str]:
+    """Extract question_id -> gold answer from JSON records."""
+
+    gold_by_id = {}
+    for record in records:
+        question_id = str(record.get("question_id") or record.get("id") or "")
+        if not question_id:
+            continue
+        if isinstance(record.get("answers"), list):
+            answer = " | ".join(str(answer) for answer in record["answers"])
+        else:
+            answer = str(record.get("gold_answer") or record.get("answer") or record.get("target") or "")
+        gold_by_id[question_id] = answer.strip()
+    return gold_by_id
+
+
+def clean_questions_from_records(records: list[dict[str, Any]]) -> dict[str, str]:
+    """Extract question_id -> clean question text when present."""
+
+    clean_by_id = {}
+    for record in records:
+        question_id = str(record.get("question_id") or record.get("id") or "")
+        if not question_id:
+            continue
+        clean_question = (
+            record.get("clean_question")
+            or record.get("question")
+            or record.get("question_text")
+            or record.get("text")
+            or ""
+        )
+        if clean_question:
+            clean_by_id[question_id] = str(clean_question)
+    return clean_by_id
+
+
+def load_gold_records(path: str | Path) -> list[dict[str, Any]]:
+    """Load gold records from JSON list/dict or JSONL."""
+
+    gold_path = Path(path)
+    if gold_path.suffix == ".jsonl":
+        return read_jsonl(gold_path)
+    with gold_path.open("r", encoding="utf-8") as handle:
+        data = json.load(handle)
+    if isinstance(data, list):
+        return data
+    if isinstance(data, dict):
+        for key in ("gold", "references", "data", "examples"):
+            if isinstance(data.get(key), list):
+                return data[key]
+    raise ValueError(f"Unsupported gold file shape: {gold_path}")
+
+
+def levenshtein_distance(left: str, right: str) -> int:
+    """Small dynamic-programming edit distance for CER."""
+
+    if left == right:
+        return 0
+    if not left:
+        return len(right)
+    if not right:
+        return len(left)
+    previous = list(range(len(right) + 1))
+    for left_index, left_char in enumerate(left, start=1):
+        current = [left_index]
+        for right_index, right_char in enumerate(right, start=1):
+            insert_cost = current[right_index - 1] + 1
+            delete_cost = previous[right_index] + 1
+            replace_cost = previous[right_index - 1] + (left_char != right_char)
+            current.append(min(insert_cost, delete_cost, replace_cost))
+        previous = current
+    return previous[-1]
+
+
+def _lcs_f1(predicted: str, gold: str) -> float:
+    """Token-level LCS F1 fallback for ROUGE-L."""
+
+    predicted_tokens = predicted.split()
+    gold_tokens = gold.split()
+    if not predicted_tokens or not gold_tokens:
+        return 0.0
+
+    previous = [0] * (len(gold_tokens) + 1)
+    for predicted_token in predicted_tokens:
+        current = [0]
+        for index, gold_token in enumerate(gold_tokens, start=1):
+            if predicted_token == gold_token:
+                current.append(previous[index - 1] + 1)
+            else:
+                current.append(max(previous[index], current[index - 1]))
+        previous = current
+
+    lcs = previous[-1]
+    if lcs == 0:
+        return 0.0
+    precision = lcs / len(predicted_tokens)
+    recall = lcs / len(gold_tokens)
+    return (2 * precision * recall) / (precision + recall)
+
+
 def evaluate_predictions(
     predictions: list[dict[str, Any]],
     gold_by_id: dict[str, str],

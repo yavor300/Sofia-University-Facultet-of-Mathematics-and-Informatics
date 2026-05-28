@@ -12,6 +12,7 @@ if str(PROJECT_SRC) not in sys.path:
     sys.path.insert(0, str(PROJECT_SRC))
 
 from openqa_textual.config import load_yaml_config
+from openqa_textual.answer_postprocess import clean_answer
 from openqa_textual.data import (
     get_sample_id,
     get_sample_image,
@@ -205,7 +206,7 @@ def predict_sample(
     else:
         result = generator.generate(clean_question, language=language)
 
-    answers = [postprocess_answer(answer) for answer in result.answers]
+    answers = [postprocess_answer(answer, language=language) for answer in result.answers]
     if not answers:
         answers = [""]
 
@@ -286,8 +287,8 @@ def load_split(args: argparse.Namespace, data_config: dict[str, Any]):
     return split_name, dataset[split_name]
 
 
-def postprocess_answer(answer: str) -> str:
-    return str(answer or "").strip()
+def postprocess_answer(answer: str, language: str | None = None) -> str:
+    return clean_answer(answer, language=language)
 
 
 def safe_sample_id(sample: dict[str, Any], index: int) -> str:
