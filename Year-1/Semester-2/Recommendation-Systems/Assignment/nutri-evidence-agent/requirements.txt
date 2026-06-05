@@ -1,0 +1,12 @@
+biopython
+pandas
+numpy
+scikit-learn
+sentence-transformers
+streamlit
+networkx
+node2vec
+gensim
+python-dotenv
+tqdm
+requests

@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="580" viewBox="0 0 920 580">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<style>text{font-family:Arial,Helvetica,sans-serif;fill:#111827}.grid{stroke:#e5e7eb;stroke-width:1}.axis{stroke:#374151;stroke-width:1.3}</style>
+<text x="460.0" y="28.0" font-size="20" text-anchor="middle" font-weight="700">Средни evaluation метрики</text>
+<line class="axis" x1="90.0" y1="55.0" x2="90.0" y2="490.0"/>
+<line class="axis" x1="90.0" y1="490.0" x2="880.0" y2="490.0"/>
+<text x="80.0" y="494.0" font-size="11" text-anchor="end">0.0</text>
+<text x="80.0" y="407.0" font-size="11" text-anchor="end">0.2</text>
+<text x="80.0" y="320.0" font-size="11" text-anchor="end">0.4</text>
+<text x="80.0" y="233.0" font-size="11" text-anchor="end">0.6</text>
+<text x="80.0" y="146.0" font-size="11" text-anchor="end">0.8</text>
+<text x="80.0" y="59.0" font-size="11" text-anchor="end">1.0</text>
+<line class="grid" x1="90.0" y1="403.0" x2="880.0" y2="403.0"/>
+<line class="grid" x1="90.0" y1="316.0" x2="880.0" y2="316.0"/>
+<line class="grid" x1="90.0" y1="229.0" x2="880.0" y2="229.0"/>
+<line class="grid" x1="90.0" y1="142.0" x2="880.0" y2="142.0"/>
+<line class="grid" x1="90.0" y1="55.0" x2="880.0" y2="55.0"/>
+<rect x="99.9" y="403.0" width="16.8" height="87.0" rx="2" fill="#64748b"/>
+<text x="108.2" y="397.0" font-size="9" text-anchor="middle">0.20</text>
+<rect x="119.6" y="403.0" width="16.8" height="87.0" rx="2" fill="#3b82f6"/>
+<text x="127.9" y="397.0" font-size="9" text-anchor="middle">0.20</text>
+<rect x="139.4" y="229.0" width="16.8" height="261.0" rx="2" fill="#10b981"/>
+<text x="147.7" y="223.0" font-size="9" text-anchor="middle">0.60</text>
+<rect x="159.1" y="403.0" width="16.8" height="87.0" rx="2" fill="#8b5cf6"/>
+<text x="167.4" y="397.0" font-size="9" text-anchor="middle">0.20</text>
+<rect x="178.9" y="403.0" width="16.8" height="87.0" rx="2" fill="#f59e0b"/>
+<text x="187.2" y="397.0" font-size="9" text-anchor="middle">0.20</text>
+<rect x="198.6" y="403.0" width="16.8" height="87.0" rx="2" fill="#06b6d4"/>
+<text x="206.9" y="397.0" font-size="9" text-anchor="middle">0.20</text>
+<rect x="218.4" y="316.0" width="16.8" height="174.0" rx="2" fill="#ef4444"/>
+<text x="226.7" y="310.0" font-size="9" text-anchor="middle">0.40</text>
+<text x="169.0" y="535.0" font-size="13" text-anchor="middle">Precision@5</text>
+<rect x="257.9" y="403.0" width="16.8" height="87.0" rx="2" fill="#64748b"/>
+<text x="266.2" y="397.0" font-size="9" text-anchor="middle">0.20</text>
+<rect x="277.6" y="359.5" width="16.8" height="130.5" rx="2" fill="#3b82f6"/>
+<text x="285.9" y="353.5" font-size="9" text-anchor="middle">0.30</text>
+<rect x="297.4" y="229.0" width="16.8" height="261.0" rx="2" fill="#10b981"/>
+<text x="305.7" y="223.0" font-size="9" text-anchor="middle">0.60</text>
+<rect x="317.1" y="403.0" width="16.8" height="87.0" rx="2" fill="#8b5cf6"/>
+<text x="325.4" y="397.0" font-size="9" text-anchor="middle">0.20</text>
+<rect x="336.9" y="403.0" width="16.8" height="87.0" rx="2" fill="#f59e0b"/>
+<text x="345.2" y="397.0" font-size="9" text-anchor="middle">0.20</text>
+<rect x="356.6" y="403.0" width="16.8" height="87.0" rx="2" fill="#06b6d4"/>
+<text x="364.9" y="397.0" font-size="9" text-anchor="middle">0.20</text>
+<rect x="376.4" y="316.0" width="16.8" height="174.0" rx="2" fill="#ef4444"/>
+<text x="384.7" y="310.0" font-size="9" text-anchor="middle">0.40</text>
+<text x="327.0" y="535.0" font-size="13" text-anchor="middle">Precision@10</text>
+<rect x="415.9" y="195.2" width="16.8" height="294.8" rx="2" fill="#64748b"/>
+<text x="424.2" y="189.2" font-size="9" text-anchor="middle">0.68</text>
+<rect x="435.6" y="142.9" width="16.8" height="347.1" rx="2" fill="#3b82f6"/>
+<text x="443.9" y="136.9" font-size="9" text-anchor="middle">0.80</text>
+<rect x="455.4" y="55.0" width="16.8" height="435.0" rx="2" fill="#10b981"/>
+<text x="463.7" y="49.0" font-size="9" text-anchor="middle">1.00</text>
+<rect x="475.1" y="132.7" width="16.8" height="357.3" rx="2" fill="#8b5cf6"/>
+<text x="483.4" y="126.7" font-size="9" text-anchor="middle">0.82</text>
+<rect x="494.9" y="182.7" width="16.8" height="307.3" rx="2" fill="#f59e0b"/>
+<text x="503.2" y="176.7" font-size="9" text-anchor="middle">0.71</text>
+<rect x="514.6" y="155.1" width="16.8" height="334.9" rx="2" fill="#06b6d4"/>
+<text x="522.9" y="149.1" font-size="9" text-anchor="middle">0.77</text>
+<rect x="534.4" y="125.0" width="16.8" height="365.0" rx="2" fill="#ef4444"/>
+<text x="542.7" y="119.0" font-size="9" text-anchor="middle">0.84</text>
+<text x="485.0" y="535.0" font-size="13" text-anchor="middle">nDCG@5</text>
+<rect x="573.9" y="195.2" width="16.8" height="294.8" rx="2" fill="#64748b"/>
+<text x="582.2" y="189.2" font-size="9" text-anchor="middle">0.68</text>
+<rect x="593.6" y="153.5" width="16.8" height="336.5" rx="2" fill="#3b82f6"/>
+<text x="601.9" y="147.5" font-size="9" text-anchor="middle">0.77</text>
+<rect x="613.4" y="55.0" width="16.8" height="435.0" rx="2" fill="#10b981"/>
+<text x="621.7" y="49.0" font-size="9" text-anchor="middle">1.00</text>
+<rect x="633.1" y="153.0" width="16.8" height="337.0" rx="2" fill="#8b5cf6"/>
+<text x="641.4" y="147.0" font-size="9" text-anchor="middle">0.77</text>
+<rect x="652.9" y="182.7" width="16.8" height="307.3" rx="2" fill="#f59e0b"/>
+<text x="661.2" y="176.7" font-size="9" text-anchor="middle">0.71</text>
+<rect x="672.6" y="158.1" width="16.8" height="331.9" rx="2" fill="#06b6d4"/>
+<text x="680.9" y="152.1" font-size="9" text-anchor="middle">0.76</text>
+<rect x="692.4" y="125.0" width="16.8" height="365.0" rx="2" fill="#ef4444"/>
+<text x="700.7" y="119.0" font-size="9" text-anchor="middle">0.84</text>
+<text x="643.0" y="535.0" font-size="13" text-anchor="middle">nDCG@10</text>
+<rect x="731.9" y="403.0" width="16.8" height="87.0" rx="2" fill="#64748b"/>
+<text x="740.2" y="397.0" font-size="9" text-anchor="middle">0.20</text>
+<rect x="751.6" y="345.0" width="16.8" height="145.0" rx="2" fill="#3b82f6"/>
+<text x="759.9" y="339.0" font-size="9" text-anchor="middle">0.33</text>
+<rect x="771.4" y="55.0" width="16.8" height="435.0" rx="2" fill="#10b981"/>
+<text x="779.7" y="49.0" font-size="9" text-anchor="middle">1.00</text>
+<rect x="791.1" y="272.5" width="16.8" height="217.5" rx="2" fill="#8b5cf6"/>
+<text x="799.4" y="266.5" font-size="9" text-anchor="middle">0.50</text>
+<rect x="810.9" y="403.0" width="16.8" height="87.0" rx="2" fill="#f59e0b"/>
+<text x="819.2" y="397.0" font-size="9" text-anchor="middle">0.20</text>
+<rect x="830.6" y="381.2" width="16.8" height="108.8" rx="2" fill="#06b6d4"/>
+<text x="838.9" y="375.2" font-size="9" text-anchor="middle">0.25</text>
+<rect x="850.4" y="272.5" width="16.8" height="217.5" rx="2" fill="#ef4444"/>
+<text x="858.7" y="266.5" font-size="9" text-anchor="middle">0.50</text>
+<text x="801.0" y="535.0" font-size="13" text-anchor="middle">MRR</text>
+<rect x="90.0" y="500.0" width="16.0" height="12.0" rx="2" fill="#64748b"/>
+<text x="112.0" y="510.0" font-size="12" text-anchor="start">MeSH overlap baseline</text>
+<rect x="370.0" y="500.0" width="16.0" height="12.0" rx="2" fill="#3b82f6"/>
+<text x="392.0" y="510.0" font-size="12" text-anchor="start">Semantic Similarity</text>
+<rect x="650.0" y="500.0" width="16.0" height="12.0" rx="2" fill="#10b981"/>
+<text x="672.0" y="510.0" font-size="12" text-anchor="start">Semantic + LLM rerank</text>
+<rect x="90.0" y="518.0" width="16.0" height="12.0" rx="2" fill="#8b5cf6"/>
+<text x="112.0" y="528.0" font-size="12" text-anchor="start">Graph node2vec</text>
+<rect x="370.0" y="518.0" width="16.0" height="12.0" rx="2" fill="#f59e0b"/>
+<text x="392.0" y="528.0" font-size="12" text-anchor="start">Graph + LLM rerank</text>
+<rect x="650.0" y="518.0" width="16.0" height="12.0" rx="2" fill="#06b6d4"/>
+<text x="672.0" y="528.0" font-size="12" text-anchor="start">Hybrid</text>
+<rect x="90.0" y="536.0" width="16.0" height="12.0" rx="2" fill="#ef4444"/>
+<text x="112.0" y="546.0" font-size="12" text-anchor="start">Hybrid + LLM rerank</text>
+</svg>

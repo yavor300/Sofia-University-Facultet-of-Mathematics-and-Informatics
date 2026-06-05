@@ -1,0 +1,43 @@
+# Python caches
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+
+# Streamlit local secrets
+.streamlit/secrets.toml
+
+# OS and editor noise
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Generated model and graph artifacts
+data/artifacts/*
+!data/artifacts/.gitkeep
+*.npy
+*.kv
+*.gpickle
+
+# Generated local exports, annotation work files, and reports
+data/*_export*.csv
+data/evaluation_*.csv
+data/*.pdf
+
+# Generated metric tables. Keep generated charts, because the docs reference them.
+docs/evaluation/**/*.csv
