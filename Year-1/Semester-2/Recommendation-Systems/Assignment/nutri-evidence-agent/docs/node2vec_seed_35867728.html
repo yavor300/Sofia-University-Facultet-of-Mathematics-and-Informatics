@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>node2vec Nearest Articles for PMID 35867728</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      color: #172033;
+      background: #f7f7f4;
+    }
+    main {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 28px;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+      line-height: 1.2;
+    }
+    h2 {
+      margin: 24px 0 10px;
+      font-size: 20px;
+    }
+    p {
+      margin: 8px 0;
+      color: #4b5563;
+      line-height: 1.45;
+    }
+    code {
+      background: #eef1ee;
+      border-radius: 4px;
+      padding: 2px 4px;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(150px, 1fr));
+      gap: 10px;
+      margin-top: 18px;
+    }
+    .stat {
+      border: 1px solid #d9ded7;
+      border-radius: 8px;
+      background: white;
+      padding: 12px;
+    }
+    .stat strong {
+      display: block;
+      font-size: 20px;
+      color: #111827;
+    }
+    .panel {
+      margin-top: 18px;
+      background: #ffffff;
+      border: 1px solid #d9ded7;
+      border-radius: 8px;
+      overflow: auto;
+    }
+    svg {
+      display: block;
+      min-width: 1160px;
+    }
+    .similarity-edge {
+      stroke: #94a3b8;
+      opacity: 0.36;
+    }
+    .article-node {
+      stroke: #ffffff;
+      stroke-width: 1.6;
+    }
+    .dot-label {
+      fill: #ffffff;
+      font-size: 8px;
+      font-weight: 700;
+      text-anchor: middle;
+      pointer-events: none;
+    }
+    .axis-label {
+      fill: #64748b;
+      font-size: 12px;
+    }
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 16px;
+      margin-top: 14px;
+      color: #374151;
+      font-size: 13px;
+    }
+    .legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      min-width: 880px;
+      font-size: 13px;
+    }
+    th, td {
+      border-bottom: 1px solid #e5e7eb;
+      padding: 8px 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      background: #f1f5f9;
+      color: #243044;
+      font-weight: 700;
+    }
+    .small {
+      font-size: 12px;
+      color: #64748b;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>node2vec Nearest Articles for PMID 35867728</h1>
+    <p>This seed-focused view shows the articles closest to the selected PMID in node2vec embedding space. The similarity is learned from the Article-MeSH graph, not from title or abstract text.</p>
+    <p>This is a visualization of <strong>node2vec embeddings</strong>, not the raw Article-MeSH edges. node2vec learns vectors from random walks over the graph, so proximity in this map means structural similarity in biomedical concept space.</p>
+    <p>The orange node is the selected seed article PMID <code>35867728</code>.</p>
+    <div class="stats">
+      <div class="stat"><strong>305</strong><span>article embeddings available</span></div>
+      <div class="stat"><strong>715</strong><span>MeSH nodes in graph</span></div>
+      <div class="stat"><strong>3491</strong><span>Article-MeSH edges</span></div>
+      <div class="stat"><strong>64</strong><span>node2vec dimensions</span></div>
+    </div>
+    <div class="legend"><span><i class="dot" style="background:#2563eb"></i>nutrition risk cerebral palsy children</span><span><i class="dot" style="background:#16a34a"></i>body composition cerebral palsy children</span><span><i class="dot" style="background:#9333ea"></i>Mediterranean diet pregnancy child neurodevel...</span><span><i class="dot" style="background:#dc2626"></i>maternal diet child cognition</span><span><i class="dot" style="background:#0891b2"></i>gut microbiome Parkinson disease</span><span><i class="dot" style="background:#f97316"></i>Seed article</span></div>
+    <div class="panel">
+      <svg width="1160" height="720" role="img" aria-label="node2vec Nearest Articles for PMID 35867728">
+        <text x="32" y="700" class="axis-label">PCA component 1</text>
+        <text x="32" y="24" class="axis-label">PCA projection of node2vec vectors</text>
+        <line x1="259.8" y1="164.6" x2="236.4" y2="120.9" class="similarity-edge" style="stroke-width:1.93"><title>node2vec cosine similarity: 0.768</title></line><line x1="506.9" y1="650.0" x2="194.3" y2="594.8" class="similarity-edge" style="stroke-width:1.87"><title>node2vec cosine similarity: 0.734</title></line><line x1="168.7" y1="529.5" x2="318.2" y2="401.3" class="similarity-edge" style="stroke-width:1.87"><title>node2vec cosine similarity: 0.733</title></line><line x1="122.9" y1="314.7" x2="70.0" y2="521.5" class="similarity-edge" style="stroke-width:1.87"><title>node2vec cosine similarity: 0.728</title></line><line x1="310.8" y1="484.0" x2="70.0" y2="521.5" class="similarity-edge" style="stroke-width:1.84"><title>node2vec cosine similarity: 0.715</title></line><line x1="310.8" y1="484.0" x2="277.8" y2="434.5" class="similarity-edge" style="stroke-width:1.79"><title>node2vec cosine similarity: 0.683</title></line><line x1="305.1" y1="345.6" x2="168.7" y2="529.5" class="similarity-edge" style="stroke-width:1.79"><title>node2vec cosine similarity: 0.682</title></line><line x1="277.8" y1="434.5" x2="70.0" y2="521.5" class="similarity-edge" style="stroke-width:1.77"><title>node2vec cosine similarity: 0.669</title></line><line x1="277.8" y1="434.5" x2="194.3" y2="594.8" class="similarity-edge" style="stroke-width:1.75"><title>node2vec cosine similarity: 0.655</title></line><line x1="634.7" y1="353.9" x2="476.8" y2="373.3" class="similarity-edge" style="stroke-width:1.74"><title>node2vec cosine similarity: 0.653</title></line><line x1="305.1" y1="345.6" x2="318.2" y2="401.3" class="similarity-edge" style="stroke-width:1.74"><title>node2vec cosine similarity: 0.652</title></line><line x1="259.8" y1="164.6" x2="426.7" y2="151.8" class="similarity-edge" style="stroke-width:1.74"><title>node2vec cosine similarity: 0.650</title></line><line x1="205.8" y1="345.6" x2="168.7" y2="529.5" class="similarity-edge" style="stroke-width:1.73"><title>node2vec cosine similarity: 0.643</title></line><line x1="426.7" y1="151.8" x2="236.4" y2="120.9" class="similarity-edge" style="stroke-width:1.73"><title>node2vec cosine similarity: 0.643</title></line><line x1="497.0" y1="86.8" x2="473.9" y2="231.2" class="similarity-edge" style="stroke-width:1.72"><title>node2vec cosine similarity: 0.635</title></line><line x1="423.3" y1="181.1" x2="473.9" y2="231.2" class="similarity-edge" style="stroke-width:1.71"><title>node2vec cosine similarity: 0.633</title></line><line x1="122.9" y1="314.7" x2="236.4" y2="120.9" class="similarity-edge" style="stroke-width:1.69"><title>node2vec cosine similarity: 0.620</title></line><line x1="386.2" y1="70.0" x2="236.4" y2="120.9" class="similarity-edge" style="stroke-width:1.68"><title>node2vec cosine similarity: 0.615</title></line><line x1="444.7" y1="218.5" x2="122.9" y2="314.7" class="similarity-edge" style="stroke-width:1.67"><title>node2vec cosine similarity: 0.607</title></line><line x1="423.3" y1="181.1" x2="497.0" y2="86.8" class="similarity-edge" style="stroke-width:1.67"><title>node2vec cosine similarity: 0.604</title></line><line x1="444.7" y1="218.5" x2="70.0" y2="521.5" class="similarity-edge" style="stroke-width:1.66"><title>node2vec cosine similarity: 0.602</title></line><line x1="205.8" y1="345.6" x2="467.8" y2="332.7" class="similarity-edge" style="stroke-width:1.66"><title>node2vec cosine similarity: 0.598</title></line><line x1="423.3" y1="181.1" x2="386.2" y2="70.0" class="similarity-edge" style="stroke-width:1.65"><title>node2vec cosine similarity: 0.595</title></line><line x1="168.7" y1="529.5" x2="336.4" y2="401.2" class="similarity-edge" style="stroke-width:1.65"><title>node2vec cosine similarity: 0.593</title></line><line x1="713.6" y1="475.9" x2="476.8" y2="373.3" class="similarity-edge" style="stroke-width:1.63"><title>node2vec cosine similarity: 0.580</title></line><line x1="122.9" y1="314.7" x2="412.2" y2="397.6" class="similarity-edge" style="stroke-width:1.62"><title>node2vec cosine similarity: 0.573</title></line><line x1="444.7" y1="218.5" x2="518.9" y2="126.4" class="similarity-edge" style="stroke-width:1.62"><title>node2vec cosine similarity: 0.572</title></line><line x1="713.6" y1="475.9" x2="168.7" y2="529.5" class="similarity-edge" style="stroke-width:1.60"><title>node2vec cosine similarity: 0.562</title></line><line x1="634.7" y1="353.9" x2="713.6" y2="475.9" class="similarity-edge" style="stroke-width:1.57"><title>node2vec cosine similarity: 0.544</title></line><line x1="634.7" y1="353.9" x2="673.4" y2="300.1" class="similarity-edge" style="stroke-width:1.57"><title>node2vec cosine similarity: 0.543</title></line><line x1="990.4" y1="372.7" x2="713.6" y2="475.9" class="similarity-edge" style="stroke-width:1.55"><title>node2vec cosine similarity: 0.531</title></line><line x1="444.7" y1="218.5" x2="937.3" y2="252.0" class="similarity-edge" style="stroke-width:1.55"><title>node2vec cosine similarity: 0.530</title></line><line x1="1077.8" y1="462.4" x2="713.6" y2="475.9" class="similarity-edge" style="stroke-width:1.54"><title>node2vec cosine similarity: 0.525</title></line><line x1="990.4" y1="372.7" x2="634.7" y2="353.9" class="similarity-edge" style="stroke-width:1.54"><title>node2vec cosine similarity: 0.524</title></line><line x1="497.0" y1="86.8" x2="633.2" y2="107.9" class="similarity-edge" style="stroke-width:1.52"><title>node2vec cosine similarity: 0.515</title></line><line x1="1077.8" y1="462.4" x2="990.4" y2="372.7" class="similarity-edge" style="stroke-width:1.52"><title>node2vec cosine similarity: 0.513</title></line><line x1="1077.8" y1="462.4" x2="996.3" y2="358.6" class="similarity-edge" style="stroke-width:1.52"><title>node2vec cosine similarity: 0.512</title></line><line x1="476.8" y1="373.3" x2="336.4" y2="401.2" class="similarity-edge" style="stroke-width:1.52"><title>node2vec cosine similarity: 0.512</title></line><line x1="633.2" y1="107.9" x2="386.2" y2="70.0" class="similarity-edge" style="stroke-width:1.52"><title>node2vec cosine similarity: 0.511</title></line><line x1="937.3" y1="252.0" x2="990.4" y2="372.7" class="similarity-edge" style="stroke-width:1.50"><title>node2vec cosine similarity: 0.501</title></line><line x1="633.2" y1="107.9" x2="518.9" y2="126.4" class="similarity-edge" style="stroke-width:1.50"><title>node2vec cosine similarity: 0.499</title></line><line x1="310.8" y1="484.0" x2="412.2" y2="397.6" class="similarity-edge" style="stroke-width:1.50"><title>node2vec cosine similarity: 0.498</title></line><line x1="444.7" y1="218.5" x2="673.4" y2="300.1" class="similarity-edge" style="stroke-width:1.50"><title>node2vec cosine similarity: 0.497</title></line><line x1="412.2" y1="397.6" x2="649.1" y2="247.1" class="similarity-edge" style="stroke-width:1.49"><title>node2vec cosine similarity: 0.497</title></line><line x1="887.0" y1="374.1" x2="506.9" y2="650.0" class="similarity-edge" style="stroke-width:1.48"><title>node2vec cosine similarity: 0.485</title></line><line x1="618.4" y1="261.3" x2="649.1" y2="247.1" class="similarity-edge" style="stroke-width:1.47"><title>node2vec cosine similarity: 0.483</title></line><line x1="467.8" y1="332.7" x2="634.7" y2="353.9" class="similarity-edge" style="stroke-width:1.47"><title>node2vec cosine similarity: 0.479</title></line><line x1="618.4" y1="261.3" x2="497.0" y2="86.8" class="similarity-edge" style="stroke-width:1.46"><title>node2vec cosine similarity: 0.477</title></line><line x1="996.3" y1="358.6" x2="1090.0" y2="391.1" class="similarity-edge" style="stroke-width:1.45"><title>node2vec cosine similarity: 0.471</title></line><line x1="1077.8" y1="462.4" x2="1090.0" y2="391.1" class="similarity-edge" style="stroke-width:1.43"><title>node2vec cosine similarity: 0.455</title></line><line x1="1064.9" y1="362.0" x2="887.0" y2="374.1" class="similarity-edge" style="stroke-width:1.41"><title>node2vec cosine similarity: 0.442</title></line><line x1="444.7" y1="218.5" x2="794.4" y2="222.4" class="similarity-edge" style="stroke-width:1.40"><title>node2vec cosine similarity: 0.436</title></line><line x1="937.3" y1="252.0" x2="1064.9" y2="362.0" class="similarity-edge" style="stroke-width:1.39"><title>node2vec cosine similarity: 0.430</title></line><line x1="937.3" y1="252.0" x2="794.4" y2="222.4" class="similarity-edge" style="stroke-width:1.37"><title>node2vec cosine similarity: 0.418</title></line><line x1="1064.9" y1="362.0" x2="880.2" y2="490.8" class="similarity-edge" style="stroke-width:1.35"><title>node2vec cosine similarity: 0.404</title></line><line x1="713.6" y1="475.9" x2="880.2" y2="490.8" class="similarity-edge" style="stroke-width:1.31"><title>node2vec cosine similarity: 0.384</title></line>
+        <circle cx="713.6" cy="475.9" r="15" fill="#f97316" class="article-node"><title>PMID: 35867728
+Title: Dietary and nutritional interventions in children with cerebral palsy: A systematic literature review.
+Source query: nutrition risk cerebral palsy children
+MeSH degree: 9</title></circle><circle cx="476.8" cy="373.3" r="10" fill="#16a34a" class="article-node"><title>PMID: 36872600
+Title: Vibration Therapy as an Early Intervention for Children Aged 2-4 Years with Cerebral Palsy: A Feasibility Study.
+Source query: body composition cerebral palsy children
+MeSH degree: 9</title></circle><circle cx="168.7" cy="529.5" r="10" fill="#2563eb" class="article-node"><title>PMID: 37486592
+Title: Tools for Nutrition Assessment of Adults with Cerebral Palsy: Development of a Gold Standard.
+Source query: nutrition risk cerebral palsy children
+MeSH degree: 8</title></circle><circle cx="194.3" cy="594.8" r="10" fill="#2563eb" class="article-node"><title>PMID: 40012369
+Title: Caregivers&#x27; experiences of feeding children with cerebral palsy: a systematic review of qualitative evidence.
+Source query: nutrition risk cerebral palsy children
+MeSH degree: 8</title></circle><circle cx="634.7" cy="353.9" r="10" fill="#2563eb" class="article-node"><title>PMID: 35487751
+Title: Study protocol for Running for health (Run4Health CP): a multicentre, assessor-blinded randomised controlled trial of 12 weeks of two times weekly Frame Running training versus usual care to improve cardiovascular health risk factors in children and youth with cerebral palsy.
+Source query: nutrition risk cerebral palsy children
+MeSH degree: 10</title></circle><circle cx="990.4" cy="372.7" r="10" fill="#9333ea" class="article-node"><title>PMID: 34030703
+Title: Mediterranean diet, Mindfulness-Based Stress Reduction and usual care during pregnancy for reducing fetal growth restriction and adverse perinatal outcomes: IMPACT BCN (Improving Mothers for a better PrenAtal Care Trial BarCeloNa): a study protocol for a randomized controlled trial.
+Source query: Mediterranean diet pregnancy child neurodevelopment
+MeSH degree: 11</title></circle><circle cx="1077.8" cy="462.4" r="10" fill="#dc2626" class="article-node"><title>PMID: 26906232
+Title: Cognition.
+Source query: maternal diet child cognition
+MeSH degree: 20</title></circle><circle cx="205.8" cy="345.6" r="10" fill="#2563eb" class="article-node"><title>PMID: 31760992
+Title: Optimizing Nutrition and Bone Health in Children with Cerebral Palsy.
+Source query: nutrition risk cerebral palsy children
+MeSH degree: 12</title></circle><circle cx="673.4" cy="300.1" r="10" fill="#2563eb" class="article-node"><title>PMID: 36849209
+Title: &lt;b&gt;School readiness of children at high risk of cerebral palsy r&lt;/b&gt;andomised to early neuroprotection and neurorehabilitation: protocol for a follow-up study of participants from four randomised clinical trials.
+Source query: nutrition risk cerebral palsy children
+MeSH degree: 10</title></circle><circle cx="305.1" cy="345.6" r="10" fill="#2563eb" class="article-node"><title>PMID: 33154081
+Title: The Impact of Malnutrition on Hospitalized Children With Cerebral Palsy.
+Source query: nutrition risk cerebral palsy children
+MeSH degree: 7</title></circle><circle cx="277.8" cy="434.5" r="10" fill="#2563eb" class="article-node"><title>PMID: 24301008
+Title: Feeding children with cerebral palsy and swallowing difficulties.
+Source query: nutrition risk cerebral palsy children
+MeSH degree: 7</title></circle><circle cx="318.2" cy="401.3" r="10" fill="#2563eb" class="article-node"><title>PMID: 39710170
+Title: Nutritional risk screening and nutritional assessment for children with cerebral palsy: A review of the current research status and future directions.
+Source query: nutrition risk cerebral palsy children
+MeSH degree: 9</title></circle><circle cx="336.4" cy="401.2" r="10" fill="#2563eb" class="article-node"><title>PMID: 39125275
+Title: Home Enteral Nutrition in Patients with Cerebral Palsy in the Years 2012-2022: A Longitudinal Analysis of Data from the National Health Fund of Poland.
+Source query: nutrition risk cerebral palsy children
+MeSH degree: 20</title></circle><circle cx="70.0" cy="521.5" r="10" fill="#16a34a" class="article-node"><title>PMID: 35224907
+Title: [Digestive and nutritional problems of children with cerebral palsy].
+Source query: body composition cerebral palsy children
+MeSH degree: 8</title></circle><circle cx="618.4" cy="261.3" r="10" fill="#16a34a" class="article-node"><title>PMID: 19182165
+Title: Determination of basal metabolic rate and body composition with bioelectrical impedance method in children with cerebral palsy.
+Source query: body composition cerebral palsy children
+MeSH degree: 11</title></circle><circle cx="412.2" cy="397.6" r="10" fill="#16a34a" class="article-node"><title>PMID: 34506748
+Title: Physical activity, sedentary time and nutritional status in Brazilian children with cerebral palsy.
+Source query: body composition cerebral palsy children
+MeSH degree: 11</title></circle><circle cx="423.3" cy="181.1" r="10" fill="#16a34a" class="article-node"><title>PMID: 16322142
+Title: Weight-for-height values and limb anthropometric composition of tube-fed children with quadriplegic cerebral palsy.
+Source query: body composition cerebral palsy children
+MeSH degree: 11</title></circle><circle cx="310.8" cy="484.0" r="10" fill="#2563eb" class="article-node"><title>PMID: 24301003
+Title: Nutritional management of children with cerebral palsy.
+Source query: nutrition risk cerebral palsy children
+MeSH degree: 9</title></circle><circle cx="506.9" cy="650.0" r="10" fill="#dc2626" class="article-node"><title>PMID: 38314711
+Title: Ketogenic Diet: Parental Experiences and Expectations.
+Source query: maternal diet child cognition
+MeSH degree: 24</title></circle><circle cx="937.3" cy="252.0" r="10" fill="#2563eb" class="article-node"><title>PMID: 18981805
+Title: Diagnosis, treatment, and prevention of cerebral palsy.
+Source query: nutrition risk cerebral palsy children
+MeSH degree: 15</title></circle><circle cx="467.8" cy="332.7" r="10" fill="#2563eb" class="article-node"><title>PMID: 34579076
+Title: Burden of Malnutrition among Children and Adolescents with Cerebral Palsy in Arabic-Speaking Countries: A Systematic Review and Meta-Analysis.
+Source query: nutrition risk cerebral palsy children
+MeSH degree: 7</title></circle><circle cx="996.3" cy="358.6" r="10" fill="#dc2626" class="article-node"><title>PMID: 38677518
+Title: Food, nutrition, and autism: from soil to fork.
+Source query: maternal diet child cognition
+MeSH degree: 9</title></circle><circle cx="1090.0" cy="391.1" r="10" fill="#dc2626" class="article-node"><title>PMID: 41461262
+Title: Maternal Diet Quality during Pregnancy and Child Cognition in United States Cohorts.
+Source query: maternal diet child cognition
+MeSH degree: 14</title></circle><circle cx="236.4" cy="120.9" r="10" fill="#2563eb" class="article-node"><title>PMID: 41344381
+Title: Fractures in Children With Cerebral Palsy: A Systematic Review.
+Source query: nutrition risk cerebral palsy children
+MeSH degree: 6</title></circle><circle cx="1064.9" cy="362.0" r="10" fill="#dc2626" class="article-node"><title>PMID: 34503987
+Title: Maternal diet in pregnancy and child&#x27;s respiratory outcomes: an individual participant data meta-analysis of 18 000 children.
+Source query: maternal diet child cognition
+MeSH degree: 9</title></circle><circle cx="497.0" cy="86.8" r="10" fill="#16a34a" class="article-node"><title>PMID: 25827683
+Title: Measurement of body composition should become routine in nutritional assessment of children with cerebral palsy.
+Source query: body composition cerebral palsy children
+MeSH degree: 5</title></circle><circle cx="518.9" cy="126.4" r="10" fill="#2563eb" class="article-node"><title>PMID: 33201495
+Title: Risk factors for gastrointestinal complications after spinal fusion in children with cerebral palsy.
+Source query: nutrition risk cerebral palsy children
+MeSH degree: 8</title></circle><circle cx="649.1" cy="247.1" r="10" fill="#16a34a" class="article-node"><title>PMID: 38853095
+Title: Elevated blood pressure in children with cerebral palsy and its relationship with adiposity and physical activity.
+Source query: body composition cerebral palsy children
+MeSH degree: 16</title></circle><circle cx="259.8" cy="164.6" r="10" fill="#2563eb" class="article-node"><title>PMID: 24964775
+Title: Fractures in children with cerebral palsy.
+Source query: nutrition risk cerebral palsy children
+MeSH degree: 9</title></circle><circle cx="887.0" cy="374.1" r="10" fill="#dc2626" class="article-node"><title>PMID: 37678584
+Title: Are adolescent diet quality and emotional eating predicted by history of maternal caregiving quality and concurrent inhibitory control?
+Source query: maternal diet child cognition
+MeSH degree: 11</title></circle><circle cx="122.9" cy="314.7" r="10" fill="#16a34a" class="article-node"><title>PMID: 18646022
+Title: Growth and nutrition disorders in children with cerebral palsy.
+Source query: body composition cerebral palsy children
+MeSH degree: 10</title></circle><circle cx="633.2" cy="107.9" r="10" fill="#2563eb" class="article-node"><title>PMID: 29593188
+Title: Risk Factor of Mortality in Indonesian Children with Cerebral Palsy.
+Source query: nutrition risk cerebral palsy children
+MeSH degree: 10</title></circle><circle cx="473.9" cy="231.2" r="10" fill="#16a34a" class="article-node"><title>PMID: 25929375
+Title: Energy expenditure in children with cerebral palsy and moderate / severe malnutrition during nutritional recovery.
+Source query: body composition cerebral palsy children
+MeSH degree: 11</title></circle><circle cx="386.2" cy="70.0" r="10" fill="#2563eb" class="article-node"><title>PMID: 40339775
+Title: How to identify children with cerebral palsy at risk of low bone mineral density.
+Source query: nutrition risk cerebral palsy children
+MeSH degree: 11</title></circle><circle cx="880.2" cy="490.8" r="10" fill="#0891b2" class="article-node"><title>PMID: 36332796
+Title: Gut microbiome and Parkinson&#x27;s disease: Perspective on pathogenesis and treatment.
+Source query: gut microbiome Parkinson disease
+MeSH degree: 6</title></circle><circle cx="444.7" cy="218.5" r="10" fill="#2563eb" class="article-node"><title>PMID: 12956289
+Title: Risk factors of undernutrition in children with spastic cerebral palsy.
+Source query: nutrition risk cerebral palsy children
+MeSH degree: 9</title></circle><circle cx="794.4" cy="222.4" r="10" fill="#2563eb" class="article-node"><title>PMID: 36041870
+Title: Risk Factors for Term-Born Periventricular White Matter Injury in Children With Cerebral Palsy: A Case-Control Study.
+Source query: nutrition risk cerebral palsy children
+MeSH degree: 10</title></circle><circle cx="426.7" cy="151.8" r="10" fill="#16a34a" class="article-node"><title>PMID: 39366537
+Title: The association between fracture and short-term adverse health outcomes among children with cerebral palsy.
+Source query: body composition cerebral palsy children
+MeSH degree: 10</title></circle>
+        <text x="713.6" y="479.1" class="dot-label">S</text><text x="476.8" y="376.5" class="dot-label">A1</text><text x="168.7" y="532.7" class="dot-label">A2</text><text x="194.3" y="598.0" class="dot-label">A3</text><text x="634.7" y="357.1" class="dot-label">A4</text><text x="990.4" y="375.9" class="dot-label">A5</text><text x="1077.8" y="465.6" class="dot-label">A6</text><text x="205.8" y="348.8" class="dot-label">A7</text><text x="673.4" y="303.3" class="dot-label">A8</text><text x="305.1" y="348.8" class="dot-label">A9</text><text x="277.8" y="437.7" class="dot-label">A10</text><text x="318.2" y="404.5" class="dot-label">A11</text><text x="336.4" y="404.4" class="dot-label">A12</text><text x="70.0" y="524.7" class="dot-label">A13</text><text x="618.4" y="264.5" class="dot-label">A14</text><text x="412.2" y="400.8" class="dot-label">A15</text><text x="423.3" y="184.3" class="dot-label">A16</text><text x="310.8" y="487.2" class="dot-label">A17</text><text x="506.9" y="653.2" class="dot-label">A18</text><text x="937.3" y="255.2" class="dot-label">A19</text><text x="467.8" y="335.9" class="dot-label">A20</text><text x="996.3" y="361.8" class="dot-label">A21</text><text x="1090.0" y="394.3" class="dot-label">A22</text><text x="236.4" y="124.1" class="dot-label">A23</text><text x="1064.9" y="365.2" class="dot-label">A24</text><text x="497.0" y="90.0" class="dot-label">A25</text><text x="518.9" y="129.6" class="dot-label">A26</text><text x="649.1" y="250.3" class="dot-label">A27</text><text x="259.8" y="167.8" class="dot-label">A28</text><text x="887.0" y="377.3" class="dot-label">A29</text><text x="122.9" y="317.9" class="dot-label">A30</text><text x="633.2" y="111.1" class="dot-label">A31</text><text x="473.9" y="234.4" class="dot-label">A32</text><text x="386.2" y="73.2" class="dot-label">A33</text><text x="880.2" y="494.0" class="dot-label">A34</text><text x="444.7" y="221.7" class="dot-label">A35</text><text x="794.4" y="225.6" class="dot-label">A36</text><text x="426.7" y="155.0" class="dot-label">A37</text>
+      </svg>
+    </div>
+    <h2>Nearest articles in node2vec space</h2><div class="panel"><table><thead><tr><th>Rank</th><th>PMID</th><th>Cosine</th><th>Year</th><th>Title</th><th>Source query</th><th>Shared MeSH with seed</th></tr></thead><tbody><tr><td>1</td><td>36872600</td><td>0.580</td><td>2023</td><td>Vibration Therapy as an Early Intervention for Children Aged 2-4 Years with Cerebral Palsy: A Feasi...</td><td>body composition cerebral palsy children</td><td>Cerebral Palsy, Child, Preschool, Humans, Quality of Life</td></tr><tr><td>2</td><td>37486592</td><td>0.562</td><td>2023</td><td>Tools for Nutrition Assessment of Adults with Cerebral Palsy: Development of a Gold Standard.</td><td>nutrition risk cerebral palsy children</td><td>Cerebral Palsy, Child, Humans, Quality of Life</td></tr><tr><td>3</td><td>40012369</td><td>0.544</td><td>2025</td><td>Caregivers&#x27; experiences of feeding children with cerebral palsy: a systematic review of qualitative...</td><td>nutrition risk cerebral palsy children</td><td>Cerebral Palsy, Child, Humans, Quality of Life</td></tr><tr><td>4</td><td>35487751</td><td>0.544</td><td>2022</td><td>Study protocol for Running for health (Run4Health CP): a multicentre, assessor-blinded randomised c...</td><td>nutrition risk cerebral palsy children</td><td>Cerebral Palsy, Child, Humans, Randomized Controlled Trials as Topic</td></tr><tr><td>5</td><td>34030703</td><td>0.531</td><td>2021</td><td>Mediterranean diet, Mindfulness-Based Stress Reduction and usual care during pregnancy for reducing...</td><td>Mediterranean diet pregnancy child neurodevelopme...</td><td>Child, Humans, Randomized Controlled Trials as Topic</td></tr><tr><td>6</td><td>26906232</td><td>0.525</td><td>2016</td><td>Cognition.</td><td>maternal diet child cognition</td><td>Child, Child, Preschool, Humans, Randomized Controlled Trials as Topic</td></tr><tr><td>7</td><td>31760992</td><td>0.519</td><td>2019</td><td>Optimizing Nutrition and Bone Health in Children with Cerebral Palsy.</td><td>nutrition risk cerebral palsy children</td><td>Cerebral Palsy, Child, Humans, Quality of Life</td></tr><tr><td>8</td><td>36849209</td><td>0.493</td><td>2023</td><td>&lt;b&gt;School readiness of children at high risk of cerebral palsy r&lt;/b&gt;andomised to early neuroprotect...</td><td>nutrition risk cerebral palsy children</td><td>Cerebral Palsy, Child, Child, Preschool, Humans, Randomized Controlled Trials as Topic</td></tr><tr><td>9</td><td>33154081</td><td>0.480</td><td>2020</td><td>The Impact of Malnutrition on Hospitalized Children With Cerebral Palsy.</td><td>nutrition risk cerebral palsy children</td><td>Cerebral Palsy, Child, Humans</td></tr><tr><td>10</td><td>24301008</td><td>0.463</td><td>2013</td><td>Feeding children with cerebral palsy and swallowing difficulties.</td><td>nutrition risk cerebral palsy children</td><td>Cerebral Palsy, Child, Child, Preschool, Humans</td></tr><tr><td>11</td><td>39710170</td><td>0.462</td><td>2024</td><td>Nutritional risk screening and nutritional assessment for children with cerebral palsy: A review of...</td><td>nutrition risk cerebral palsy children</td><td>Cerebral Palsy, Child, Child, Preschool, Humans</td></tr><tr><td>12</td><td>39125275</td><td>0.450</td><td>2024</td><td>Home Enteral Nutrition in Patients with Cerebral Palsy in the Years 2012-2022: A Longitudinal Analy...</td><td>nutrition risk cerebral palsy children</td><td>Cerebral Palsy, Child, Child, Preschool, Humans, Quality of Life</td></tr><tr><td>13</td><td>35224907</td><td>0.444</td><td>2022</td><td>[Digestive and nutritional problems of children with cerebral palsy].</td><td>body composition cerebral palsy children</td><td>Cerebral Palsy, Child, Humans</td></tr><tr><td>14</td><td>19182165</td><td>0.443</td><td>2009</td><td>Determination of basal metabolic rate and body composition with bioelectrical impedance method in c...</td><td>body composition cerebral palsy children</td><td>Cerebral Palsy, Child, Child, Preschool, Humans</td></tr><tr><td>15</td><td>34506748</td><td>0.440</td><td>2021</td><td>Physical activity, sedentary time and nutritional status in Brazilian children with cerebral palsy.</td><td>body composition cerebral palsy children</td><td>Cerebral Palsy, Child, Child, Preschool, Humans</td></tr></tbody></table></div>
+    <h2>Article nodes shown in the map</h2><div class="panel"><table><thead><tr><th>Node</th><th>PMID</th><th>Year</th><th>Title</th><th>Journal</th><th>Source query</th><th>MeSH edges</th></tr></thead><tbody><tr><td><strong>S</strong></td><td>35867728</td><td>2022</td><td>Dietary and nutritional interventions in children with cerebral palsy: A systematic literature review.</td><td>PloS one</td><td>nutrition risk cerebral palsy children</td><td>9</td></tr><tr><td><strong>A1</strong></td><td>36872600</td><td>2023</td><td>Vibration Therapy as an Early Intervention for Children Aged 2-4 Years with Cerebral Palsy: A Feasibility Stu...</td><td>Physical &amp; occupational therapy in pediatrics</td><td>body composition cerebral palsy children</td><td>9</td></tr><tr><td><strong>A2</strong></td><td>37486592</td><td>2023</td><td>Tools for Nutrition Assessment of Adults with Cerebral Palsy: Development of a Gold Standard.</td><td>Current nutrition reports</td><td>nutrition risk cerebral palsy children</td><td>8</td></tr><tr><td><strong>A3</strong></td><td>40012369</td><td>2025</td><td>Caregivers&#x27; experiences of feeding children with cerebral palsy: a systematic review of qualitative evidence.</td><td>JBI evidence synthesis</td><td>nutrition risk cerebral palsy children</td><td>8</td></tr><tr><td><strong>A4</strong></td><td>35487751</td><td>2022</td><td>Study protocol for Running for health (Run4Health CP): a multicentre, assessor-blinded randomised controlled ...</td><td>BMJ open</td><td>nutrition risk cerebral palsy children</td><td>10</td></tr><tr><td><strong>A5</strong></td><td>34030703</td><td>2021</td><td>Mediterranean diet, Mindfulness-Based Stress Reduction and usual care during pregnancy for reducing fetal gro...</td><td>Trials</td><td>Mediterranean diet pregnancy child neurodevelopment</td><td>11</td></tr><tr><td><strong>A6</strong></td><td>26906232</td><td>2016</td><td>Cognition.</td><td>World review of nutrition and dietetics</td><td>maternal diet child cognition</td><td>20</td></tr><tr><td><strong>A7</strong></td><td>31760992</td><td>2019</td><td>Optimizing Nutrition and Bone Health in Children with Cerebral Palsy.</td><td>Physical medicine and rehabilitation clinics of North ...</td><td>nutrition risk cerebral palsy children</td><td>12</td></tr><tr><td><strong>A8</strong></td><td>36849209</td><td>2023</td><td>&lt;b&gt;School readiness of children at high risk of cerebral palsy r&lt;/b&gt;andomised to early neuroprotection and ne...</td><td>BMJ open</td><td>nutrition risk cerebral palsy children</td><td>10</td></tr><tr><td><strong>A9</strong></td><td>33154081</td><td>2020</td><td>The Impact of Malnutrition on Hospitalized Children With Cerebral Palsy.</td><td>Hospital pediatrics</td><td>nutrition risk cerebral palsy children</td><td>7</td></tr><tr><td><strong>A10</strong></td><td>24301008</td><td>2013</td><td>Feeding children with cerebral palsy and swallowing difficulties.</td><td>European journal of clinical nutrition</td><td>nutrition risk cerebral palsy children</td><td>7</td></tr><tr><td><strong>A11</strong></td><td>39710170</td><td>2024</td><td>Nutritional risk screening and nutritional assessment for children with cerebral palsy: A review of the curre...</td><td>Clinical nutrition ESPEN</td><td>nutrition risk cerebral palsy children</td><td>9</td></tr><tr><td><strong>A12</strong></td><td>39125275</td><td>2024</td><td>Home Enteral Nutrition in Patients with Cerebral Palsy in the Years 2012-2022: A Longitudinal Analysis of Dat...</td><td>Nutrients</td><td>nutrition risk cerebral palsy children</td><td>20</td></tr><tr><td><strong>A13</strong></td><td>35224907</td><td>2022</td><td>[Digestive and nutritional problems of children with cerebral palsy].</td><td>Revue medicale suisse</td><td>body composition cerebral palsy children</td><td>8</td></tr><tr><td><strong>A14</strong></td><td>19182165</td><td>2009</td><td>Determination of basal metabolic rate and body composition with bioelectrical impedance method in children wi...</td><td>Journal of child neurology</td><td>body composition cerebral palsy children</td><td>11</td></tr><tr><td><strong>A15</strong></td><td>34506748</td><td>2021</td><td>Physical activity, sedentary time and nutritional status in Brazilian children with cerebral palsy.</td><td>Jornal de pediatria</td><td>body composition cerebral palsy children</td><td>11</td></tr><tr><td><strong>A16</strong></td><td>16322142</td><td>2005</td><td>Weight-for-height values and limb anthropometric composition of tube-fed children with quadriplegic cerebral ...</td><td>Pediatrics</td><td>body composition cerebral palsy children</td><td>11</td></tr><tr><td><strong>A17</strong></td><td>24301003</td><td>2013</td><td>Nutritional management of children with cerebral palsy.</td><td>European journal of clinical nutrition</td><td>nutrition risk cerebral palsy children</td><td>9</td></tr><tr><td><strong>A18</strong></td><td>38314711</td><td>2024</td><td>Ketogenic Diet: Parental Experiences and Expectations.</td><td>Journal of child neurology</td><td>maternal diet child cognition</td><td>24</td></tr><tr><td><strong>A19</strong></td><td>18981805</td><td>2008</td><td>Diagnosis, treatment, and prevention of cerebral palsy.</td><td>Clinical obstetrics and gynecology</td><td>nutrition risk cerebral palsy children</td><td>15</td></tr><tr><td><strong>A20</strong></td><td>34579076</td><td>2021</td><td>Burden of Malnutrition among Children and Adolescents with Cerebral Palsy in Arabic-Speaking Countries: A Sys...</td><td>Nutrients</td><td>nutrition risk cerebral palsy children</td><td>7</td></tr><tr><td><strong>A21</strong></td><td>38677518</td><td>2024</td><td>Food, nutrition, and autism: from soil to fork.</td><td>The American journal of clinical nutrition</td><td>maternal diet child cognition</td><td>9</td></tr><tr><td><strong>A22</strong></td><td>41461262</td><td>2025</td><td>Maternal Diet Quality during Pregnancy and Child Cognition in United States Cohorts.</td><td>The Journal of nutrition</td><td>maternal diet child cognition</td><td>14</td></tr><tr><td><strong>A23</strong></td><td>41344381</td><td>2026</td><td>Fractures in Children With Cerebral Palsy: A Systematic Review.</td><td>Pediatrics</td><td>nutrition risk cerebral palsy children</td><td>6</td></tr><tr><td><strong>A24</strong></td><td>34503987</td><td>2022</td><td>Maternal diet in pregnancy and child&#x27;s respiratory outcomes: an individual participant data meta-analysis of ...</td><td>The European respiratory journal</td><td>maternal diet child cognition</td><td>9</td></tr><tr><td><strong>A25</strong></td><td>25827683</td><td>2015</td><td>Measurement of body composition should become routine in nutritional assessment of children with cerebral pal...</td><td>Developmental medicine and child neurology</td><td>body composition cerebral palsy children</td><td>5</td></tr><tr><td><strong>A26</strong></td><td>33201495</td><td>2020</td><td>Risk factors for gastrointestinal complications after spinal fusion in children with cerebral palsy.</td><td>Spine deformity</td><td>nutrition risk cerebral palsy children</td><td>8</td></tr><tr><td><strong>A27</strong></td><td>38853095</td><td>2024</td><td>Elevated blood pressure in children with cerebral palsy and its relationship with adiposity and physical acti...</td><td>Disability and health journal</td><td>body composition cerebral palsy children</td><td>16</td></tr><tr><td><strong>A28</strong></td><td>24964775</td><td>2014</td><td>Fractures in children with cerebral palsy.</td><td>Current osteoporosis reports</td><td>nutrition risk cerebral palsy children</td><td>9</td></tr><tr><td><strong>A29</strong></td><td>37678584</td><td>2023</td><td>Are adolescent diet quality and emotional eating predicted by history of maternal caregiving quality and conc...</td><td>Appetite</td><td>maternal diet child cognition</td><td>11</td></tr><tr><td><strong>A30</strong></td><td>18646022</td><td>2008</td><td>Growth and nutrition disorders in children with cerebral palsy.</td><td>Developmental disabilities research reviews</td><td>body composition cerebral palsy children</td><td>10</td></tr><tr><td><strong>A31</strong></td><td>29593188</td><td>2018</td><td>Risk Factor of Mortality in Indonesian Children with Cerebral Palsy.</td><td>The journal of medical investigation : JMI</td><td>nutrition risk cerebral palsy children</td><td>10</td></tr><tr><td><strong>A32</strong></td><td>25929375</td><td>2015</td><td>Energy expenditure in children with cerebral palsy and moderate / severe malnutrition during nutritional reco...</td><td>Nutricion hospitalaria</td><td>body composition cerebral palsy children</td><td>11</td></tr><tr><td><strong>A33</strong></td><td>40339775</td><td>2025</td><td>How to identify children with cerebral palsy at risk of low bone mineral density.</td><td>Bone</td><td>nutrition risk cerebral palsy children</td><td>11</td></tr><tr><td><strong>A34</strong></td><td>36332796</td><td>2022</td><td>Gut microbiome and Parkinson&#x27;s disease: Perspective on pathogenesis and treatment.</td><td>Journal of advanced research</td><td>gut microbiome Parkinson disease</td><td>6</td></tr><tr><td><strong>A35</strong></td><td>12956289</td><td>2003</td><td>Risk factors of undernutrition in children with spastic cerebral palsy.</td><td>Chang Gung medical journal</td><td>nutrition risk cerebral palsy children</td><td>9</td></tr><tr><td><strong>A36</strong></td><td>36041870</td><td>2022</td><td>Risk Factors for Term-Born Periventricular White Matter Injury in Children With Cerebral Palsy: A Case-Contro...</td><td>Neurology</td><td>nutrition risk cerebral palsy children</td><td>10</td></tr><tr><td><strong>A37</strong></td><td>39366537</td><td>2024</td><td>The association between fracture and short-term adverse health outcomes among children with cerebral palsy.</td><td>Bone</td><td>body composition cerebral palsy children</td><td>10</td></tr></tbody></table></div>
+  </main>
+</body>
+</html>

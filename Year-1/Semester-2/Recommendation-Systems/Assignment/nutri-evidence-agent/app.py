@@ -34,6 +34,8 @@ SEMANTIC_INDEX_PATH = PROJECT_ROOT / "data" / "artifacts" / "article_embedding_i
 GRAPH_PATH = PROJECT_ROOT / "data" / "artifacts" / "article_mesh_graph.gpickle"
 NODE2VEC_PATH = PROJECT_ROOT / "data" / "artifacts" / "node2vec_embeddings.kv"
 OPENAI_ANNOTATION_GLOB = "evaluation_annotations_openai*.csv"
+GRAPH_VISUALIZATION_PATH = PROJECT_ROOT / "docs" / "article_mesh_graph.html"
+NODE2VEC_OVERVIEW_PATH = PROJECT_ROOT / "docs" / "node2vec_embedding_overview.html"
 
 
 def main() -> None:
@@ -186,6 +188,9 @@ def render_article_mode(articles: list[dict], settings, options: dict[str, Any])
         st.write(f"Selected PMID `{seed_pmid}`")
         st.write(seed_article.get("title", "Untitled"))
 
+    if {"Graph node2vec", "Hybrid"} & set(selected_methods):
+        render_node2vec_method_details(seed_pmid)
+
     if not st.button("Recommend similar papers", type="primary"):
         return
     if not selected_methods:
@@ -279,6 +284,11 @@ def render_article_mode(articles: list[dict], settings, options: dict[str, Any])
                 options["generate_explanations"],
                 graph_rerank_output,
             )
+            render_node2vec_neighbor_analysis(
+                seed_article=seed_article,
+                graph_results=graph_results,
+                rerank_output=graph_rerank_output,
+            )
         else:
             st.warning("Graph artifacts are missing or no graph embeddings were available for this article.")
 
@@ -320,6 +330,140 @@ def render_article_mode(articles: list[dict], settings, options: dict[str, Any])
 
     st.subheader("Evaluation Note")
     st.write("Hybrid, semantic, graph, and MeSH overlap outputs can be annotated in `data/evaluation_annotations.csv`.")
+
+
+def render_node2vec_method_details(seed_pmid: str) -> None:
+    st.markdown("#### Graph node2vec method details")
+    st.info(
+        "Graph node2vec uses the Article-MeSH knowledge graph, not title/abstract text. "
+        "It learns article vectors from random walks over article-MeSH connections and then "
+        "ranks articles by cosine similarity in that learned graph embedding space."
+    )
+
+    stats = load_graph_artifact_stats()
+    if stats["available"]:
+        col1, col2, col3, col4 = st.columns(4)
+        col1.metric("Article nodes", stats["article_nodes"])
+        col2.metric("MeSH nodes", stats["mesh_nodes"])
+        col3.metric("Graph edges", stats["edges"])
+        col4.metric("Embedded articles", stats["embedded_article_nodes"])
+        st.caption(
+            f"node2vec artifact: `{NODE2VEC_PATH.relative_to(PROJECT_ROOT)}` "
+            f"({stats['embedded_nodes']} embedded graph nodes, {stats['vector_size']} dimensions)."
+        )
+    else:
+        st.warning(
+            "Graph artifacts are missing. Build them before using the Graph node2vec method."
+        )
+        st.code(
+            ".venv/bin/python scripts/build_graph.py\n"
+            ".venv/bin/python scripts/train_node2vec.py",
+            language="bash",
+        )
+
+    with st.expander("How to interpret Graph node2vec recommendations"):
+        st.markdown(
+            """
+- **Graph score** is cosine similarity between normalized node2vec article embeddings.
+- **Shared MeSH Terms** shows exact MeSH overlap with the selected seed article when available.
+- A graph recommendation can still have a good node2vec score even with few exact shared MeSH terms, because node2vec also captures indirect graph-neighborhood similarity.
+- **Graph node2vec** uses only graph structure. **Hybrid** combines semantic text similarity with graph similarity using `0.6 * semantic_score + 0.4 * graph_score`.
+"""
+        )
+
+    seed_visualization = PROJECT_ROOT / "docs" / f"node2vec_seed_{seed_pmid}.html"
+    visualization_rows = [
+        {
+            "Visualization": "Raw Article-MeSH topology",
+            "File": str(GRAPH_VISUALIZATION_PATH.relative_to(PROJECT_ROOT)),
+            "Status": "available" if GRAPH_VISUALIZATION_PATH.exists() else "missing",
+        },
+        {
+            "Visualization": "node2vec embedding overview",
+            "File": str(NODE2VEC_OVERVIEW_PATH.relative_to(PROJECT_ROOT)),
+            "Status": "available" if NODE2VEC_OVERVIEW_PATH.exists() else "missing",
+        },
+        {
+            "Visualization": "node2vec seed-focused view",
+            "File": str(seed_visualization.relative_to(PROJECT_ROOT)),
+            "Status": "available" if seed_visualization.exists() else "generate if needed",
+        },
+    ]
+    st.markdown("##### Presentation visualizations")
+    st.dataframe(pd.DataFrame(visualization_rows), hide_index=True, width="stretch")
+    if not seed_visualization.exists():
+        st.caption("Generate a seed-specific node2vec visualization with:")
+        st.code(
+            f".venv/bin/python scripts/visualize_node2vec_embeddings.py "
+            f"--seed-pmid {seed_pmid} "
+            f"--output docs/node2vec_seed_{seed_pmid}.html "
+            f"--max-articles 38 "
+            f"--max-similarity-edges 70",
+            language="bash",
+        )
+
+
+def render_node2vec_neighbor_analysis(
+    seed_article: dict | None,
+    graph_results: list[dict],
+    rerank_output: dict[str, Any] | None,
+) -> None:
+    if not seed_article or not graph_results:
+        return
+
+    seed_mesh_terms = _clean_terms(seed_article.get("mesh_terms", []))
+    algorithmic_candidates = (
+        rerank_output.get("candidates", [])
+        if rerank_output and rerank_output.get("candidates")
+        else graph_results
+    )
+
+    st.markdown("##### node2vec neighbor analysis")
+    st.caption(
+        "This section explains the graph search result before any LLM interpretation. "
+        "The neighbors below are articles that are close to the seed article in node2vec "
+        "embedding space learned from Article-MeSH random walks."
+    )
+
+    col1, col2, col3 = st.columns(3)
+    col1.metric("Seed MeSH terms", len(seed_mesh_terms))
+    col2.metric("Graph candidates inspected", len(algorithmic_candidates))
+    col3.metric(
+        "Candidates with exact MeSH overlap",
+        sum(1 for result in algorithmic_candidates if result.get("shared_mesh_terms")),
+    )
+
+    with st.expander("Selected seed article metadata"):
+        st.write(f"**PMID:** {seed_article.get('pmid', '')}")
+        st.write(f"**Title:** {seed_article.get('title', 'Untitled')}")
+        st.write(f"**Journal:** {seed_article.get('journal', '')}")
+        st.write(f"**Year:** {seed_article.get('year', '')}")
+        st.write("**Seed MeSH terms:**")
+        st.write(", ".join(seed_mesh_terms) if seed_mesh_terms else "No MeSH terms available.")
+
+    neighbor_rows = []
+    for rank, result in enumerate(algorithmic_candidates, start=1):
+        shared_terms = result.get("shared_mesh_terms", []) or []
+        candidate_mesh_terms = _clean_terms(result.get("mesh_terms", []))
+        neighbor_rows.append(
+            {
+                "Graph Rank": rank,
+                "PMID": result.get("pmid", ""),
+                "Title": result.get("title", ""),
+                "Graph Cosine Score": round(float(result.get("score", result.get("graph_score", 0)) or 0), 4),
+                "Shared MeSH Count": len(shared_terms),
+                "Shared MeSH Terms": ", ".join(shared_terms),
+                "Candidate MeSH Count": len(candidate_mesh_terms),
+                "Why node2vec may link it": _node2vec_neighbor_reason(shared_terms),
+            }
+        )
+
+    st.dataframe(pd.DataFrame(neighbor_rows), hide_index=True, width="stretch")
+    st.info(
+        "A high node2vec score means the articles are close in the learned graph embedding space. "
+        "Exact shared MeSH terms are easy to inspect, but node2vec can also surface indirect neighbors "
+        "that appear in similar MeSH neighborhoods even when the exact overlap is smaller."
+    )
 
 
 def render_method_section(
@@ -583,6 +727,42 @@ def load_graph_recommender_if_available(articles: list[dict]) -> GraphRecommende
     return recommender
 
 
+@st.cache_data(show_spinner=False)
+def load_graph_artifact_stats() -> dict[str, Any]:
+    if not GRAPH_PATH.exists() or not NODE2VEC_PATH.exists():
+        return {
+            "available": False,
+            "article_nodes": 0,
+            "mesh_nodes": 0,
+            "edges": 0,
+            "embedded_nodes": 0,
+            "embedded_article_nodes": 0,
+            "vector_size": 0,
+        }
+
+    graph = ArticleMeshGraphBuilder().load(str(GRAPH_PATH))
+    vectors = Node2VecTrainer().load(str(NODE2VEC_PATH))
+    article_nodes = [
+        node
+        for node, data in graph.nodes(data=True)
+        if data.get("node_type") == "article"
+    ]
+    mesh_nodes = [
+        node
+        for node, data in graph.nodes(data=True)
+        if data.get("node_type") == "mesh_term"
+    ]
+    return {
+        "available": True,
+        "article_nodes": len(article_nodes),
+        "mesh_nodes": len(mesh_nodes),
+        "edges": graph.number_of_edges(),
+        "embedded_nodes": len(vectors),
+        "embedded_article_nodes": sum(1 for node in article_nodes if node in vectors),
+        "vector_size": getattr(vectors, "vector_size", 0),
+    }
+
+
 def make_ollama_client(settings, options: dict[str, Any]) -> OllamaClient:
     return OllamaClient(
         base_url=settings.ollama_base_url,
@@ -642,6 +822,36 @@ def article_by_pmid(articles: list[dict], pmid: str) -> dict | None:
             return article
 
     return None
+
+
+def _clean_terms(terms: Any) -> list[str]:
+    if not terms:
+        return []
+    if isinstance(terms, str):
+        values = [terms]
+    else:
+        try:
+            values = list(terms)
+        except TypeError:
+            values = [terms]
+
+    cleaned = []
+    seen = set()
+    for term in values:
+        value = str(term or "").strip()
+        key = value.lower()
+        if value and key not in seen:
+            cleaned.append(value)
+            seen.add(key)
+    return cleaned
+
+
+def _node2vec_neighbor_reason(shared_terms: list[str]) -> str:
+    if len(shared_terms) >= 4:
+        return "Strong exact MeSH overlap plus graph-neighborhood proximity."
+    if shared_terms:
+        return "Some exact MeSH overlap plus indirect node2vec graph proximity."
+    return "No exact shown overlap; likely indirect similarity through nearby MeSH neighborhoods."
 
 
 if __name__ == "__main__":

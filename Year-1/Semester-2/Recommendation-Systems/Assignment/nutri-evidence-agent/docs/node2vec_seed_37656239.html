@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>node2vec Nearest Articles for PMID 37656239</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      color: #172033;
+      background: #f7f7f4;
+    }
+    main {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 28px;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+      line-height: 1.2;
+    }
+    h2 {
+      margin: 24px 0 10px;
+      font-size: 20px;
+    }
+    p {
+      margin: 8px 0;
+      color: #4b5563;
+      line-height: 1.45;
+    }
+    code {
+      background: #eef1ee;
+      border-radius: 4px;
+      padding: 2px 4px;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(150px, 1fr));
+      gap: 10px;
+      margin-top: 18px;
+    }
+    .stat {
+      border: 1px solid #d9ded7;
+      border-radius: 8px;
+      background: white;
+      padding: 12px;
+    }
+    .stat strong {
+      display: block;
+      font-size: 20px;
+      color: #111827;
+    }
+    .panel {
+      margin-top: 18px;
+      background: #ffffff;
+      border: 1px solid #d9ded7;
+      border-radius: 8px;
+      overflow: auto;
+    }
+    svg {
+      display: block;
+      min-width: 1160px;
+    }
+    .similarity-edge {
+      stroke: #94a3b8;
+      opacity: 0.36;
+    }
+    .article-node {
+      stroke: #ffffff;
+      stroke-width: 1.6;
+    }
+    .dot-label {
+      fill: #ffffff;
+      font-size: 8px;
+      font-weight: 700;
+      text-anchor: middle;
+      pointer-events: none;
+    }
+    .axis-label {
+      fill: #64748b;
+      font-size: 12px;
+    }
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 16px;
+      margin-top: 14px;
+      color: #374151;
+      font-size: 13px;
+    }
+    .legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      min-width: 880px;
+      font-size: 13px;
+    }
+    th, td {
+      border-bottom: 1px solid #e5e7eb;
+      padding: 8px 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      background: #f1f5f9;
+      color: #243044;
+      font-weight: 700;
+    }
+    .small {
+      font-size: 12px;
+      color: #64748b;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>node2vec Nearest Articles for PMID 37656239</h1>
+    <p>This seed-focused view shows the articles closest to the selected PMID in node2vec embedding space. The similarity is learned from the Article-MeSH graph, not from title or abstract text.</p>
+    <p>This is a visualization of <strong>node2vec embeddings</strong>, not the raw Article-MeSH edges. node2vec learns vectors from random walks over the graph, so proximity in this map means structural similarity in biomedical concept space.</p>
+    <p>The orange node is the selected seed article PMID <code>37656239</code>.</p>
+    <div class="stats">
+      <div class="stat"><strong>305</strong><span>article embeddings available</span></div>
+      <div class="stat"><strong>715</strong><span>MeSH nodes in graph</span></div>
+      <div class="stat"><strong>3491</strong><span>Article-MeSH edges</span></div>
+      <div class="stat"><strong>64</strong><span>node2vec dimensions</span></div>
+    </div>
+    <div class="legend"><span><i class="dot" style="background:#2563eb"></i>nutrition risk cerebral palsy children</span><span><i class="dot" style="background:#16a34a"></i>body composition cerebral palsy children</span><span><i class="dot" style="background:#9333ea"></i>urbanization dietary patterns</span><span><i class="dot" style="background:#dc2626"></i>maternal diet child cognition</span><span><i class="dot" style="background:#f97316"></i>Seed article</span></div>
+    <div class="panel">
+      <svg width="1160" height="720" role="img" aria-label="node2vec Nearest Articles for PMID 37656239">
+        <text x="32" y="700" class="axis-label">PCA component 1</text>
+        <text x="32" y="24" class="axis-label">PCA projection of node2vec vectors</text>
+        <line x1="127.6" y1="359.1" x2="70.0" y2="442.5" class="similarity-edge" style="stroke-width:1.93"><title>node2vec cosine similarity: 0.768</title></line><line x1="533.1" y1="240.6" x2="456.3" y2="238.8" class="similarity-edge" style="stroke-width:1.86"><title>node2vec cosine similarity: 0.722</title></line><line x1="969.7" y1="254.7" x2="940.5" y2="298.6" class="similarity-edge" style="stroke-width:1.81"><title>node2vec cosine similarity: 0.694</title></line><line x1="422.6" y1="626.1" x2="468.1" y2="641.2" class="similarity-edge" style="stroke-width:1.81"><title>node2vec cosine similarity: 0.693</title></line><line x1="638.2" y1="253.3" x2="456.3" y2="238.8" class="similarity-edge" style="stroke-width:1.77"><title>node2vec cosine similarity: 0.672</title></line><line x1="308.5" y1="486.0" x2="70.0" y2="442.5" class="similarity-edge" style="stroke-width:1.77"><title>node2vec cosine similarity: 0.671</title></line><line x1="818.6" y1="415.1" x2="541.6" y2="352.3" class="similarity-edge" style="stroke-width:1.77"><title>node2vec cosine similarity: 0.667</title></line><line x1="1090.0" y1="452.8" x2="1088.2" y2="470.3" class="similarity-edge" style="stroke-width:1.77"><title>node2vec cosine similarity: 0.667</title></line><line x1="818.6" y1="415.1" x2="1088.2" y2="470.3" class="similarity-edge" style="stroke-width:1.76"><title>node2vec cosine similarity: 0.660</title></line><line x1="954.9" y1="294.9" x2="940.5" y2="298.6" class="similarity-edge" style="stroke-width:1.75"><title>node2vec cosine similarity: 0.658</title></line><line x1="743.3" y1="526.5" x2="872.5" y2="514.1" class="similarity-edge" style="stroke-width:1.73"><title>node2vec cosine similarity: 0.645</title></line><line x1="343.6" y1="353.8" x2="541.6" y2="352.3" class="similarity-edge" style="stroke-width:1.73"><title>node2vec cosine similarity: 0.641</title></line><line x1="1009.5" y1="241.5" x2="638.2" y2="253.3" class="similarity-edge" style="stroke-width:1.71"><title>node2vec cosine similarity: 0.629</title></line><line x1="1009.5" y1="241.5" x2="456.3" y2="238.8" class="similarity-edge" style="stroke-width:1.70"><title>node2vec cosine similarity: 0.628</title></line><line x1="343.6" y1="353.8" x2="70.0" y2="442.5" class="similarity-edge" style="stroke-width:1.69"><title>node2vec cosine similarity: 0.620</title></line><line x1="953.1" y1="476.8" x2="967.0" y2="427.2" class="similarity-edge" style="stroke-width:1.69"><title>node2vec cosine similarity: 0.617</title></line><line x1="1009.5" y1="241.5" x2="969.7" y2="254.7" class="similarity-edge" style="stroke-width:1.68"><title>node2vec cosine similarity: 0.614</title></line><line x1="317.0" y1="304.4" x2="70.0" y2="442.5" class="similarity-edge" style="stroke-width:1.67"><title>node2vec cosine similarity: 0.608</title></line><line x1="433.4" y1="557.7" x2="343.6" y2="353.8" class="similarity-edge" style="stroke-width:1.67"><title>node2vec cosine similarity: 0.607</title></line><line x1="969.7" y1="254.7" x2="997.7" y2="390.1" class="similarity-edge" style="stroke-width:1.66"><title>node2vec cosine similarity: 0.603</title></line><line x1="954.9" y1="294.9" x2="997.7" y2="390.1" class="similarity-edge" style="stroke-width:1.66"><title>node2vec cosine similarity: 0.602</title></line><line x1="308.5" y1="486.0" x2="127.6" y2="359.1" class="similarity-edge" style="stroke-width:1.66"><title>node2vec cosine similarity: 0.600</title></line><line x1="420.4" y1="357.3" x2="743.3" y2="526.5" class="similarity-edge" style="stroke-width:1.66"><title>node2vec cosine similarity: 0.598</title></line><line x1="533.1" y1="240.6" x2="954.9" y2="294.9" class="similarity-edge" style="stroke-width:1.65"><title>node2vec cosine similarity: 0.595</title></line><line x1="955.6" y1="490.3" x2="1088.2" y2="470.3" class="similarity-edge" style="stroke-width:1.64"><title>node2vec cosine similarity: 0.585</title></line><line x1="1009.5" y1="241.5" x2="818.7" y2="414.6" class="similarity-edge" style="stroke-width:1.63"><title>node2vec cosine similarity: 0.580</title></line><line x1="533.1" y1="240.6" x2="420.4" y2="357.3" class="similarity-edge" style="stroke-width:1.62"><title>node2vec cosine similarity: 0.576</title></line><line x1="533.1" y1="240.6" x2="317.0" y2="304.4" class="similarity-edge" style="stroke-width:1.62"><title>node2vec cosine similarity: 0.575</title></line><line x1="898.9" y1="454.2" x2="997.7" y2="390.1" class="similarity-edge" style="stroke-width:1.62"><title>node2vec cosine similarity: 0.575</title></line><line x1="343.6" y1="353.8" x2="659.6" y2="399.0" class="similarity-edge" style="stroke-width:1.62"><title>node2vec cosine similarity: 0.573</title></line><line x1="953.1" y1="476.8" x2="1088.2" y2="470.3" class="similarity-edge" style="stroke-width:1.62"><title>node2vec cosine similarity: 0.573</title></line><line x1="433.4" y1="557.7" x2="468.1" y2="641.2" class="similarity-edge" style="stroke-width:1.62"><title>node2vec cosine similarity: 0.572</title></line><line x1="739.4" y1="572.5" x2="793.5" y2="650.0" class="similarity-edge" style="stroke-width:1.61"><title>node2vec cosine similarity: 0.572</title></line><line x1="638.2" y1="253.3" x2="844.0" y2="226.1" class="similarity-edge" style="stroke-width:1.61"><title>node2vec cosine similarity: 0.569</title></line><line x1="541.6" y1="352.3" x2="659.6" y2="399.0" class="similarity-edge" style="stroke-width:1.61"><title>node2vec cosine similarity: 0.568</title></line><line x1="586.3" y1="70.0" x2="456.3" y2="238.8" class="similarity-edge" style="stroke-width:1.61"><title>node2vec cosine similarity: 0.567</title></line><line x1="967.0" y1="427.2" x2="715.0" y2="301.1" class="similarity-edge" style="stroke-width:1.60"><title>node2vec cosine similarity: 0.564</title></line><line x1="433.4" y1="557.7" x2="422.6" y2="626.1" class="similarity-edge" style="stroke-width:1.60"><title>node2vec cosine similarity: 0.564</title></line><line x1="818.6" y1="415.1" x2="818.7" y2="414.6" class="similarity-edge" style="stroke-width:1.60"><title>node2vec cosine similarity: 0.562</title></line><line x1="644.0" y1="325.5" x2="940.5" y2="298.6" class="similarity-edge" style="stroke-width:1.59"><title>node2vec cosine similarity: 0.557</title></line><line x1="1090.0" y1="452.8" x2="997.7" y2="390.1" class="similarity-edge" style="stroke-width:1.58"><title>node2vec cosine similarity: 0.551</title></line><line x1="954.9" y1="294.9" x2="644.0" y2="325.5" class="similarity-edge" style="stroke-width:1.58"><title>node2vec cosine similarity: 0.551</title></line><line x1="955.6" y1="490.3" x2="644.0" y2="325.5" class="similarity-edge" style="stroke-width:1.58"><title>node2vec cosine similarity: 0.549</title></line><line x1="308.5" y1="486.0" x2="739.4" y2="572.5" class="similarity-edge" style="stroke-width:1.56"><title>node2vec cosine similarity: 0.538</title></line><line x1="710.3" y1="520.7" x2="456.3" y2="238.8" class="similarity-edge" style="stroke-width:1.56"><title>node2vec cosine similarity: 0.536</title></line><line x1="704.4" y1="485.2" x2="818.7" y2="414.6" class="similarity-edge" style="stroke-width:1.52"><title>node2vec cosine similarity: 0.511</title></line><line x1="870.0" y1="446.5" x2="710.3" y2="520.7" class="similarity-edge" style="stroke-width:1.51"><title>node2vec cosine similarity: 0.505</title></line><line x1="870.0" y1="446.5" x2="638.2" y2="253.3" class="similarity-edge" style="stroke-width:1.50"><title>node2vec cosine similarity: 0.497</title></line><line x1="659.6" y1="399.0" x2="715.0" y2="301.1" class="similarity-edge" style="stroke-width:1.49"><title>node2vec cosine similarity: 0.497</title></line><line x1="433.4" y1="557.7" x2="793.5" y2="650.0" class="similarity-edge" style="stroke-width:1.49"><title>node2vec cosine similarity: 0.494</title></line><line x1="954.9" y1="294.9" x2="898.9" y2="454.2" class="similarity-edge" style="stroke-width:1.49"><title>node2vec cosine similarity: 0.494</title></line><line x1="743.3" y1="526.5" x2="704.4" y2="485.2" class="similarity-edge" style="stroke-width:1.47"><title>node2vec cosine similarity: 0.479</title></line><line x1="1009.5" y1="241.5" x2="844.0" y2="226.1" class="similarity-edge" style="stroke-width:1.46"><title>node2vec cosine similarity: 0.475</title></line><line x1="586.3" y1="70.0" x2="638.2" y2="253.3" class="similarity-edge" style="stroke-width:1.45"><title>node2vec cosine similarity: 0.471</title></line><line x1="872.5" y1="514.1" x2="739.4" y2="572.5" class="similarity-edge" style="stroke-width:1.42"><title>node2vec cosine similarity: 0.451</title></line>
+        <circle cx="638.2" cy="253.3" r="15" fill="#f97316" class="article-node"><title>PMID: 37656239
+Title: Low skeletal muscle mass and liver fibrosis in children with cerebral palsy.
+Source query: nutrition risk cerebral palsy children
+MeSH degree: 10</title></circle><circle cx="456.3" cy="238.8" r="10" fill="#2563eb" class="article-node"><title>PMID: 40339775
+Title: How to identify children with cerebral palsy at risk of low bone mineral density.
+Source query: nutrition risk cerebral palsy children
+MeSH degree: 11</title></circle><circle cx="1009.5" cy="241.5" r="10" fill="#16a34a" class="article-node"><title>PMID: 16522908
+Title: Reduced body protein in children with spastic quadriplegic cerebral palsy.
+Source query: body composition cerebral palsy children
+MeSH degree: 17</title></circle><circle cx="969.7" cy="254.7" r="10" fill="#16a34a" class="article-node"><title>PMID: 25827868
+Title: Assessment of body composition in children with cerebral palsy: a cross-sectional study in Norway.
+Source query: body composition cerebral palsy children
+MeSH degree: 13</title></circle><circle cx="844.0" cy="226.1" r="10" fill="#9333ea" class="article-node"><title>PMID: 38568294
+Title: Association of dietary patterns with sarcopenia in adults aged 50 years and older.
+Source query: urbanization dietary patterns
+MeSH degree: 11</title></circle><circle cx="317.0" cy="304.4" r="10" fill="#2563eb" class="article-node"><title>PMID: 38527242
+Title: Effectiveness of assisted standing on bone mineral density in children with cerebral palsy. A systematic review.
+Source query: nutrition risk cerebral palsy children
+MeSH degree: 6</title></circle><circle cx="533.1" cy="240.6" r="10" fill="#16a34a" class="article-node"><title>PMID: 10855654
+Title: Body composition in nutritionally adequate ambulatory and non-ambulatory children with cerebral palsy and a healthy reference group.
+Source query: body composition cerebral palsy children
+MeSH degree: 14</title></circle><circle cx="343.6" cy="353.8" r="10" fill="#16a34a" class="article-node"><title>PMID: 18646022
+Title: Growth and nutrition disorders in children with cerebral palsy.
+Source query: body composition cerebral palsy children
+MeSH degree: 10</title></circle><circle cx="420.4" cy="357.3" r="10" fill="#2563eb" class="article-node"><title>PMID: 31760992
+Title: Optimizing Nutrition and Bone Health in Children with Cerebral Palsy.
+Source query: nutrition risk cerebral palsy children
+MeSH degree: 12</title></circle><circle cx="644.0" cy="325.5" r="10" fill="#16a34a" class="article-node"><title>PMID: 28465219
+Title: Differences in Body Composition According to Gross Motor Function in Children With Cerebral Palsy.
+Source query: body composition cerebral palsy children
+MeSH degree: 12</title></circle><circle cx="743.3" cy="526.5" r="10" fill="#2563eb" class="article-node"><title>PMID: 34579076
+Title: Burden of Malnutrition among Children and Adolescents with Cerebral Palsy in Arabic-Speaking Countries: A Systematic Review and Meta-Analysis.
+Source query: nutrition risk cerebral palsy children
+MeSH degree: 7</title></circle><circle cx="940.5" cy="298.6" r="10" fill="#16a34a" class="article-node"><title>PMID: 31158551
+Title: Criterion validity of assessment methods to estimate body composition in children with cerebral palsy: A systematic review.
+Source query: body composition cerebral palsy children
+MeSH degree: 8</title></circle><circle cx="870.0" cy="446.5" r="10" fill="#2563eb" class="article-node"><title>PMID: 32686452
+Title: Obesity and cardio-metabolic risk factors among children and adolescents with cerebral palsy.
+Source query: nutrition risk cerebral palsy children
+MeSH degree: 9</title></circle><circle cx="710.3" cy="520.7" r="10" fill="#2563eb" class="article-node"><title>PMID: 35805684
+Title: Risk Factors for Dental Caries Experience in Children and Adolescents with Cerebral Palsy-A Scoping Review.
+Source query: nutrition risk cerebral palsy children
+MeSH degree: 8</title></circle><circle cx="70.0" cy="442.5" r="10" fill="#2563eb" class="article-node"><title>PMID: 41344381
+Title: Fractures in Children With Cerebral Palsy: A Systematic Review.
+Source query: nutrition risk cerebral palsy children
+MeSH degree: 6</title></circle><circle cx="586.3" cy="70.0" r="10" fill="#9333ea" class="article-node"><title>PMID: 27198234
+Title: Dietary patterns are associated with bone mineral density in an urban Mexican adult population.
+Source query: urbanization dietary patterns
+MeSH degree: 16</title></circle><circle cx="715.0" cy="301.1" r="10" fill="#16a34a" class="article-node"><title>PMID: 38853095
+Title: Elevated blood pressure in children with cerebral palsy and its relationship with adiposity and physical activity.
+Source query: body composition cerebral palsy children
+MeSH degree: 16</title></circle><circle cx="953.1" cy="476.8" r="10" fill="#16a34a" class="article-node"><title>PMID: 25013156
+Title: Variability explained by strength, body composition and gait impairment in activity and participation measures for children with cerebral palsy: a multicentre study.
+Source query: body composition cerebral palsy children
+MeSH degree: 16</title></circle><circle cx="818.7" cy="414.6" r="10" fill="#2563eb" class="article-node"><title>PMID: 39028671
+Title: Mental Health Diagnoses Risk Among Children and Young Adults With Cerebral Palsy, Chronic Conditions, or Typical Development.
+Source query: nutrition risk cerebral palsy children
+MeSH degree: 12</title></circle><circle cx="127.6" cy="359.1" r="10" fill="#2563eb" class="article-node"><title>PMID: 24964775
+Title: Fractures in children with cerebral palsy.
+Source query: nutrition risk cerebral palsy children
+MeSH degree: 9</title></circle><circle cx="818.6" cy="415.1" r="10" fill="#16a34a" class="article-node"><title>PMID: 16322142
+Title: Weight-for-height values and limb anthropometric composition of tube-fed children with quadriplegic cerebral palsy.
+Source query: body composition cerebral palsy children
+MeSH degree: 11</title></circle><circle cx="308.5" cy="486.0" r="10" fill="#2563eb" class="article-node"><title>PMID: 16932102
+Title: Fractures in children with cerebral palsy.
+Source query: nutrition risk cerebral palsy children
+MeSH degree: 16</title></circle><circle cx="997.7" cy="390.1" r="10" fill="#2563eb" class="article-node"><title>PMID: 32593667
+Title: The Pediatric Subjective Global Nutrition Assessment Classifies More Children With Cerebral Palsy as Malnourished Compared With Anthropometry.
+Source query: nutrition risk cerebral palsy children
+MeSH degree: 21</title></circle><circle cx="954.9" cy="294.9" r="10" fill="#16a34a" class="article-node"><title>PMID: 15883558
+Title: Determination of body composition in children with cerebral palsy: bioelectrical impedance analysis and anthropometry vs dual-energy x-ray absorptiometry.
+Source query: body composition cerebral palsy children
+MeSH degree: 14</title></circle><circle cx="1088.2" cy="470.3" r="10" fill="#16a34a" class="article-node"><title>PMID: 8969729
+Title: Energy expenditure and body composition in children with spastic quadriplegic cerebral palsy.
+Source query: body composition cerebral palsy children
+MeSH degree: 13</title></circle><circle cx="659.6" cy="399.0" r="10" fill="#16a34a" class="article-node"><title>PMID: 34506748
+Title: Physical activity, sedentary time and nutritional status in Brazilian children with cerebral palsy.
+Source query: body composition cerebral palsy children
+MeSH degree: 11</title></circle><circle cx="704.4" cy="485.2" r="10" fill="#2563eb" class="article-node"><title>PMID: 35487751
+Title: Study protocol for Running for health (Run4Health CP): a multicentre, assessor-blinded randomised controlled trial of 12 weeks of two times weekly Frame Running training versus usual care to improve cardiovascular health risk factors in children and youth with cerebral palsy.
+Source query: nutrition risk cerebral palsy children
+MeSH degree: 10</title></circle><circle cx="955.6" cy="490.3" r="10" fill="#16a34a" class="article-node"><title>PMID: 19926178
+Title: Anthropometry and body composition analysis in children with cerebral palsy.
+Source query: body composition cerebral palsy children
+MeSH degree: 21</title></circle><circle cx="967.0" cy="427.2" r="10" fill="#16a34a" class="article-node"><title>PMID: 25108644
+Title: Analysis of the relationships that body composition and muscular strength have with oxygen cost of walking in children with cerebral palsy.
+Source query: body composition cerebral palsy children
+MeSH degree: 13</title></circle><circle cx="468.1" cy="641.2" r="10" fill="#2563eb" class="article-node"><title>PMID: 33201495
+Title: Risk factors for gastrointestinal complications after spinal fusion in children with cerebral palsy.
+Source query: nutrition risk cerebral palsy children
+MeSH degree: 8</title></circle><circle cx="898.9" cy="454.2" r="10" fill="#2563eb" class="article-node"><title>PMID: 22725837
+Title: Nutritional status of children with cerebral palsy in Turkey.
+Source query: nutrition risk cerebral palsy children
+MeSH degree: 21</title></circle><circle cx="739.4" cy="572.5" r="10" fill="#2563eb" class="article-node"><title>PMID: 35339939
+Title: Malnutrition and nutritional deficiencies in children with cerebral palsy: a systematic review and meta-analysis.
+Source query: nutrition risk cerebral palsy children
+MeSH degree: 11</title></circle><circle cx="433.4" cy="557.7" r="10" fill="#2563eb" class="article-node"><title>PMID: 12956289
+Title: Risk factors of undernutrition in children with spastic cerebral palsy.
+Source query: nutrition risk cerebral palsy children
+MeSH degree: 9</title></circle><circle cx="1090.0" cy="452.8" r="10" fill="#16a34a" class="article-node"><title>PMID: 30070881
+Title: Energy expenditure is associated with age, anthropometric indicators and body composition in children with spastic cerebral palsy.
+Source query: body composition cerebral palsy children
+MeSH degree: 13</title></circle><circle cx="872.5" cy="514.1" r="10" fill="#dc2626" class="article-node"><title>PMID: 34856192
+Title: Strategies and interventions for healthy adolescent growth, nutrition, and development.
+Source query: maternal diet child cognition
+MeSH degree: 13</title></circle><circle cx="541.6" cy="352.3" r="10" fill="#2563eb" class="article-node"><title>PMID: 20702841
+Title: Growth in cerebral palsy.
+Source query: nutrition risk cerebral palsy children
+MeSH degree: 6</title></circle><circle cx="422.6" cy="626.1" r="10" fill="#2563eb" class="article-node"><title>PMID: 27480292
+Title: Management of spinal infections in children with cerebral palsy.
+Source query: nutrition risk cerebral palsy children
+MeSH degree: 11</title></circle><circle cx="793.5" cy="650.0" r="10" fill="#2563eb" class="article-node"><title>PMID: 39137591
+Title: Prevalence of Vitamin D Deficiency in Children With Cerebral Palsy: A Meta-Analysis.
+Source query: nutrition risk cerebral palsy children
+MeSH degree: 9</title></circle>
+        <text x="638.2" y="256.5" class="dot-label">S</text><text x="456.3" y="242.0" class="dot-label">A1</text><text x="1009.5" y="244.7" class="dot-label">A2</text><text x="969.7" y="257.9" class="dot-label">A3</text><text x="844.0" y="229.3" class="dot-label">A4</text><text x="317.0" y="307.6" class="dot-label">A5</text><text x="533.1" y="243.8" class="dot-label">A6</text><text x="343.6" y="357.0" class="dot-label">A7</text><text x="420.4" y="360.5" class="dot-label">A8</text><text x="644.0" y="328.7" class="dot-label">A9</text><text x="743.3" y="529.7" class="dot-label">A10</text><text x="940.5" y="301.8" class="dot-label">A11</text><text x="870.0" y="449.7" class="dot-label">A12</text><text x="710.3" y="523.9" class="dot-label">A13</text><text x="70.0" y="445.7" class="dot-label">A14</text><text x="586.3" y="73.2" class="dot-label">A15</text><text x="715.0" y="304.3" class="dot-label">A16</text><text x="953.1" y="480.0" class="dot-label">A17</text><text x="818.7" y="417.8" class="dot-label">A18</text><text x="127.6" y="362.3" class="dot-label">A19</text><text x="818.6" y="418.3" class="dot-label">A20</text><text x="308.5" y="489.2" class="dot-label">A21</text><text x="997.7" y="393.3" class="dot-label">A22</text><text x="954.9" y="298.1" class="dot-label">A23</text><text x="1088.2" y="473.5" class="dot-label">A24</text><text x="659.6" y="402.2" class="dot-label">A25</text><text x="704.4" y="488.4" class="dot-label">A26</text><text x="955.6" y="493.5" class="dot-label">A27</text><text x="967.0" y="430.4" class="dot-label">A28</text><text x="468.1" y="644.4" class="dot-label">A29</text><text x="898.9" y="457.4" class="dot-label">A30</text><text x="739.4" y="575.7" class="dot-label">A31</text><text x="433.4" y="560.9" class="dot-label">A32</text><text x="1090.0" y="456.0" class="dot-label">A33</text><text x="872.5" y="517.3" class="dot-label">A34</text><text x="541.6" y="355.5" class="dot-label">A35</text><text x="422.6" y="629.3" class="dot-label">A36</text><text x="793.5" y="653.2" class="dot-label">A37</text>
+      </svg>
+    </div>
+    <h2>Nearest articles in node2vec space</h2><div class="panel"><table><thead><tr><th>Rank</th><th>PMID</th><th>Cosine</th><th>Year</th><th>Title</th><th>Source query</th><th>Shared MeSH with seed</th></tr></thead><tbody><tr><td>1</td><td>40339775</td><td>0.672</td><td>2025</td><td>How to identify children with cerebral palsy at risk of low bone mineral density.</td><td>nutrition risk cerebral palsy children</td><td>Absorptiometry, Photon, Adolescent, Bone Density, Cerebral Palsy, Child, Cross-Sectional Studies, Humans</td></tr><tr><td>2</td><td>16522908</td><td>0.629</td><td>2006</td><td>Reduced body protein in children with spastic quadriplegic cerebral palsy.</td><td>body composition cerebral palsy children</td><td>Absorptiometry, Photon, Adolescent, Cerebral Palsy, Child, Cross-Sectional Studies, Humans, Muscle, Skeletal</td></tr><tr><td>3</td><td>25827868</td><td>0.593</td><td>2015</td><td>Assessment of body composition in children with cerebral palsy: a cross-sectional study in Norway.</td><td>body composition cerebral palsy children</td><td>Absorptiometry, Photon, Adolescent, Cerebral Palsy, Child, Cross-Sectional Studies, Humans</td></tr><tr><td>4</td><td>38568294</td><td>0.569</td><td>2024</td><td>Association of dietary patterns with sarcopenia in adults aged 50 years and older.</td><td>urbanization dietary patterns</td><td>Cross-Sectional Studies, Humans, Muscle, Skeletal</td></tr><tr><td>5</td><td>38527242</td><td>0.562</td><td>2024</td><td>Effectiveness of assisted standing on bone mineral density in children with cerebral palsy. A syste...</td><td>nutrition risk cerebral palsy children</td><td>Bone Density, Cerebral Palsy, Child, Humans</td></tr><tr><td>6</td><td>10855654</td><td>0.549</td><td>2000</td><td>Body composition in nutritionally adequate ambulatory and non-ambulatory children with cerebral pal...</td><td>body composition cerebral palsy children</td><td>Absorptiometry, Photon, Adolescent, Bone Density, Cerebral Palsy, Child, Humans</td></tr><tr><td>7</td><td>18646022</td><td>0.527</td><td>2008</td><td>Growth and nutrition disorders in children with cerebral palsy.</td><td>body composition cerebral palsy children</td><td>Bone Density, Cerebral Palsy, Child, Humans</td></tr><tr><td>8</td><td>31760992</td><td>0.519</td><td>2019</td><td>Optimizing Nutrition and Bone Health in Children with Cerebral Palsy.</td><td>nutrition risk cerebral palsy children</td><td>Bone Density, Cerebral Palsy, Child, Humans</td></tr><tr><td>9</td><td>28465219</td><td>0.514</td><td>2017</td><td>Differences in Body Composition According to Gross Motor Function in Children With Cerebral Palsy.</td><td>body composition cerebral palsy children</td><td>Adolescent, Bone Density, Cerebral Palsy, Child, Humans</td></tr><tr><td>10</td><td>34579076</td><td>0.511</td><td>2021</td><td>Burden of Malnutrition among Children and Adolescents with Cerebral Palsy in Arabic-Speaking Countr...</td><td>nutrition risk cerebral palsy children</td><td>Adolescent, Cerebral Palsy, Child, Humans</td></tr><tr><td>11</td><td>31158551</td><td>0.502</td><td>2019</td><td>Criterion validity of assessment methods to estimate body composition in children with cerebral pal...</td><td>body composition cerebral palsy children</td><td>Absorptiometry, Photon, Cerebral Palsy, Child, Humans</td></tr><tr><td>12</td><td>32686452</td><td>0.497</td><td>2020</td><td>Obesity and cardio-metabolic risk factors among children and adolescents with cerebral palsy.</td><td>nutrition risk cerebral palsy children</td><td>Adolescent, Cerebral Palsy, Child, Cross-Sectional Studies, Humans</td></tr><tr><td>13</td><td>35805684</td><td>0.496</td><td>2022</td><td>Risk Factors for Dental Caries Experience in Children and Adolescents with Cerebral Palsy-A Scoping...</td><td>nutrition risk cerebral palsy children</td><td>Adolescent, Cerebral Palsy, Child, Cross-Sectional Studies, Humans</td></tr><tr><td>14</td><td>41344381</td><td>0.490</td><td>2026</td><td>Fractures in Children With Cerebral Palsy: A Systematic Review.</td><td>nutrition risk cerebral palsy children</td><td>Bone Density, Cerebral Palsy, Child, Humans</td></tr><tr><td>15</td><td>27198234</td><td>0.471</td><td>2016</td><td>Dietary patterns are associated with bone mineral density in an urban Mexican adult population.</td><td>urbanization dietary patterns</td><td>Absorptiometry, Photon, Bone Density, Cross-Sectional Studies, Humans</td></tr></tbody></table></div>
+    <h2>Article nodes shown in the map</h2><div class="panel"><table><thead><tr><th>Node</th><th>PMID</th><th>Year</th><th>Title</th><th>Journal</th><th>Source query</th><th>MeSH edges</th></tr></thead><tbody><tr><td><strong>S</strong></td><td>37656239</td><td>2023</td><td>Low skeletal muscle mass and liver fibrosis in children with cerebral palsy.</td><td>European journal of pediatrics</td><td>nutrition risk cerebral palsy children</td><td>10</td></tr><tr><td><strong>A1</strong></td><td>40339775</td><td>2025</td><td>How to identify children with cerebral palsy at risk of low bone mineral density.</td><td>Bone</td><td>nutrition risk cerebral palsy children</td><td>11</td></tr><tr><td><strong>A2</strong></td><td>16522908</td><td>2006</td><td>Reduced body protein in children with spastic quadriplegic cerebral palsy.</td><td>The American journal of clinical nutrition</td><td>body composition cerebral palsy children</td><td>17</td></tr><tr><td><strong>A3</strong></td><td>25827868</td><td>2015</td><td>Assessment of body composition in children with cerebral palsy: a cross-sectional study in Norway.</td><td>Developmental medicine and child neurology</td><td>body composition cerebral palsy children</td><td>13</td></tr><tr><td><strong>A4</strong></td><td>38568294</td><td>2024</td><td>Association of dietary patterns with sarcopenia in adults aged 50 years and older.</td><td>European journal of nutrition</td><td>urbanization dietary patterns</td><td>11</td></tr><tr><td><strong>A5</strong></td><td>38527242</td><td>2024</td><td>Effectiveness of assisted standing on bone mineral density in children with cerebral palsy. A systematic revi...</td><td>Archivos argentinos de pediatria</td><td>nutrition risk cerebral palsy children</td><td>6</td></tr><tr><td><strong>A6</strong></td><td>10855654</td><td>2000</td><td>Body composition in nutritionally adequate ambulatory and non-ambulatory children with cerebral palsy and a h...</td><td>Developmental medicine and child neurology</td><td>body composition cerebral palsy children</td><td>14</td></tr><tr><td><strong>A7</strong></td><td>18646022</td><td>2008</td><td>Growth and nutrition disorders in children with cerebral palsy.</td><td>Developmental disabilities research reviews</td><td>body composition cerebral palsy children</td><td>10</td></tr><tr><td><strong>A8</strong></td><td>31760992</td><td>2019</td><td>Optimizing Nutrition and Bone Health in Children with Cerebral Palsy.</td><td>Physical medicine and rehabilitation clinics of North ...</td><td>nutrition risk cerebral palsy children</td><td>12</td></tr><tr><td><strong>A9</strong></td><td>28465219</td><td>2017</td><td>Differences in Body Composition According to Gross Motor Function in Children With Cerebral Palsy.</td><td>Archives of physical medicine and rehabilitation</td><td>body composition cerebral palsy children</td><td>12</td></tr><tr><td><strong>A10</strong></td><td>34579076</td><td>2021</td><td>Burden of Malnutrition among Children and Adolescents with Cerebral Palsy in Arabic-Speaking Countries: A Sys...</td><td>Nutrients</td><td>nutrition risk cerebral palsy children</td><td>7</td></tr><tr><td><strong>A11</strong></td><td>31158551</td><td>2019</td><td>Criterion validity of assessment methods to estimate body composition in children with cerebral palsy: A syst...</td><td>Annals of physical and rehabilitation medicine</td><td>body composition cerebral palsy children</td><td>8</td></tr><tr><td><strong>A12</strong></td><td>32686452</td><td>2020</td><td>Obesity and cardio-metabolic risk factors among children and adolescents with cerebral palsy.</td><td>Nutricion hospitalaria</td><td>nutrition risk cerebral palsy children</td><td>9</td></tr><tr><td><strong>A13</strong></td><td>35805684</td><td>2022</td><td>Risk Factors for Dental Caries Experience in Children and Adolescents with Cerebral Palsy-A Scoping Review.</td><td>International journal of environmental research and pu...</td><td>nutrition risk cerebral palsy children</td><td>8</td></tr><tr><td><strong>A14</strong></td><td>41344381</td><td>2026</td><td>Fractures in Children With Cerebral Palsy: A Systematic Review.</td><td>Pediatrics</td><td>nutrition risk cerebral palsy children</td><td>6</td></tr><tr><td><strong>A15</strong></td><td>27198234</td><td>2016</td><td>Dietary patterns are associated with bone mineral density in an urban Mexican adult population.</td><td>Osteoporosis international : a journal established as ...</td><td>urbanization dietary patterns</td><td>16</td></tr><tr><td><strong>A16</strong></td><td>38853095</td><td>2024</td><td>Elevated blood pressure in children with cerebral palsy and its relationship with adiposity and physical acti...</td><td>Disability and health journal</td><td>body composition cerebral palsy children</td><td>16</td></tr><tr><td><strong>A17</strong></td><td>25013156</td><td>2014</td><td>Variability explained by strength, body composition and gait impairment in activity and participation measure...</td><td>Clinical rehabilitation</td><td>body composition cerebral palsy children</td><td>16</td></tr><tr><td><strong>A18</strong></td><td>39028671</td><td>2024</td><td>Mental Health Diagnoses Risk Among Children and Young Adults With Cerebral Palsy, Chronic Conditions, or Typi...</td><td>JAMA network open</td><td>nutrition risk cerebral palsy children</td><td>12</td></tr><tr><td><strong>A19</strong></td><td>24964775</td><td>2014</td><td>Fractures in children with cerebral palsy.</td><td>Current osteoporosis reports</td><td>nutrition risk cerebral palsy children</td><td>9</td></tr><tr><td><strong>A20</strong></td><td>16322142</td><td>2005</td><td>Weight-for-height values and limb anthropometric composition of tube-fed children with quadriplegic cerebral ...</td><td>Pediatrics</td><td>body composition cerebral palsy children</td><td>11</td></tr><tr><td><strong>A21</strong></td><td>16932102</td><td>2006</td><td>Fractures in children with cerebral palsy.</td><td>Journal of pediatric orthopedics</td><td>nutrition risk cerebral palsy children</td><td>16</td></tr><tr><td><strong>A22</strong></td><td>32593667</td><td>2020</td><td>The Pediatric Subjective Global Nutrition Assessment Classifies More Children With Cerebral Palsy as Malnouri...</td><td>Journal of the Academy of Nutrition and Dietetics</td><td>nutrition risk cerebral palsy children</td><td>21</td></tr><tr><td><strong>A23</strong></td><td>15883558</td><td>2005</td><td>Determination of body composition in children with cerebral palsy: bioelectrical impedance analysis and anthr...</td><td>Journal of the American Dietetic Association</td><td>body composition cerebral palsy children</td><td>14</td></tr><tr><td><strong>A24</strong></td><td>8969729</td><td>1996</td><td>Energy expenditure and body composition in children with spastic quadriplegic cerebral palsy.</td><td>The Journal of pediatrics</td><td>body composition cerebral palsy children</td><td>13</td></tr><tr><td><strong>A25</strong></td><td>34506748</td><td>2021</td><td>Physical activity, sedentary time and nutritional status in Brazilian children with cerebral palsy.</td><td>Jornal de pediatria</td><td>body composition cerebral palsy children</td><td>11</td></tr><tr><td><strong>A26</strong></td><td>35487751</td><td>2022</td><td>Study protocol for Running for health (Run4Health CP): a multicentre, assessor-blinded randomised controlled ...</td><td>BMJ open</td><td>nutrition risk cerebral palsy children</td><td>10</td></tr><tr><td><strong>A27</strong></td><td>19926178</td><td>2009</td><td>Anthropometry and body composition analysis in children with cerebral palsy.</td><td>Clinical nutrition (Edinburgh, Scotland)</td><td>body composition cerebral palsy children</td><td>21</td></tr><tr><td><strong>A28</strong></td><td>25108644</td><td>2014</td><td>Analysis of the relationships that body composition and muscular strength have with oxygen cost of walking in...</td><td>Gait &amp; posture</td><td>body composition cerebral palsy children</td><td>13</td></tr><tr><td><strong>A29</strong></td><td>33201495</td><td>2020</td><td>Risk factors for gastrointestinal complications after spinal fusion in children with cerebral palsy.</td><td>Spine deformity</td><td>nutrition risk cerebral palsy children</td><td>8</td></tr><tr><td><strong>A30</strong></td><td>22725837</td><td>2012</td><td>Nutritional status of children with cerebral palsy in Turkey.</td><td>Disability and rehabilitation</td><td>nutrition risk cerebral palsy children</td><td>21</td></tr><tr><td><strong>A31</strong></td><td>35339939</td><td>2022</td><td>Malnutrition and nutritional deficiencies in children with cerebral palsy: a systematic review and meta-analy...</td><td>Public health</td><td>nutrition risk cerebral palsy children</td><td>11</td></tr><tr><td><strong>A32</strong></td><td>12956289</td><td>2003</td><td>Risk factors of undernutrition in children with spastic cerebral palsy.</td><td>Chang Gung medical journal</td><td>nutrition risk cerebral palsy children</td><td>9</td></tr><tr><td><strong>A33</strong></td><td>30070881</td><td>2018</td><td>Energy expenditure is associated with age, anthropometric indicators and body composition in children with sp...</td><td>Nutricion hospitalaria</td><td>body composition cerebral palsy children</td><td>13</td></tr><tr><td><strong>A34</strong></td><td>34856192</td><td>2021</td><td>Strategies and interventions for healthy adolescent growth, nutrition, and development.</td><td>Lancet (London, England)</td><td>maternal diet child cognition</td><td>13</td></tr><tr><td><strong>A35</strong></td><td>20702841</td><td>2010</td><td>Growth in cerebral palsy.</td><td>Nutrition in clinical practice : official publication ...</td><td>nutrition risk cerebral palsy children</td><td>6</td></tr><tr><td><strong>A36</strong></td><td>27480292</td><td>2016</td><td>Management of spinal infections in children with cerebral palsy.</td><td>Orthopaedics &amp; traumatology, surgery &amp; research : OTSR</td><td>nutrition risk cerebral palsy children</td><td>11</td></tr><tr><td><strong>A37</strong></td><td>39137591</td><td>2024</td><td>Prevalence of Vitamin D Deficiency in Children With Cerebral Palsy: A Meta-Analysis.</td><td>Pediatric neurology</td><td>nutrition risk cerebral palsy children</td><td>9</td></tr></tbody></table></div>
+  </main>
+</body>
+</html>

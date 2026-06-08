@@ -1,0 +1,865 @@
+% !TeX program = pdflatex
+% Documentation for Overleaf/pdfLaTeX.
+% This file intentionally avoids fontspec and is compatible with pdfLaTeX.
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{cmap}
+\usepackage[T2A]{fontenc}
+\usepackage[english,bulgarian]{babel}
+\selectlanguage{bulgarian}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{microtype}
+\usepackage{setspace}
+\onehalfspacing
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{amsmath}
+\usepackage{longtable,booktabs,array,multirow}
+\usepackage{etoolbox}
+\AtBeginEnvironment{longtable}{\small}
+\setlength{\LTleft}{0pt}
+\setlength{\LTright}{0pt}
+\usepackage{enumitem}
+\setlist{itemsep=2pt,topsep=4pt}
+\usepackage{fancyvrb}
+\usepackage{fvextra}
+\DefineVerbatimEnvironment{verbatim}{Verbatim}{breaklines=true,breakanywhere=true,fontsize=\small}
+
+\providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\providecommand{\pandocbounded}[1]{#1}
+\providecommand{\passthrough}[1]{#1}
+\sloppy
+\hbadness=10000
+\hfuzz=5pt
+
+\addto\captionsbulgarian{%
+  \renewcommand{\contentsname}{Съдържание}%
+  \renewcommand{\figurename}{Фигура}%
+  \renewcommand{\tablename}{Таблица}%
+  \renewcommand{\abstractname}{Резюме}%
+  \renewcommand{\refname}{Литература}%
+}
+
+\title{\textbf{Документация за курсов проект по „Бази от знания“:\\ NutriEvidence Knowledge Graph и node2vec}}
+\author{
+Явор Чамов\\
+\small{Факултетен №: 4MI3400787}\\[0.5em]
+}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Настоящият документ описва частта от проекта \textit{NutriEvidence Agent}, която е свързана с дисциплината „Бази от знания“. Акцентът е поставен върху моделирането на биомедицински знания чрез Article--MeSH knowledge graph, представянето на статии и медицински термини като графови възли, обучението на node2vec ембединги и използването им за препоръчване на сходни научни публикации.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+\section{1. Резюме / Abstract}
+
+\textbf{NutriEvidence Knowledge Graph} представлява модул от проекта \textit{NutriEvidence Agent}, който моделира връзките между PubMed статии и техните MeSH термини като база от знания. Вместо публикациите да се разглеждат само като независими текстови документи, те се представят като част от графова структура, в която статии, медицински понятия и тематични категории са свързани чрез експлицитни релации.
+
+Основната идея е, че биомедицинската литература съдържа не само текстова информация, но и структурирани знания. MeSH термините са контролирани медицински понятия, чрез които публикациите се индексират в PubMed. Когато статия е свързана с даден MeSH термин, това означава, че тя разглежда конкретна медицинска тема, заболяване, популация, метод или изследователски контекст.
+
+В проекта тези връзки се използват за изграждане на \textbf{Article--MeSH knowledge graph}. Върху графа се обучава \textbf{node2vec} модел, който генерира векторни представяния на възлите. След това embeddings на article възлите се използват за намиране на сходни статии чрез cosine similarity.
+
+Така системата добавя графово знание към препоръчването на научни публикации. Това е особено подходящо за предмета „Бази от знания“, защото проектът демонстрира как домейн знания могат да бъдат моделирани, съхранявани, обработвани и използвани за изводи и препоръки.
+
+\vspace{0.5em}\hrule\vspace{1.0em}
+
+\section{2. Проблем, който проектът решава}
+
+PubMed съдържа голямо количество биомедицински публикации. Всяка публикация може да бъде свързана с множество медицински понятия, като заболявания, симптоми, възрастови групи, методи на изследване, хранителни фактори и клинични показатели. Ако тези връзки се разглеждат само като списък от ключови думи, се губи важна структурна информация.
+
+Основните проблеми са:
+
+\begin{itemize}
+\tightlist
+\item
+  трудно е да се открият статии, които са тематично близки, но не използват еднакви думи в заглавието или abstract-а;
+\item
+  semantic similarity върху текст може да пропусне връзки, които са видими през общи MeSH термини;
+\item
+  простото съвпадение на MeSH термини не отчита структурата на целия набор от статии;
+\item
+  липсва ясно представяне на знанията като възли, релации и домейн понятия;
+\item
+  потребителят има нужда от обяснима препоръка, основана не само на текст, но и на концептуална близост.
+\end{itemize}
+
+Проектът решава тези проблеми чрез изграждане на графова база от знания, в която статиите и MeSH термините са свързани. Върху този граф се прилага node2vec, за да се получи числово представяне на структурната близост между публикациите.
+
+\vspace{0.5em}\hrule\vspace{1.0em}
+
+\section{3. Основна цел на проекта за предмета „Бази от знания“}
+
+Основната цел е да се разработи и документира knowledge graph модул, който:
+
+\begin{itemize}
+\tightlist
+\item
+  представя PubMed статии като възли в граф;
+\item
+  представя MeSH термините като отделни концептуални възли;
+\item
+  създава релации между статии и MeSH термини;
+\item
+  използва графовата структура като база от знания;
+\item
+  обучава node2vec embeddings върху графа;
+\item
+  намира сходни статии чрез graph-based similarity;
+\item
+  позволява сравнение между MeSH overlap baseline и node2vec подход;
+\item
+  подпомага препоръчването на научна литература чрез структурирани знания.
+\end{itemize}
+
+Фокусът не е върху LLM слоя, генерацията на отговори или медицински съвети. Фокусът е върху моделирането и използването на знания чрез граф.
+
+\vspace{0.5em}\hrule\vspace{1.0em}
+
+\section{4. Какво представлява базата от знания в проекта}
+
+В контекста на проекта базата от знания е графова структура, която описва връзките между научни статии и медицински понятия. Тя може да бъде разглеждана като опростен knowledge graph, в който фактите са представени чрез тройки от вида:
+
+\begin{verbatim}
+subject --relation--> object
+\end{verbatim}
+
+За проекта основният тип тройка е:
+
+\begin{verbatim}
+Article --hasMeSHTerm--> MeSHTerm
+\end{verbatim}
+
+Пример:
+
+\begin{verbatim}
+article:37656239 --hasMeSHTerm--> mesh:cerebral_palsy
+article:37656239 --hasMeSHTerm--> mesh:child
+article:37656239 --hasMeSHTerm--> mesh:body_composition
+\end{verbatim}
+
+Тази структура позволява системата да отговори на въпроси като:
+
+\begin{itemize}
+\tightlist
+\item
+  кои статии са свързани с даден MeSH термин;
+\item
+  кои статии споделят общи медицински понятия;
+\item
+  кои MeSH термини са най-често срещани в корпуса;
+\item
+  кои статии са графово близки до избрана seed статия;
+\item
+  кои теми свързват две публикации.
+\end{itemize}
+
+\vspace{0.5em}\hrule\vspace{1.0em}
+
+\section{5. Представяне на знанията}
+
+\subsection{5.1. Типове възли}
+
+Графът съдържа два основни типа възли:
+
+\begin{longtable}{p{0.25\textwidth}p{0.65\textwidth}}
+\toprule
+\textbf{Тип възел} & \textbf{Описание} \\
+\midrule
+Article & Представя PubMed публикация. Всеки article възел се идентифицира чрез PMID. \\
+MeSHTerm & Представя медицински термин от MeSH речника, свързан с една или повече статии. \\
+\bottomrule
+\end{longtable}
+
+Примерни article възли:
+
+\begin{verbatim}
+article:37656239
+article:12345678
+article:98765432
+\end{verbatim}
+
+Примерни MeSH възли:
+
+\begin{verbatim}
+mesh:cerebral_palsy
+mesh:nutritional_status
+mesh:child
+mesh:body_composition
+\end{verbatim}
+
+\subsection{5.2. Типове релации}
+
+Основната релация в текущия MVP е:
+
+\begin{longtable}{p{0.3\textwidth}p{0.6\textwidth}}
+\toprule
+\textbf{Релация} & \textbf{Значение} \\
+\midrule
+hasMeSHTerm & Свързва PubMed статия с MeSH термин, който описва съдържанието й. \\
+\bottomrule
+\end{longtable}
+
+Пример:
+
+\begin{verbatim}
+article:37656239 --hasMeSHTerm--> mesh:cerebral_palsy
+\end{verbatim}
+
+В бъдеща версия могат да се добавят и други релации, например:
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{publishedIn} --- връзка между статия и списание;
+\item
+  \texttt{writtenBy} --- връзка между статия и автор;
+\item
+  \texttt{hasPublicationType} --- връзка между статия и тип публикация;
+\item
+  \texttt{broaderThan} / \texttt{narrowerThan} --- йерархични връзки между MeSH термини.
+\end{itemize}
+
+\subsection{5.3. Данни, използвани за графа}
+
+За всяка статия се използват следните полета:
+
+\begin{verbatim}
+pmid
+title
+abstract
+year
+journal
+publication_types
+mesh_terms
+\end{verbatim}
+
+Най-важното поле за knowledge graph частта е:
+
+\begin{verbatim}
+mesh_terms
+\end{verbatim}
+
+То съдържа списък от медицински понятия, чрез които статията е индексирана.
+
+\vspace{0.5em}\hrule\vspace{1.0em}
+
+\section{6. Изграждане на Article--MeSH knowledge graph}
+
+Процесът на изграждане на графа преминава през няколко стъпки.
+
+\subsection{6.1. Зареждане на статии}
+
+Системата зарежда локално кеширани PubMed статии от JSON файл:
+
+\begin{verbatim}
+data/pubmed_articles.json
+\end{verbatim}
+
+Всяка статия трябва да има поне PMID и списък от MeSH термини. Статии без MeSH термини могат да бъдат пропуснати или включени само като изолирани article възли.
+
+\subsection{6.2. Нормализация на MeSH термините}
+
+Преди добавяне към графа MeSH термините се нормализират, за да се избегнат дублирания. Примерни операции:
+
+\begin{itemize}
+\tightlist
+\item
+  премахване на излишни интервали;
+\item
+  превръщане към lowercase формат;
+\item
+  замяна на интервали със символ \texttt{\_};
+\item
+  премахване на празни стойности.
+\end{itemize}
+
+Пример:
+
+\begin{verbatim}
+"Cerebral Palsy" -> "cerebral_palsy"
+"Body Composition" -> "body_composition"
+\end{verbatim}
+
+\subsection{6.3. Добавяне на възли и ребра}
+
+За всяка статия се създава article възел:
+
+\begin{verbatim}
+article:<PMID>
+\end{verbatim}
+
+За всеки MeSH термин се създава MeSH възел:
+
+\begin{verbatim}
+mesh:<normalized_term>
+\end{verbatim}
+
+След това се добавя ребро между статията и всеки неин MeSH термин:
+
+\begin{verbatim}
+article:<PMID> --hasMeSHTerm--> mesh:<term>
+\end{verbatim}
+
+\subsection{6.4. Общ алгоритъм}
+
+\begin{verbatim}
+for article in articles:
+    article_node = "article:" + article.pmid
+    add_node(article_node, type="Article")
+
+    for mesh_term in article.mesh_terms:
+        mesh_node = "mesh:" + normalize(mesh_term)
+        add_node(mesh_node, type="MeSHTerm")
+        add_edge(article_node, mesh_node, relation="hasMeSHTerm")
+\end{verbatim}
+
+Резултатът е двуделен граф, в който article възлите са свързани с MeSH възли. Две статии не са директно свързани, но могат да бъдат близки чрез общи или сходни MeSH термини.
+
+\subsection{6.5. Визуализация на Article--MeSH графа}
+
+За демонстрация проектът включва интерактивна HTML визуализация:
+
+\begin{verbatim}
+nutri-evidence-agent/docs/article_mesh_graph.html
+\end{verbatim}
+
+Тъй като pdfLaTeX не може директно да вгражда HTML файлове, в документа е включена статична TikZ версия на същата визуализация. Сините възли са PubMed статии, зелените възли са MeSH термини, а ребрата показват релацията \texttt{hasMeSHTerm}.
+
+\begin{figure}[H]
+\centering
+\input{nutri-evidence-agent/docs/fig-article-mesh-graph.tex}
+\caption{Статична версия на интерактивната Article--MeSH визуализация от \texttt{docs/article\_mesh\_graph.html}.}
+\label{fig:article-mesh-graph}
+\end{figure}
+
+\vspace{0.5em}\hrule\vspace{1.0em}
+
+\section{7. MeSH overlap baseline}
+
+Преди използване на node2vec е полезно да се реализира прост baseline, базиран на припокриване между MeSH термините на две статии.
+
+Ако имаме две статии $A$ и $B$, техните множества от MeSH термини са $M_A$ и $M_B$. Сходството може да се изчисли чрез Jaccard similarity:
+
+\begin{equation}
+J(A, B) = \frac{|M_A \cap M_B|}{|M_A \cup M_B|}
+\end{equation}
+
+Ако две статии имат много общи MeSH термини, тяхната Jaccard стойност ще бъде по-висока.
+
+Предимства на baseline подхода:
+
+\begin{itemize}
+\tightlist
+\item
+  лесен е за имплементация;
+\item
+  обясним е;
+\item
+  показва директно кои термини се припокриват;
+\item
+  служи като база за сравнение с node2vec.
+\end{itemize}
+
+Ограничения:
+
+\begin{itemize}
+\tightlist
+\item
+  отчита само директно съвпадение на термини;
+\item
+  не използва глобалната структура на графа;
+\item
+  не различава често срещани общи термини от по-специфични термини;
+\item
+  не намира индиректна близост между статии.
+\end{itemize}
+
+\vspace{0.5em}\hrule\vspace{1.0em}
+
+\section{8. node2vec върху knowledge graph}
+
+\subsection{8.1. Идея на node2vec}
+
+\textbf{node2vec} е алгоритъм за създаване на векторни представяния на възли в граф. Основната идея е графът да се обходи чрез множество random walks. Получените последователности от възли се третират подобно на изречения, а възлите се третират подобно на думи. След това модел, подобен на Word2Vec, се обучава да поставя близки в графа възли близо един до друг във векторното пространство.
+
+В контекста на проекта това означава:
+
+\begin{itemize}
+\tightlist
+\item
+  статии, които споделят подобни MeSH термини, получават близки embeddings;
+\item
+  статии, които са свързани чрез общи тематични области, могат да бъдат близки дори без директно припокриване на всички термини;
+\item
+  графовата структура се превръща в числово представяне, подходящо за similarity search.
+\end{itemize}
+
+\subsection{8.2. Random walks}
+
+node2vec генерира множество random walks от всеки възел. Примерна разходка в Article--MeSH граф може да изглежда така:
+
+\begin{verbatim}
+article:37656239
+mesh:cerebral_palsy
+article:12345678
+mesh:nutritional_status
+article:98765432
+\end{verbatim}
+
+Така моделът научава, че тези статии и термини се срещат в сходен графов контекст.
+
+\subsection{8.3. Параметри на node2vec}
+
+Основни параметри:
+
+\begin{longtable}{p{0.25\textwidth}p{0.65\textwidth}}
+\toprule
+\textbf{Параметър} & \textbf{Описание} \\
+\midrule
+Dimensions & Размерност на embedding вектора, например 64 или 128. \\
+Walk length & Дължина на всяка random walk последователност. \\
+Number of walks & Брой random walks, стартирани от всеки възел. \\
+Window size & Размер на контекстния прозорец при обучението. \\
+p & Return parameter, който контролира вероятността за връщане към предишния възел. \\
+q & In-out parameter, който контролира дали обхождането е по-локално или по-глобално. \\
+\bottomrule
+\end{longtable}
+
+Примерна конфигурация:
+
+\begin{verbatim}
+dimensions = 64
+walk_length = 30
+num_walks = 100
+window = 10
+p = 1.0
+q = 1.0
+\end{verbatim}
+
+При $p=1$ и $q=1$ random walk поведението е балансирано. При други стойности може да се насърчи по-локално или по-глобално изследване на графа.
+
+\subsection{8.4. Обучение на embeddings}
+
+След генериране на random walks се обучава embedding модел. Всеки възел получава вектор:
+
+\begin{verbatim}
+article:37656239 -> [0.12, -0.04, 0.33, ...]
+mesh:cerebral_palsy -> [0.08, 0.21, -0.10, ...]
+\end{verbatim}
+
+За препоръчване се използват само embeddings на article възлите, защото крайната цел е системата да препоръчва статии.
+
+\subsection{8.5. Визуализация на node2vec embedding пространството}
+
+В проекта са добавени и интерактивни HTML визуализации, които показват научените node2vec embeddings:
+
+\begin{verbatim}
+nutri-evidence-agent/docs/node2vec_embedding_overview.html
+nutri-evidence-agent/docs/node2vec_seed_37656239.html
+nutri-evidence-agent/docs/node2vec_seed_35867728.html
+\end{verbatim}
+
+Тези визуализации не показват директно суровите Article--MeSH ребра. Вместо това те показват проекция на научените node2vec вектори в двумерно пространство чрез PCA. Близки точки в тези графики означават, че съответните article възли са близки в графовото embedding пространство.
+
+\begin{figure}[H]
+\centering
+\input{nutri-evidence-agent/docs/fig-node2vec-overview.tex}
+\caption{Обща PCA проекция на article node2vec embeddings. Цветовете групират статиите според първоначалната PubMed заявка, а линиите показват висока graph embedding близост.}
+\label{fig:node2vec-overview}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\input{nutri-evidence-agent/docs/fig-node2vec-seed-37656239.tex}
+\caption{Seed-focused node2vec визуализация за PMID 37656239. Оранжевият възел е избраната seed статия, а останалите възли са нейни близки съседи в graph embedding пространството.}
+\label{fig:node2vec-seed-37656239}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\input{nutri-evidence-agent/docs/fig-node2vec-seed-35867728.tex}
+\caption{Seed-focused node2vec визуализация за PMID 35867728. Графиката показва как node2vec групира статии за cerebral palsy, nutrition и близки MeSH контексти.}
+\label{fig:node2vec-seed-35867728}
+\end{figure}
+
+\vspace{0.5em}\hrule\vspace{1.0em}
+
+\section{9. Graph-based recommender}
+
+Graph-based recommender използва node2vec embeddings, за да намира статии, които са близки в графовото пространство.
+
+\subsection{9.1. Recommend by selected article}
+
+В този режим потребителят избира seed статия. Системата намира нейния article node:
+
+\begin{verbatim}
+article:<seed_pmid>
+\end{verbatim}
+
+След това изчислява cosine similarity между embedding-а на seed статията и embeddings на всички останали article възли.
+
+\begin{equation}
+\operatorname{sim}(A, B) = \frac{\vec{v}_A \cdot \vec{v}_B}{\|\vec{v}_A\| \|\vec{v}_B\|}
+\end{equation}
+
+Крайните резултати се сортират по similarity score и се връщат Top K най-близки статии.
+
+\subsection{9.2. Общ процес}
+
+\begin{verbatim}
+Selected seed article
+|
+Find article node in graph
+|
+Load node2vec embedding for seed node
+|
+Compare with all article embeddings
+|
+Sort by cosine similarity
+|
+Return Top K similar articles
+\end{verbatim}
+
+\subsection{9.3. Изход от recommender-а}
+
+Всеки резултат съдържа:
+
+\begin{verbatim}
+pmid
+title
+year
+journal
+mesh_terms
+graph_score
+method
+shared_mesh_terms
+\end{verbatim}
+
+Полето \texttt{shared\_mesh\_terms} е полезно за обяснение на препоръката, защото показва кои медицински понятия свързват seed статията с препоръчаната статия.
+
+\vspace{0.5em}\hrule\vspace{1.0em}
+
+\section{10. Архитектура на knowledge graph модула}
+
+Планираната структура на проекта за графовата част е:
+
+\begin{verbatim}
+src/
+  graph/
+    article_mesh_graph_builder.py
+    node2vec_trainer.py
+    graph_recommender.py
+    graph_artifacts.py
+  recommenders/
+    mesh_overlap_recommender.py
+    hybrid_recommender.py
+  evaluation/
+    graph_evaluator.py
+\end{verbatim}
+
+\subsection{10.1. ArticleMeshGraphBuilder}
+
+Този компонент отговаря за:
+
+\begin{itemize}
+\tightlist
+\item
+  зареждане на статии;
+\item
+  нормализиране на MeSH термините;
+\item
+  създаване на article и MeSH възли;
+\item
+  добавяне на релации \texttt{hasMeSHTerm};
+\item
+  записване на графа като artifact.
+\end{itemize}
+
+\subsection{10.2. Node2VecTrainer}
+
+Този компонент:
+
+\begin{itemize}
+\tightlist
+\item
+  приема готов NetworkX граф;
+\item
+  стартира node2vec обучение;
+\item
+  създава embeddings за всички възли;
+\item
+  запазва модела и embedding файловете;
+\item
+  позволява повторно използване без ново обучение.
+\end{itemize}
+
+\subsection{10.3. GraphRecommender}
+
+Този компонент:
+
+\begin{itemize}
+\tightlist
+\item
+  зарежда node2vec embeddings;
+\item
+  филтрира само article възли;
+\item
+  приема seed PMID;
+\item
+  изчислява cosine similarity;
+\item
+  връща Top K graph-based препоръки.
+\end{itemize}
+
+\vspace{0.5em}\hrule\vspace{1.0em}
+
+\section{11. Хипотези}
+
+\subsection{11.1. Хипотеза H1: MeSH термините са подходяща основа за база от знания}
+
+\textbf{Твърдение:} PubMed статии и техните MeSH термини могат да бъдат представени като графова база от знания, която отразява домейн връзки в биомедицинската литература.
+
+\textbf{Очакван резултат:} Статии от близки теми ще бъдат свързани чрез общи MeSH възли или чрез близки пътища в графа.
+
+\textbf{Критерий за отхвърляне:} Ако графът е прекалено разреден, съдържа твърде много изолирани възли или не създава полезни връзки между статии, хипотезата се отслабва.
+
+\subsection{11.2. Хипотеза H2: node2vec улавя структурна близост между статии}
+
+\textbf{Твърдение:} node2vec embeddings върху Article--MeSH граф могат да откриват тематично сходни статии чрез структурата на графа.
+
+\textbf{Очакван резултат:} Graph-based recommender ще връща статии със сходни медицински теми, дори когато текстовете им не са напълно еднакви.
+
+\textbf{Критерий за отхвърляне:} Ако node2vec резултатите са по-слаби от простия MeSH overlap baseline при повечето тестови случаи, хипотезата се отхвърля за текущия dataset.
+
+\subsection{11.3. Хипотеза H3: Графовият подход е обясним}
+
+\textbf{Твърдение:} Препоръките от графовия recommender могат да бъдат обяснени чрез общи MeSH термини и пътища в графа.
+
+\textbf{Очакван резултат:} За всяка препоръчана статия системата може да покаже кои MeSH термини я свързват със seed статията.
+
+\textbf{Критерий за отхвърляне:} Ако node2vec връща сходни статии без видими общи понятия или обясними връзки, обяснимостта на подхода е ограничена.
+
+\vspace{0.5em}\hrule\vspace{1.0em}
+
+\section{12. Оценяване}
+
+Оценяването на knowledge graph частта може да се извърши чрез сравнение на няколко метода:
+
+\begin{itemize}
+\tightlist
+\item
+  MeSH overlap baseline;
+\item
+  Graph node2vec recommender;
+\item
+  Hybrid recommender, който комбинира semantic и graph score.
+\end{itemize}
+
+\subsection{12.1. Evaluation scenario}
+
+Основният сценарий за оценка е \textbf{Recommend by selected article}. Потребителят избира seed article, а системата трябва да намери сходни статии.
+
+Пример:
+
+\begin{verbatim}
+Seed article:
+PMID 37656239
+Low skeletal muscle mass and liver fibrosis in children with cerebral palsy.
+\end{verbatim}
+
+Системата сравнява резултатите от различните методи и проверява кои от тях връщат най-релевантни публикации.
+
+\subsection{12.2. Метрики}
+
+Използват се ranking метрики:
+
+\begin{verbatim}
+Precision@5
+Precision@10
+nDCG@5
+nDCG@10
+MRR
+\end{verbatim}
+
+Релевантността може да бъде зададена по скала:
+
+\begin{verbatim}
+0 = not relevant
+1 = somewhat relevant
+2 = relevant
+3 = highly relevant
+\end{verbatim}
+
+За binary метрики може да се използва праг:
+
+\begin{verbatim}
+relevance >= 2 = relevant
+\end{verbatim}
+
+\subsection{12.3. Примерна таблица за резултати}
+
+\begin{longtable}{p{0.34\textwidth}rrrrr}
+\toprule
+\textbf{Метод} & \textbf{P@5} & \textbf{P@10} & \textbf{nDCG@5} & \textbf{nDCG@10} & \textbf{MRR} \\
+\midrule
+MeSH overlap baseline & 0.200 & 0.200 & 0.678 & 0.678 & 0.200 \\
+Graph node2vec & 0.200 & 0.200 & 0.821 & 0.775 & 0.500 \\
+Hybrid & 0.200 & 0.200 & 0.770 & 0.763 & 0.250 \\
+\bottomrule
+\end{longtable}
+
+Таблицата показва примерен формат за представяне на резултати. При финалната версия стойностите трябва да се изчислят върху реалните evaluation файлове на проекта.
+
+\vspace{0.5em}\hrule\vspace{1.0em}
+
+\section{13. Реализация}
+
+\subsection{13.1. Използвани технологии}
+
+За knowledge graph частта се използват:
+
+\begin{verbatim}
+Python 3.10+
+pandas
+numpy
+NetworkX
+node2vec
+gensim
+scikit-learn
+\end{verbatim}
+
+NetworkX се използва за построяване и съхранение на графа. node2vec и gensim се използват за обучение на embeddings. scikit-learn се използва за cosine similarity и ranking.
+
+\subsection{13.2. Данни и artifacts}
+
+Графовата част може да генерира следните artifacts:
+
+\begin{verbatim}
+data/artifacts/article_mesh_graph.gpickle
+data/artifacts/node2vec_model.model
+data/artifacts/article_node_embeddings.npy
+data/artifacts/article_node_mapping.json
+\end{verbatim}
+
+Тези файлове позволяват графът и embeddings да се използват повторно без всяко стартиране да обучава модела отначало.
+
+\subsection{13.3. Псевдокод на GraphRecommender}
+
+\begin{verbatim}
+def recommend_similar_articles(seed_pmid, top_k):
+    seed_node = "article:" + seed_pmid
+
+    if seed_node not in embeddings:
+        return []
+
+    seed_vector = embeddings[seed_node]
+    scores = []
+
+    for node, vector in embeddings.items():
+        if not node.startswith("article:"):
+            continue
+        if node == seed_node:
+            continue
+
+        score = cosine_similarity(seed_vector, vector)
+        scores.append((node, score))
+
+    scores.sort(key=lambda x: x[1], reverse=True)
+    return scores[:top_k]
+\end{verbatim}
+
+\vspace{0.5em}\hrule\vspace{1.0em}
+
+\section{14. Ограничения}
+
+Knowledge graph подходът има следните ограничения:
+
+\begin{itemize}
+\tightlist
+\item
+  качеството зависи от наличието и пълнотата на MeSH термините;
+\item
+  нови PubMed статии може да нямат пълни MeSH annotations;
+\item
+  Article--MeSH графът е сравнително прост и не използва пълната MeSH йерархия;
+\item
+  node2vec може да намира структурна близост, която не винаги означава реална научна релевантност;
+\item
+  често срещани MeSH термини като \texttt{Humans} или \texttt{Child} могат да създадат твърде общи връзки;
+\item
+  random walk параметрите влияят върху качеството на embeddings;
+\item
+  графът не оценява методологично качество, risk of bias или сила на доказателствата.
+\end{itemize}
+
+\vspace{0.5em}\hrule\vspace{1.0em}
+
+\section{15. Бъдеща работа}
+
+В бъдеща версия knowledge graph частта може да бъде разширена чрез:
+
+\begin{itemize}
+\tightlist
+\item
+  добавяне на MeSH hierarchy relations;
+\item
+  използване на RDF triples;
+\item
+  SPARQL заявки върху графа;
+\item
+  добавяне на authors, journals и publication types като възли;
+\item
+  претегляне на ръбовете според важността на MeSH термините;
+\item
+  филтриране на твърде общи MeSH terms;
+\item
+  сравнение между node2vec, DeepWalk и GraphSAGE;
+\item
+  визуализация на графа;
+\item
+  генериране на обяснения чрез shortest paths между статии;
+\item
+  комбиниране на graph embeddings със semantic embeddings.
+\end{itemize}
+
+\vspace{0.5em}\hrule\vspace{1.0em}
+
+\section{16. Очакван принос на проекта}
+
+Проектът демонстрира как знания от биомедицинска област могат да бъдат представени и използвани чрез графова база от знания. Основният принос е в комбинирането на:
+
+\begin{verbatim}
+Knowledge representation
+Article--MeSH graph
+Controlled medical vocabulary
+Graph-based recommendation
+node2vec embeddings
+Similarity search
+Explainable recommendations
+Evaluation with ranking metrics
+\end{verbatim}
+
+Това прави проекта подходящ за дисциплината „Бази от знания“, защото показва практически пример за изграждане, обработка и използване на структурирани знания.
+
+\vspace{0.5em}\hrule\vspace{1.0em}
+
+\section{17. Заключение}
+
+Графовата част на \textit{NutriEvidence Agent} представя PubMed статии и MeSH термини като база от знания. Чрез Article--MeSH knowledge graph системата може да моделира връзки между публикации и медицински понятия. node2vec превръща тази структура във векторно пространство, което позволява намиране на сходни статии чрез graph-based similarity.
+
+За предмета „Бази от знания“ проектът е ценен, защото демонстрира целия процес: извличане на структурирани знания, моделиране като граф, обучение на графови embeddings, препоръчване на обекти и оценяване на резултатите. Въпреки ограниченията, този подход дава основа за по-богати knowledge graph решения, включително RDF, SPARQL, йерархии на понятия и обясними пътища между публикации.
+
+\end{document}

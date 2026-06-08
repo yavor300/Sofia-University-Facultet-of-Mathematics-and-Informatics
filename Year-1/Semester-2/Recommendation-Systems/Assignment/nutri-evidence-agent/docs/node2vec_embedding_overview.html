@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>node2vec Article Embedding Map</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      color: #172033;
+      background: #f7f7f4;
+    }
+    main {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 28px;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+      line-height: 1.2;
+    }
+    h2 {
+      margin: 24px 0 10px;
+      font-size: 20px;
+    }
+    p {
+      margin: 8px 0;
+      color: #4b5563;
+      line-height: 1.45;
+    }
+    code {
+      background: #eef1ee;
+      border-radius: 4px;
+      padding: 2px 4px;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(150px, 1fr));
+      gap: 10px;
+      margin-top: 18px;
+    }
+    .stat {
+      border: 1px solid #d9ded7;
+      border-radius: 8px;
+      background: white;
+      padding: 12px;
+    }
+    .stat strong {
+      display: block;
+      font-size: 20px;
+      color: #111827;
+    }
+    .panel {
+      margin-top: 18px;
+      background: #ffffff;
+      border: 1px solid #d9ded7;
+      border-radius: 8px;
+      overflow: auto;
+    }
+    svg {
+      display: block;
+      min-width: 1160px;
+    }
+    .similarity-edge {
+      stroke: #94a3b8;
+      opacity: 0.36;
+    }
+    .article-node {
+      stroke: #ffffff;
+      stroke-width: 1.6;
+    }
+    .dot-label {
+      fill: #ffffff;
+      font-size: 8px;
+      font-weight: 700;
+      text-anchor: middle;
+      pointer-events: none;
+    }
+    .axis-label {
+      fill: #64748b;
+      font-size: 12px;
+    }
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 16px;
+      margin-top: 14px;
+      color: #374151;
+      font-size: 13px;
+    }
+    .legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      min-width: 880px;
+      font-size: 13px;
+    }
+    th, td {
+      border-bottom: 1px solid #e5e7eb;
+      padding: 8px 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      background: #f1f5f9;
+      color: #243044;
+      font-weight: 700;
+    }
+    .small {
+      font-size: 12px;
+      color: #64748b;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>node2vec Article Embedding Map</h1>
+    <p>This view projects article-node embeddings learned from random walks over the Article-MeSH graph. Nearby blue points are articles that node2vec considers structurally similar because they appear in similar MeSH neighborhoods.</p>
+    <p>This is a visualization of <strong>node2vec embeddings</strong>, not the raw Article-MeSH edges. node2vec learns vectors from random walks over the graph, so proximity in this map means structural similarity in biomedical concept space.</p>
+    
+    <div class="stats">
+      <div class="stat"><strong>305</strong><span>article embeddings available</span></div>
+      <div class="stat"><strong>715</strong><span>MeSH nodes in graph</span></div>
+      <div class="stat"><strong>3491</strong><span>Article-MeSH edges</span></div>
+      <div class="stat"><strong>64</strong><span>node2vec dimensions</span></div>
+    </div>
+    <div class="legend"><span><i class="dot" style="background:#2563eb"></i>nutrition risk cerebral palsy children</span><span><i class="dot" style="background:#16a34a"></i>gut microbiome Parkinson disease</span><span><i class="dot" style="background:#9333ea"></i>Mediterranean diet pregnancy child neurodevel...</span><span><i class="dot" style="background:#dc2626"></i>urbanization dietary patterns</span><span><i class="dot" style="background:#0891b2"></i>maternal diet child cognition</span><span><i class="dot" style="background:#ca8a04"></i>body composition cerebral palsy children</span><span><i class="dot" style="background:#475569"></i>gut microbiome Alzheimer disease</span><span><i class="dot" style="background:#f97316"></i>Seed article</span></div>
+    <div class="panel">
+      <svg width="1160" height="720" role="img" aria-label="node2vec Article Embedding Map">
+        <text x="32" y="700" class="axis-label">PCA component 1</text>
+        <text x="32" y="24" class="axis-label">PCA projection of node2vec vectors</text>
+        <line x1="70.0" y1="410.3" x2="117.1" y2="528.4" class="similarity-edge" style="stroke-width:1.92"><title>node2vec cosine similarity: 0.760</title></line><line x1="202.2" y1="532.6" x2="117.1" y2="528.4" class="similarity-edge" style="stroke-width:1.88"><title>node2vec cosine similarity: 0.738</title></line><line x1="117.1" y1="528.4" x2="222.3" y2="481.9" class="similarity-edge" style="stroke-width:1.78"><title>node2vec cosine similarity: 0.675</title></line><line x1="1052.4" y1="399.2" x2="1006.6" y2="322.4" class="similarity-edge" style="stroke-width:1.77"><title>node2vec cosine similarity: 0.668</title></line><line x1="485.0" y1="135.7" x2="454.2" y2="225.5" class="similarity-edge" style="stroke-width:1.77"><title>node2vec cosine similarity: 0.667</title></line><line x1="351.9" y1="141.5" x2="309.4" y2="131.0" class="similarity-edge" style="stroke-width:1.76"><title>node2vec cosine similarity: 0.663</title></line><line x1="1069.0" y1="307.2" x2="955.5" y2="424.9" class="similarity-edge" style="stroke-width:1.74"><title>node2vec cosine similarity: 0.647</title></line><line x1="937.4" y1="307.7" x2="1014.4" y2="323.7" class="similarity-edge" style="stroke-width:1.72"><title>node2vec cosine similarity: 0.638</title></line><line x1="220.4" y1="485.0" x2="117.1" y2="528.4" class="similarity-edge" style="stroke-width:1.72"><title>node2vec cosine similarity: 0.636</title></line><line x1="750.2" y1="588.3" x2="720.6" y2="562.3" class="similarity-edge" style="stroke-width:1.71"><title>node2vec cosine similarity: 0.634</title></line><line x1="685.5" y1="488.8" x2="609.3" y2="570.4" class="similarity-edge" style="stroke-width:1.71"><title>node2vec cosine similarity: 0.633</title></line><line x1="569.1" y1="126.3" x2="372.6" y2="198.1" class="similarity-edge" style="stroke-width:1.70"><title>node2vec cosine similarity: 0.624</title></line><line x1="202.2" y1="532.6" x2="222.3" y2="481.9" class="similarity-edge" style="stroke-width:1.68"><title>node2vec cosine similarity: 0.614</title></line><line x1="408.6" y1="178.5" x2="351.9" y2="141.5" class="similarity-edge" style="stroke-width:1.68"><title>node2vec cosine similarity: 0.614</title></line><line x1="1006.6" y1="322.4" x2="1014.4" y2="323.7" class="similarity-edge" style="stroke-width:1.67"><title>node2vec cosine similarity: 0.609</title></line><line x1="372.9" y1="348.3" x2="217.9" y2="228.2" class="similarity-edge" style="stroke-width:1.67"><title>node2vec cosine similarity: 0.608</title></line><line x1="660.6" y1="137.6" x2="569.1" y2="126.3" class="similarity-edge" style="stroke-width:1.67"><title>node2vec cosine similarity: 0.608</title></line><line x1="299.0" y1="181.3" x2="481.5" y2="91.4" class="similarity-edge" style="stroke-width:1.67"><title>node2vec cosine similarity: 0.604</title></line><line x1="481.5" y1="91.4" x2="309.4" y2="131.0" class="similarity-edge" style="stroke-width:1.66"><title>node2vec cosine similarity: 0.602</title></line><line x1="1069.0" y1="307.2" x2="1090.0" y2="347.0" class="similarity-edge" style="stroke-width:1.66"><title>node2vec cosine similarity: 0.602</title></line><line x1="279.0" y1="580.2" x2="138.3" y2="501.3" class="similarity-edge" style="stroke-width:1.65"><title>node2vec cosine similarity: 0.597</title></line><line x1="1052.4" y1="399.2" x2="1069.0" y2="307.2" class="similarity-edge" style="stroke-width:1.65"><title>node2vec cosine similarity: 0.595</title></line><line x1="367.6" y1="184.3" x2="408.6" y2="178.5" class="similarity-edge" style="stroke-width:1.65"><title>node2vec cosine similarity: 0.595</title></line><line x1="138.3" y1="501.3" x2="325.4" y2="525.0" class="similarity-edge" style="stroke-width:1.64"><title>node2vec cosine similarity: 0.588</title></line><line x1="918.0" y1="310.1" x2="881.2" y2="409.0" class="similarity-edge" style="stroke-width:1.64"><title>node2vec cosine similarity: 0.587</title></line><line x1="279.0" y1="580.2" x2="202.2" y2="532.6" class="similarity-edge" style="stroke-width:1.63"><title>node2vec cosine similarity: 0.581</title></line><line x1="449.0" y1="250.2" x2="309.4" y2="131.0" class="similarity-edge" style="stroke-width:1.63"><title>node2vec cosine similarity: 0.581</title></line><line x1="1006.6" y1="322.4" x2="924.5" y2="239.1" class="similarity-edge" style="stroke-width:1.63"><title>node2vec cosine similarity: 0.580</title></line><line x1="363.2" y1="113.7" x2="372.6" y2="198.1" class="similarity-edge" style="stroke-width:1.62"><title>node2vec cosine similarity: 0.577</title></line><line x1="1038.1" y1="498.4" x2="1090.0" y2="347.0" class="similarity-edge" style="stroke-width:1.62"><title>node2vec cosine similarity: 0.575</title></line><line x1="612.5" y1="476.9" x2="547.9" y2="391.5" class="similarity-edge" style="stroke-width:1.62"><title>node2vec cosine similarity: 0.573</title></line><line x1="955.5" y1="424.9" x2="986.2" y2="193.7" class="similarity-edge" style="stroke-width:1.62"><title>node2vec cosine similarity: 0.572</title></line><line x1="296.1" y1="478.6" x2="138.3" y2="501.3" class="similarity-edge" style="stroke-width:1.61"><title>node2vec cosine similarity: 0.571</title></line><line x1="606.7" y1="480.4" x2="640.0" y2="526.4" class="similarity-edge" style="stroke-width:1.61"><title>node2vec cosine similarity: 0.570</title></line><line x1="840.5" y1="325.2" x2="947.4" y2="354.1" class="similarity-edge" style="stroke-width:1.61"><title>node2vec cosine similarity: 0.568</title></line><line x1="256.5" y1="418.3" x2="202.2" y2="532.6" class="similarity-edge" style="stroke-width:1.61"><title>node2vec cosine similarity: 0.566</title></line><line x1="943.8" y1="254.5" x2="1014.4" y2="323.7" class="similarity-edge" style="stroke-width:1.60"><title>node2vec cosine similarity: 0.565</title></line><line x1="840.5" y1="325.2" x2="802.3" y2="335.9" class="similarity-edge" style="stroke-width:1.60"><title>node2vec cosine similarity: 0.565</title></line><line x1="413.6" y1="89.7" x2="309.4" y2="131.0" class="similarity-edge" style="stroke-width:1.60"><title>node2vec cosine similarity: 0.563</title></line><line x1="1069.0" y1="307.2" x2="932.1" y2="303.1" class="similarity-edge" style="stroke-width:1.60"><title>node2vec cosine similarity: 0.562</title></line><line x1="547.9" y1="391.5" x2="609.3" y2="570.4" class="similarity-edge" style="stroke-width:1.60"><title>node2vec cosine similarity: 0.561</title></line><line x1="553.7" y1="178.1" x2="539.9" y2="151.4" class="similarity-edge" style="stroke-width:1.60"><title>node2vec cosine similarity: 0.560</title></line><line x1="932.1" y1="303.1" x2="878.5" y2="253.8" class="similarity-edge" style="stroke-width:1.59"><title>node2vec cosine similarity: 0.557</title></line><line x1="947.4" y1="354.1" x2="877.3" y2="222.8" class="similarity-edge" style="stroke-width:1.59"><title>node2vec cosine similarity: 0.554</title></line><line x1="924.5" y1="239.1" x2="1090.0" y2="347.0" class="similarity-edge" style="stroke-width:1.58"><title>node2vec cosine similarity: 0.553</title></line><line x1="1069.0" y1="307.2" x2="986.2" y2="193.7" class="similarity-edge" style="stroke-width:1.58"><title>node2vec cosine similarity: 0.552</title></line><line x1="309.3" y1="212.8" x2="387.4" y2="433.1" class="similarity-edge" style="stroke-width:1.58"><title>node2vec cosine similarity: 0.551</title></line><line x1="367.6" y1="184.3" x2="449.0" y2="250.2" class="similarity-edge" style="stroke-width:1.58"><title>node2vec cosine similarity: 0.550</title></line><line x1="566.1" y1="598.8" x2="579.2" y2="524.8" class="similarity-edge" style="stroke-width:1.58"><title>node2vec cosine similarity: 0.549</title></line><line x1="750.2" y1="588.3" x2="621.5" y2="650.0" class="similarity-edge" style="stroke-width:1.58"><title>node2vec cosine similarity: 0.549</title></line><line x1="485.0" y1="135.7" x2="363.2" y2="113.7" class="similarity-edge" style="stroke-width:1.58"><title>node2vec cosine similarity: 0.549</title></line><line x1="70.0" y1="410.3" x2="222.3" y2="481.9" class="similarity-edge" style="stroke-width:1.58"><title>node2vec cosine similarity: 0.548</title></line><line x1="450.3" y1="70.0" x2="335.2" y2="144.8" class="similarity-edge" style="stroke-width:1.57"><title>node2vec cosine similarity: 0.547</title></line><line x1="660.6" y1="137.6" x2="372.6" y2="198.1" class="similarity-edge" style="stroke-width:1.57"><title>node2vec cosine similarity: 0.547</title></line><line x1="702.4" y1="543.2" x2="671.9" y2="552.9" class="similarity-edge" style="stroke-width:1.57"><title>node2vec cosine similarity: 0.546</title></line><line x1="943.8" y1="254.5" x2="924.5" y2="239.1" class="similarity-edge" style="stroke-width:1.57"><title>node2vec cosine similarity: 0.545</title></line><line x1="413.6" y1="89.7" x2="539.9" y2="151.4" class="similarity-edge" style="stroke-width:1.57"><title>node2vec cosine similarity: 0.544</title></line><line x1="296.1" y1="478.6" x2="325.4" y2="525.0" class="similarity-edge" style="stroke-width:1.57"><title>node2vec cosine similarity: 0.543</title></line><line x1="750.2" y1="588.3" x2="686.7" y2="583.9" class="similarity-edge" style="stroke-width:1.57"><title>node2vec cosine similarity: 0.543</title></line><line x1="309.3" y1="212.8" x2="367.6" y2="184.3" class="similarity-edge" style="stroke-width:1.57"><title>node2vec cosine similarity: 0.543</title></line><line x1="660.6" y1="137.6" x2="936.9" y2="310.4" class="similarity-edge" style="stroke-width:1.56"><title>node2vec cosine similarity: 0.540</title></line><line x1="256.5" y1="418.3" x2="220.4" y2="485.0" class="similarity-edge" style="stroke-width:1.56"><title>node2vec cosine similarity: 0.537</title></line><line x1="299.0" y1="181.3" x2="309.3" y2="212.8" class="similarity-edge" style="stroke-width:1.56"><title>node2vec cosine similarity: 0.537</title></line><line x1="686.7" y1="583.9" x2="579.2" y2="524.8" class="similarity-edge" style="stroke-width:1.56"><title>node2vec cosine similarity: 0.535</title></line><line x1="865.6" y1="336.4" x2="841.0" y2="336.9" class="similarity-edge" style="stroke-width:1.56"><title>node2vec cosine similarity: 0.535</title></line><line x1="924.5" y1="239.1" x2="919.4" y2="300.5" class="similarity-edge" style="stroke-width:1.55"><title>node2vec cosine similarity: 0.529</title></line><line x1="924.5" y1="239.1" x2="865.6" y2="336.4" class="similarity-edge" style="stroke-width:1.54"><title>node2vec cosine similarity: 0.527</title></line><line x1="309.3" y1="212.8" x2="454.2" y2="225.5" class="similarity-edge" style="stroke-width:1.54"><title>node2vec cosine similarity: 0.527</title></line><line x1="760.5" y1="379.8" x2="877.3" y2="222.8" class="similarity-edge" style="stroke-width:1.54"><title>node2vec cosine similarity: 0.526</title></line><line x1="750.2" y1="588.3" x2="612.5" y2="476.9" class="similarity-edge" style="stroke-width:1.54"><title>node2vec cosine similarity: 0.526</title></line><line x1="450.3" y1="70.0" x2="581.6" y2="189.0" class="similarity-edge" style="stroke-width:1.54"><title>node2vec cosine similarity: 0.525</title></line><line x1="788.4" y1="516.0" x2="686.7" y2="583.9" class="similarity-edge" style="stroke-width:1.54"><title>node2vec cosine similarity: 0.524</title></line><line x1="603.8" y1="571.6" x2="609.3" y2="570.4" class="similarity-edge" style="stroke-width:1.54"><title>node2vec cosine similarity: 0.524</title></line><line x1="621.5" y1="650.0" x2="609.3" y2="570.4" class="similarity-edge" style="stroke-width:1.54"><title>node2vec cosine similarity: 0.524</title></line><line x1="702.4" y1="543.2" x2="686.7" y2="583.9" class="similarity-edge" style="stroke-width:1.54"><title>node2vec cosine similarity: 0.524</title></line><line x1="401.5" y1="577.6" x2="609.3" y2="570.4" class="similarity-edge" style="stroke-width:1.54"><title>node2vec cosine similarity: 0.522</title></line><line x1="335.2" y1="144.8" x2="363.2" y2="113.7" class="similarity-edge" style="stroke-width:1.53"><title>node2vec cosine similarity: 0.521</title></line><line x1="918.0" y1="310.1" x2="840.5" y2="325.2" class="similarity-edge" style="stroke-width:1.53"><title>node2vec cosine similarity: 0.521</title></line><line x1="955.5" y1="424.9" x2="841.0" y2="336.9" class="similarity-edge" style="stroke-width:1.53"><title>node2vec cosine similarity: 0.518</title></line><line x1="952.3" y1="317.5" x2="1090.0" y2="347.0" class="similarity-edge" style="stroke-width:1.53"><title>node2vec cosine similarity: 0.517</title></line><line x1="581.6" y1="189.0" x2="553.7" y2="178.1" class="similarity-edge" style="stroke-width:1.53"><title>node2vec cosine similarity: 0.517</title></line><line x1="497.3" y1="194.1" x2="481.5" y2="91.4" class="similarity-edge" style="stroke-width:1.53"><title>node2vec cosine similarity: 0.517</title></line><line x1="309.3" y1="212.8" x2="483.7" y2="199.4" class="similarity-edge" style="stroke-width:1.53"><title>node2vec cosine similarity: 0.516</title></line><line x1="619.8" y1="501.4" x2="719.7" y2="476.6" class="similarity-edge" style="stroke-width:1.52"><title>node2vec cosine similarity: 0.515</title></line><line x1="621.5" y1="650.0" x2="401.5" y2="577.6" class="similarity-edge" style="stroke-width:1.52"><title>node2vec cosine similarity: 0.514</title></line><line x1="1038.1" y1="498.4" x2="947.4" y2="354.1" class="similarity-edge" style="stroke-width:1.52"><title>node2vec cosine similarity: 0.514</title></line><line x1="1069.0" y1="307.2" x2="937.4" y2="307.7" class="similarity-edge" style="stroke-width:1.52"><title>node2vec cosine similarity: 0.513</title></line><line x1="387.4" y1="433.1" x2="444.8" y2="448.2" class="similarity-edge" style="stroke-width:1.52"><title>node2vec cosine similarity: 0.513</title></line><line x1="603.8" y1="571.6" x2="619.8" y2="501.4" class="similarity-edge" style="stroke-width:1.51"><title>node2vec cosine similarity: 0.509</title></line><line x1="1006.6" y1="322.4" x2="919.4" y2="300.5" class="similarity-edge" style="stroke-width:1.51"><title>node2vec cosine similarity: 0.509</title></line><line x1="936.9" y1="310.4" x2="1014.4" y2="323.7" class="similarity-edge" style="stroke-width:1.51"><title>node2vec cosine similarity: 0.507</title></line><line x1="671.9" y1="552.9" x2="686.7" y2="583.9" class="similarity-edge" style="stroke-width:1.51"><title>node2vec cosine similarity: 0.506</title></line><line x1="1038.1" y1="498.4" x2="720.6" y2="562.3" class="similarity-edge" style="stroke-width:1.51"><title>node2vec cosine similarity: 0.506</title></line><line x1="702.4" y1="543.2" x2="551.6" y2="534.3" class="similarity-edge" style="stroke-width:1.51"><title>node2vec cosine similarity: 0.504</title></line><line x1="138.3" y1="501.3" x2="444.8" y2="448.2" class="similarity-edge" style="stroke-width:1.51"><title>node2vec cosine similarity: 0.504</title></line><line x1="947.4" y1="354.1" x2="952.3" y2="317.5" class="similarity-edge" style="stroke-width:1.51"><title>node2vec cosine similarity: 0.503</title></line><line x1="952.3" y1="317.5" x2="878.5" y2="253.8" class="similarity-edge" style="stroke-width:1.51"><title>node2vec cosine similarity: 0.503</title></line><line x1="881.2" y1="409.0" x2="955.5" y2="424.9" class="similarity-edge" style="stroke-width:1.51"><title>node2vec cosine similarity: 0.503</title></line><line x1="947.4" y1="354.1" x2="866.5" y2="297.0" class="similarity-edge" style="stroke-width:1.50"><title>node2vec cosine similarity: 0.503</title></line><line x1="486.2" y1="244.5" x2="569.1" y2="126.3" class="similarity-edge" style="stroke-width:1.50"><title>node2vec cosine similarity: 0.499</title></line><line x1="551.6" y1="534.3" x2="503.6" y2="498.2" class="similarity-edge" style="stroke-width:1.50"><title>node2vec cosine similarity: 0.499</title></line><line x1="750.2" y1="588.3" x2="685.5" y2="488.8" class="similarity-edge" style="stroke-width:1.50"><title>node2vec cosine similarity: 0.498</title></line><line x1="760.5" y1="379.8" x2="947.4" y2="354.1" class="similarity-edge" style="stroke-width:1.49"><title>node2vec cosine similarity: 0.495</title></line><line x1="503.6" y1="498.2" x2="719.7" y2="476.6" class="similarity-edge" style="stroke-width:1.49"><title>node2vec cosine similarity: 0.494</title></line><line x1="569.1" y1="126.3" x2="621.5" y2="299.7" class="similarity-edge" style="stroke-width:1.49"><title>node2vec cosine similarity: 0.494</title></line><line x1="606.7" y1="480.4" x2="351.9" y2="141.5" class="similarity-edge" style="stroke-width:1.49"><title>node2vec cosine similarity: 0.493</title></line><line x1="486.2" y1="244.5" x2="372.6" y2="198.1" class="similarity-edge" style="stroke-width:1.49"><title>node2vec cosine similarity: 0.492</title></line><line x1="299.0" y1="181.3" x2="497.3" y2="194.1" class="similarity-edge" style="stroke-width:1.49"><title>node2vec cosine similarity: 0.491</title></line><line x1="788.4" y1="516.0" x2="603.8" y2="571.6" class="similarity-edge" style="stroke-width:1.48"><title>node2vec cosine similarity: 0.491</title></line><line x1="351.9" y1="141.5" x2="217.9" y2="228.2" class="similarity-edge" style="stroke-width:1.48"><title>node2vec cosine similarity: 0.487</title></line>
+        <circle cx="877.3" cy="222.8" r="10" fill="#2563eb" class="article-node"><title>PMID: 31500109
+Title: Nutritional Status of Children with Cerebral Palsy-Findings from Prospective Hospital-Based Surveillance in Vietnam Indicate a Need for Action.
+Source query: nutrition risk cerebral palsy children
+MeSH degree: 26</title></circle><circle cx="455.6" cy="471.5" r="10" fill="#16a34a" class="article-node"><title>PMID: 28195358
+Title: Parkinson&#x27;s disease and Parkinson&#x27;s disease medications have distinct signatures of the gut microbiome.
+Source query: gut microbiome Parkinson disease
+MeSH degree: 26</title></circle><circle cx="454.2" cy="225.5" r="10" fill="#9333ea" class="article-node"><title>PMID: 26887648
+Title: Dietary patterns in early childhood and child cognitive and psychomotor development: the Rhea mother-child cohort study in Crete.
+Source query: Mediterranean diet pregnancy child neurodevelopment
+MeSH degree: 26</title></circle><circle cx="702.4" cy="543.2" r="10" fill="#dc2626" class="article-node"><title>PMID: 20702749
+Title: Dietary patterns are associated with metabolic syndrome in an urban Mexican population.
+Source query: urbanization dietary patterns
+MeSH degree: 26</title></circle><circle cx="309.3" cy="212.8" r="10" fill="#0891b2" class="article-node"><title>PMID: 22686384
+Title: Maternal intake of methyl-donor nutrients and child cognition at 3 years of age.
+Source query: maternal diet child cognition
+MeSH degree: 25</title></circle><circle cx="640.0" cy="526.4" r="10" fill="#dc2626" class="article-node"><title>PMID: 33793340
+Title: Hypertension in Low- and Middle-Income Countries.
+Source query: urbanization dietary patterns
+MeSH degree: 25</title></circle><circle cx="603.8" cy="571.6" r="10" fill="#dc2626" class="article-node"><title>PMID: 26581684
+Title: Dietary Patterns Are Associated with Predicted Cardiovascular Disease Risk in an Urban Mexican Adult Population.
+Source query: urbanization dietary patterns
+MeSH degree: 25</title></circle><circle cx="621.5" cy="299.7" r="10" fill="#0891b2" class="article-node"><title>PMID: 38314711
+Title: Ketogenic Diet: Parental Experiences and Expectations.
+Source query: maternal diet child cognition
+MeSH degree: 24</title></circle><circle cx="720.6" cy="562.3" r="10" fill="#dc2626" class="article-node"><title>PMID: 28367791
+Title: Dietary patterns and non-communicable disease risk in Indian adults: secondary analysis of Indian Migration Study data.
+Source query: urbanization dietary patterns
+MeSH degree: 24</title></circle><circle cx="481.5" cy="91.4" r="10" fill="#0891b2" class="article-node"><title>PMID: 34562095
+Title: Maternal diet quality during pregnancy and child cognition and behavior in a US cohort.
+Source query: maternal diet child cognition
+MeSH degree: 23</title></circle><circle cx="750.2" cy="588.3" r="10" fill="#dc2626" class="article-node"><title>PMID: 25697609
+Title: Dietary patterns in India and their association with obesity and central obesity.
+Source query: urbanization dietary patterns
+MeSH degree: 23</title></circle><circle cx="947.4" cy="354.1" r="10" fill="#2563eb" class="article-node"><title>PMID: 26111638
+Title: Cerebral Palsy in Children as a Risk Factor for Malnutrition.
+Source query: nutrition risk cerebral palsy children
+MeSH degree: 22</title></circle><circle cx="1006.6" cy="322.4" r="10" fill="#ca8a04" class="article-node"><title>PMID: 21795444
+Title: Measuring body composition and energy expenditure in children with severe neurologic impairment and intellectual disability.
+Source query: body composition cerebral palsy children
+MeSH degree: 22</title></circle><circle cx="556.5" cy="300.2" r="10" fill="#0891b2" class="article-node"><title>PMID: 1745900
+Title: Iron deficiency.
+Source query: maternal diet child cognition
+MeSH degree: 22</title></circle><circle cx="299.0" cy="181.3" r="10" fill="#0891b2" class="article-node"><title>PMID: 18353804
+Title: Maternal fish intake during pregnancy, blood mercury levels, and child cognition at age 3 years in a US cohort.
+Source query: maternal diet child cognition
+MeSH degree: 22</title></circle><circle cx="760.5" cy="379.8" r="10" fill="#dc2626" class="article-node"><title>PMID: 24507623
+Title: Dietary patterns and cognitive ability among 12- to 13 year-old adolescents in Selangor, Malaysia.
+Source query: urbanization dietary patterns
+MeSH degree: 22</title></circle><circle cx="1090.0" cy="347.0" r="10" fill="#2563eb" class="article-node"><title>PMID: 32593667
+Title: The Pediatric Subjective Global Nutrition Assessment Classifies More Children With Cerebral Palsy as Malnourished Compared With Anthropometry.
+Source query: nutrition risk cerebral palsy children
+MeSH degree: 21</title></circle><circle cx="1038.1" cy="498.4" r="10" fill="#2563eb" class="article-node"><title>PMID: 22725837
+Title: Nutritional status of children with cerebral palsy in Turkey.
+Source query: nutrition risk cerebral palsy children
+MeSH degree: 21</title></circle><circle cx="943.8" cy="254.5" r="10" fill="#ca8a04" class="article-node"><title>PMID: 19926178
+Title: Anthropometry and body composition analysis in children with cerebral palsy.
+Source query: body composition cerebral palsy children
+MeSH degree: 21</title></circle><circle cx="497.3" cy="194.1" r="10" fill="#9333ea" class="article-node"><title>PMID: 32249266
+Title: Impact of Methylmercury and Other Heavy Metals Exposure on Neurocognitive Function in Children Aged 7 Years: Study Protocol of the Follow-up.
+Source query: Mediterranean diet pregnancy child neurodevelopment
+MeSH degree: 21</title></circle><circle cx="367.6" cy="184.3" r="10" fill="#0891b2" class="article-node"><title>PMID: 30420706
+Title: Maternal obesity and offspring cognition: the role of inflammation.
+Source query: maternal diet child cognition
+MeSH degree: 21</title></circle><circle cx="486.2" cy="244.5" r="10" fill="#0891b2" class="article-node"><title>PMID: 17355398
+Title: Antenatal maternal stress and long-term effects on child neurodevelopment: how and why?
+Source query: maternal diet child cognition
+MeSH degree: 21</title></circle><circle cx="606.7" cy="480.4" r="10" fill="#dc2626" class="article-node"><title>PMID: 20383237
+Title: Findings on dietary patterns in different groups of African origin undergoing nutrition transition.
+Source query: urbanization dietary patterns
+MeSH degree: 21</title></circle><circle cx="788.4" cy="516.0" r="10" fill="#dc2626" class="article-node"><title>PMID: 21896249
+Title: Dietary patterns in an ethnoculturally diverse population of young Canadian adults.
+Source query: urbanization dietary patterns
+MeSH degree: 21</title></circle><circle cx="952.3" cy="317.5" r="10" fill="#2563eb" class="article-node"><title>PMID: 30902487
+Title: Nutritional red flags in children with cerebral palsy.
+Source query: nutrition risk cerebral palsy children
+MeSH degree: 20</title></circle><circle cx="802.3" cy="335.9" r="10" fill="#2563eb" class="article-node"><title>PMID: 39125275
+Title: Home Enteral Nutrition in Patients with Cerebral Palsy in the Years 2012-2022: A Longitudinal Analysis of Data from the National Health Fund of Poland.
+Source query: nutrition risk cerebral palsy children
+MeSH degree: 20</title></circle><circle cx="372.9" cy="348.3" r="10" fill="#0891b2" class="article-node"><title>PMID: 33651981
+Title: High-fiber diet mitigates maternal obesity-induced cognitive and social dysfunction in the offspring via gut-brain axis.
+Source query: maternal diet child cognition
+MeSH degree: 20</title></circle><circle cx="450.3" cy="70.0" r="10" fill="#0891b2" class="article-node"><title>PMID: 26906232
+Title: Cognition.
+Source query: maternal diet child cognition
+MeSH degree: 20</title></circle><circle cx="485.0" cy="135.7" r="10" fill="#0891b2" class="article-node"><title>PMID: 19033373
+Title: Neonatal thyroxine, maternal thyroid function, and child cognition.
+Source query: maternal diet child cognition
+MeSH degree: 20</title></circle><circle cx="671.9" cy="552.9" r="10" fill="#dc2626" class="article-node"><title>PMID: 24708913
+Title: Dietary patterns in urban Ghana and risk of type 2 diabetes.
+Source query: urbanization dietary patterns
+MeSH degree: 20</title></circle><circle cx="551.6" cy="534.3" r="10" fill="#dc2626" class="article-node"><title>PMID: 25411287
+Title: Socioeconomic determinants of dietary patterns in low- and middle-income countries: a systematic review.
+Source query: urbanization dietary patterns
+MeSH degree: 20</title></circle><circle cx="1014.4" cy="323.7" r="10" fill="#ca8a04" class="article-node"><title>PMID: 7752019
+Title: Body composition in children with spastic quadriplegic cerebral palsy.
+Source query: body composition cerebral palsy children
+MeSH degree: 19</title></circle><circle cx="256.5" cy="418.3" r="10" fill="#16a34a" class="article-node"><title>PMID: 26457021
+Title: Brain-gut-microbiota axis in Parkinson&#x27;s disease.
+Source query: gut microbiome Parkinson disease
+MeSH degree: 19</title></circle><circle cx="547.9" cy="391.5" r="10" fill="#0891b2" class="article-node"><title>PMID: 29382553
+Title: Maternal and child dietary intake: The role of maternal healthy-eater self-schema.
+Source query: maternal diet child cognition
+MeSH degree: 19</title></circle><circle cx="685.5" cy="488.8" r="10" fill="#dc2626" class="article-node"><title>PMID: 32209090
+Title: Dietary patterns of Brazilian farmers and their relation with sociodemographic, labor, and lifestyle conditions.
+Source query: urbanization dietary patterns
+MeSH degree: 19</title></circle><circle cx="866.5" cy="297.0" r="10" fill="#2563eb" class="article-node"><title>PMID: 32893359
+Title: Nutritional status of children with cerebral palsy attending rehabilitation centers.
+Source query: nutrition risk cerebral palsy children
+MeSH degree: 18</title></circle><circle cx="919.4" cy="300.5" r="10" fill="#ca8a04" class="article-node"><title>PMID: 4940723
+Title: Body composition in cerebral palsy.
+Source query: body composition cerebral palsy children
+MeSH degree: 18</title></circle><circle cx="865.6" cy="336.4" r="10" fill="#ca8a04" class="article-node"><title>PMID: 28077375
+Title: Body composition, diet, and physical activity: a longitudinal cohort study in preschoolers with cerebral palsy.
+Source query: body composition cerebral palsy children
+MeSH degree: 18</title></circle><circle cx="296.1" cy="478.6" r="10" fill="#475569" class="article-node"><title>PMID: 34622235
+Title: Identification of &lt;i&gt;Faecalibacterium prausnitzii&lt;/i&gt; strains for gut microbiome-based intervention in Alzheimer&#x27;s-type dementia.
+Source query: gut microbiome Alzheimer disease
+MeSH degree: 18</title></circle><circle cx="138.3" cy="501.3" r="10" fill="#475569" class="article-node"><title>PMID: 40164697
+Title: Metagenomic analysis characterizes stage-specific gut microbiota in Alzheimer&#x27;s disease.
+Source query: gut microbiome Alzheimer disease
+MeSH degree: 18</title></circle><circle cx="253.0" cy="338.7" r="10" fill="#475569" class="article-node"><title>PMID: 30949921
+Title: Diet and Inflammation in Cognitive Ageing and Alzheimer&#x27;s Disease.
+Source query: gut microbiome Alzheimer disease
+MeSH degree: 18</title></circle><circle cx="413.6" cy="89.7" r="10" fill="#0891b2" class="article-node"><title>PMID: 40208849
+Title: Maternal dietary patterns, breastfeeding duration, and their association with child cognitive function and head circumference growth: A prospective mother-child cohort study.
+Source query: maternal diet child cognition
+MeSH degree: 18</title></circle><circle cx="553.7" cy="178.1" r="10" fill="#0891b2" class="article-node"><title>PMID: 31973784
+Title: Influences of the perinatal diet on maternal and child health: insights from the GUSTO study.
+Source query: maternal diet child cognition
+MeSH degree: 18</title></circle><circle cx="612.5" cy="476.9" r="10" fill="#0891b2" class="article-node"><title>PMID: 29096028
+Title: The Role of Maternal and Child Characteristics in Chinese Children&#x27;s Dietary Intake Across Three Groups.
+Source query: maternal diet child cognition
+MeSH degree: 18</title></circle><circle cx="581.6" cy="189.0" r="10" fill="#0891b2" class="article-node"><title>PMID: 31943072
+Title: Influence of fatty acid desaturase (FADS) genotype on maternal and child polyunsaturated fatty acids (PUFA) status and child health outcomes: a systematic review.
+Source query: maternal diet child cognition
+MeSH degree: 18</title></circle><circle cx="566.1" cy="598.8" r="10" fill="#dc2626" class="article-node"><title>PMID: 29384335
+Title: Dietary patterns, dietary lead exposure and hypertension in the older Chinese population.
+Source query: urbanization dietary patterns
+MeSH degree: 18</title></circle><circle cx="444.8" cy="448.2" r="10" fill="#dc2626" class="article-node"><title>PMID: 41830663
+Title: Dietary patterns and longitudinal frailty progression in older Chinese adults: a nationwide cohort study.
+Source query: urbanization dietary patterns
+MeSH degree: 18</title></circle><circle cx="719.7" cy="476.6" r="10" fill="#dc2626" class="article-node"><title>PMID: 29615325
+Title: Consistency and Generalizability of Dietary Patterns in a Multiethnic Working Population.
+Source query: urbanization dietary patterns
+MeSH degree: 18</title></circle><circle cx="840.5" cy="325.2" r="10" fill="#2563eb" class="article-node"><title>PMID: 23750743
+Title: Fractures in children with cerebral palsy: a total population study.
+Source query: nutrition risk cerebral palsy children
+MeSH degree: 17</title></circle><circle cx="986.2" cy="193.7" r="10" fill="#ca8a04" class="article-node"><title>PMID: 31237080
+Title: Total and regional body fat status among children and young people with cerebral palsy: A scoping review.
+Source query: body composition cerebral palsy children
+MeSH degree: 17</title></circle><circle cx="937.4" cy="307.7" r="10" fill="#ca8a04" class="article-node"><title>PMID: 16522908
+Title: Reduced body protein in children with spastic quadriplegic cerebral palsy.
+Source query: body composition cerebral palsy children
+MeSH degree: 17</title></circle><circle cx="873.8" cy="260.8" r="10" fill="#ca8a04" class="article-node"><title>PMID: 23208164
+Title: Relationships between dietary intake and body composition according to gross motor functional ability in preschool-aged children with cerebral palsy.
+Source query: body composition cerebral palsy children
+MeSH degree: 17</title></circle><circle cx="202.2" cy="532.6" r="10" fill="#475569" class="article-node"><title>PMID: 33169684
+Title: Role of gut-brain axis, gut microbial composition, and probiotic intervention in Alzheimer&#x27;s disease.
+Source query: gut microbiome Alzheimer disease
+MeSH degree: 17</title></circle><circle cx="483.7" cy="199.4" r="10" fill="#9333ea" class="article-node"><title>PMID: 34579057
+Title: Periconceptional Maternal Diet Characterized by High Glycemic Loading Is Associated with Offspring Behavior in NEST.
+Source query: Mediterranean diet pregnancy child neurodevelopment
+MeSH degree: 17</title></circle><circle cx="217.9" cy="228.2" r="10" fill="#0891b2" class="article-node"><title>PMID: 41902531
+Title: Maternal low-sodium diet impairs hippocampal neurogenesis and cognition in adult mouse offspring.
+Source query: maternal diet child cognition
+MeSH degree: 17</title></circle><circle cx="539.9" cy="151.4" r="10" fill="#0891b2" class="article-node"><title>PMID: 40334748
+Title: Maternal prenatal nut and seafood consumption and child neuropsychological function from 4 to 15 years of age: a population-based cohort study.
+Source query: maternal diet child cognition
+MeSH degree: 17</title></circle><circle cx="351.9" cy="141.5" r="10" fill="#0891b2" class="article-node"><title>PMID: 40573132
+Title: Maternal Diet Quality and Multivitamin Intake During Pregnancy Interact in the Association with Offspring Neurodevelopment at 2 Years of Age.
+Source query: maternal diet child cognition
+MeSH degree: 17</title></circle><circle cx="408.6" cy="178.5" r="10" fill="#0891b2" class="article-node"><title>PMID: 39163911
+Title: Socioeconomic adversity, maternal nutrition, and the prenatal programming of offspring cognition and language at two years of age through maternal inflammation.
+Source query: maternal diet child cognition
+MeSH degree: 17</title></circle><circle cx="503.6" cy="498.2" r="10" fill="#dc2626" class="article-node"><title>PMID: 27759064
+Title: Dietary patterns and mortality from cardiovascular disease: Isfahan Cohort Study.
+Source query: urbanization dietary patterns
+MeSH degree: 17</title></circle><circle cx="621.5" cy="650.0" r="10" fill="#dc2626" class="article-node"><title>PMID: 28693514
+Title: Disparities in dietary intake and physical activity patterns across the urbanization divide in the Peruvian Andes.
+Source query: urbanization dietary patterns
+MeSH degree: 17</title></circle><circle cx="881.2" cy="409.0" r="10" fill="#2563eb" class="article-node"><title>PMID: 28363511
+Title: Risk Factors for Malnutrition Among Children With Cerebral Palsy in Botswana.
+Source query: nutrition risk cerebral palsy children
+MeSH degree: 16</title></circle><circle cx="918.0" cy="310.1" r="10" fill="#2563eb" class="article-node"><title>PMID: 16932102
+Title: Fractures in children with cerebral palsy.
+Source query: nutrition risk cerebral palsy children
+MeSH degree: 16</title></circle><circle cx="841.0" cy="336.9" r="10" fill="#ca8a04" class="article-node"><title>PMID: 38853095
+Title: Elevated blood pressure in children with cerebral palsy and its relationship with adiposity and physical activity.
+Source query: body composition cerebral palsy children
+MeSH degree: 16</title></circle><circle cx="936.9" cy="310.4" r="10" fill="#ca8a04" class="article-node"><title>PMID: 25013156
+Title: Variability explained by strength, body composition and gait impairment in activity and participation measures for children with cerebral palsy: a multicentre study.
+Source query: body composition cerebral palsy children
+MeSH degree: 16</title></circle><circle cx="924.5" cy="239.1" r="10" fill="#ca8a04" class="article-node"><title>PMID: 23123140
+Title: The use of bioelectrical impedance analysis to estimate total body water in young children with cerebral palsy.
+Source query: body composition cerebral palsy children
+MeSH degree: 16</title></circle><circle cx="220.4" cy="485.0" r="10" fill="#16a34a" class="article-node"><title>PMID: 28164854
+Title: The Microbiome-Gut-Brain Axis in Health and Disease.
+Source query: gut microbiome Parkinson disease
+MeSH degree: 16</title></circle><circle cx="222.3" cy="481.9" r="10" fill="#475569" class="article-node"><title>PMID: 40355382
+Title: The gut-brain axis in Alzheimer&#x27;s disease is shaped by commensal gut microbiota derived extracellular vesicles.
+Source query: gut microbiome Alzheimer disease
+MeSH degree: 16</title></circle><circle cx="449.0" cy="250.2" r="10" fill="#9333ea" class="article-node"><title>PMID: 38800987
+Title: Maternal pre-pregnancy diet and prenatal depression: the mediating role of pre-pregnancy weight status and prenatal inflammation.
+Source query: Mediterranean diet pregnancy child neurodevelopment
+MeSH degree: 16</title></circle><circle cx="387.4" cy="433.1" r="10" fill="#0891b2" class="article-node"><title>PMID: 40056822
+Title: Associations between dietary B vitamin intakes and cognitive function among elderly individuals: An observational study.
+Source query: maternal diet child cognition
+MeSH degree: 16</title></circle><circle cx="401.5" cy="577.6" r="10" fill="#dc2626" class="article-node"><title>PMID: 39287374
+Title: Impact of urbanization on gut microbiome mosaics across geographic and dietary contexts.
+Source query: urbanization dietary patterns
+MeSH degree: 16</title></circle><circle cx="579.2" cy="524.8" r="10" fill="#dc2626" class="article-node"><title>PMID: 40633388
+Title: Ambient air pollution, dietary patterns, and the risk of incident cerebrovascular diseases: A prospective cohort study.
+Source query: urbanization dietary patterns
+MeSH degree: 16</title></circle><circle cx="686.7" cy="583.9" r="10" fill="#dc2626" class="article-node"><title>PMID: 30286315
+Title: Dietary patterns and colorectal cancer risk in Zimbabwe: A population based case-control study.
+Source query: urbanization dietary patterns
+MeSH degree: 16</title></circle><circle cx="619.8" cy="501.4" r="10" fill="#dc2626" class="article-node"><title>PMID: 27198234
+Title: Dietary patterns are associated with bone mineral density in an urban Mexican adult population.
+Source query: urbanization dietary patterns
+MeSH degree: 16</title></circle><circle cx="660.6" cy="137.6" r="10" fill="#2563eb" class="article-node"><title>PMID: 18981805
+Title: Diagnosis, treatment, and prevention of cerebral palsy.
+Source query: nutrition risk cerebral palsy children
+MeSH degree: 15</title></circle><circle cx="878.5" cy="253.8" r="10" fill="#2563eb" class="article-node"><title>PMID: 40721852
+Title: Relationship between nutritional assessment and nutritional risk screening in hospitalized children with cerebral palsy: a single-center prospective study.
+Source query: nutrition risk cerebral palsy children
+MeSH degree: 15</title></circle><circle cx="955.5" cy="424.9" r="10" fill="#ca8a04" class="article-node"><title>PMID: 29512149
+Title: Diagnostic performance of body mass index to identify excess body fat in children with cerebral palsy.
+Source query: body composition cerebral palsy children
+MeSH degree: 15</title></circle><circle cx="325.4" cy="525.0" r="10" fill="#16a34a" class="article-node"><title>PMID: 40420833
+Title: Microbiome signatures of virulence in the oral-gut-brain axis influence Parkinson&#x27;s disease and cognitive decline pathophysiology.
+Source query: gut microbiome Parkinson disease
+MeSH degree: 15</title></circle><circle cx="70.0" cy="410.3" r="10" fill="#475569" class="article-node"><title>PMID: 35017199
+Title: Gut microbiota regulate Alzheimer&#x27;s disease pathologies and cognitive disorders via PUFA-associated neuroinflammation.
+Source query: gut microbiome Alzheimer disease
+MeSH degree: 15</title></circle><circle cx="279.0" cy="580.2" r="10" fill="#475569" class="article-node"><title>PMID: 30958695
+Title: &lt;i&gt;APOE&lt;/i&gt; genotype influences the gut microbiome structure and function in humans and mice: relevance for Alzheimer&#x27;s disease pathophysiology.
+Source query: gut microbiome Alzheimer disease
+MeSH degree: 15</title></circle><circle cx="335.2" cy="144.8" r="10" fill="#0891b2" class="article-node"><title>PMID: 32531929
+Title: Choline, Neurological Development and Brain Function: A Systematic Review Focusing on the First 1000 Days.
+Source query: maternal diet child cognition
+MeSH degree: 15</title></circle><circle cx="609.3" cy="570.4" r="10" fill="#dc2626" class="article-node"><title>PMID: 41235216
+Title: Socioeconomic and demographic factors influencing dietary patterns in Aktobe: a sample of Kazakhstan&#x27;s dietary culture.
+Source query: urbanization dietary patterns
+MeSH degree: 15</title></circle><circle cx="848.3" cy="374.1" r="10" fill="#2563eb" class="article-node"><title>PMID: 21768315
+Title: Low weight, morbidity, and mortality in children with cerebral palsy: new clinical growth charts.
+Source query: nutrition risk cerebral palsy children
+MeSH degree: 14</title></circle><circle cx="932.1" cy="303.1" r="10" fill="#ca8a04" class="article-node"><title>PMID: 32213841
+Title: The Relationship Between Body Composition and Muscle Tone in Children with Cerebral Palsy: A Case-Control Study.
+Source query: body composition cerebral palsy children
+MeSH degree: 14</title></circle><circle cx="1069.0" cy="307.2" r="10" fill="#ca8a04" class="article-node"><title>PMID: 15883558
+Title: Determination of body composition in children with cerebral palsy: bioelectrical impedance analysis and anthropometry vs dual-energy x-ray absorptiometry.
+Source query: body composition cerebral palsy children
+MeSH degree: 14</title></circle><circle cx="1052.4" cy="399.2" r="10" fill="#ca8a04" class="article-node"><title>PMID: 10855654
+Title: Body composition in nutritionally adequate ambulatory and non-ambulatory children with cerebral palsy and a healthy reference group.
+Source query: body composition cerebral palsy children
+MeSH degree: 14</title></circle><circle cx="117.1" cy="528.4" r="10" fill="#475569" class="article-node"><title>PMID: 37452088
+Title: Sepsis exacerbates Alzheimer&#x27;s disease pathophysiology, modulates the gut microbiome, increases neuroinflammation and amyloid burden.
+Source query: gut microbiome Alzheimer disease
+MeSH degree: 14</title></circle><circle cx="569.1" cy="126.3" r="10" fill="#9333ea" class="article-node"><title>PMID: 37606923
+Title: Effect of a Mediterranean Diet or Mindfulness-Based Stress Reduction During Pregnancy on Child Neurodevelopment: A Prespecified Analysis of the IMPACT BCN Randomized Clinical Trial.
+Source query: Mediterranean diet pregnancy child neurodevelopment
+MeSH degree: 14</title></circle><circle cx="372.6" cy="198.1" r="10" fill="#9333ea" class="article-node"><title>PMID: 41999106
+Title: Effects of Mediterranean diet and stress-reduction interventions during pregnancy on fetal brain development detected using magnetic resonance imaging.
+Source query: Mediterranean diet pregnancy child neurodevelopment
+MeSH degree: 14</title></circle><circle cx="363.2" cy="113.7" r="10" fill="#0891b2" class="article-node"><title>PMID: 38823254
+Title: Maternal nutrition and its effects on fetal neurodevelopment.
+Source query: maternal diet child cognition
+MeSH degree: 14</title></circle><circle cx="309.4" cy="131.0" r="10" fill="#0891b2" class="article-node"><title>PMID: 41461262
+Title: Maternal Diet Quality during Pregnancy and Child Cognition in United States Cohorts.
+Source query: maternal diet child cognition
+MeSH degree: 14</title></circle>
+        <text x="877.3" y="226.0" class="dot-label">A1</text><text x="455.6" y="474.7" class="dot-label">A2</text><text x="454.2" y="228.7" class="dot-label">A3</text><text x="702.4" y="546.4" class="dot-label">A4</text><text x="309.3" y="216.0" class="dot-label">A5</text><text x="640.0" y="529.6" class="dot-label">A6</text><text x="603.8" y="574.8" class="dot-label">A7</text><text x="621.5" y="302.9" class="dot-label">A8</text><text x="720.6" y="565.5" class="dot-label">A9</text><text x="481.5" y="94.6" class="dot-label">A10</text><text x="750.2" y="591.5" class="dot-label">A11</text><text x="947.4" y="357.3" class="dot-label">A12</text><text x="1006.6" y="325.6" class="dot-label">A13</text><text x="556.5" y="303.4" class="dot-label">A14</text><text x="299.0" y="184.5" class="dot-label">A15</text><text x="760.5" y="383.0" class="dot-label">A16</text><text x="1090.0" y="350.2" class="dot-label">A17</text><text x="1038.1" y="501.6" class="dot-label">A18</text><text x="943.8" y="257.7" class="dot-label">A19</text><text x="497.3" y="197.3" class="dot-label">A20</text><text x="367.6" y="187.5" class="dot-label">A21</text><text x="486.2" y="247.7" class="dot-label">A22</text><text x="606.7" y="483.6" class="dot-label">A23</text><text x="788.4" y="519.2" class="dot-label">A24</text><text x="952.3" y="320.7" class="dot-label">A25</text><text x="802.3" y="339.1" class="dot-label">A26</text><text x="372.9" y="351.5" class="dot-label">A27</text><text x="450.3" y="73.2" class="dot-label">A28</text><text x="485.0" y="138.9" class="dot-label">A29</text><text x="671.9" y="556.1" class="dot-label">A30</text><text x="551.6" y="537.5" class="dot-label">A31</text><text x="1014.4" y="326.9" class="dot-label">A32</text><text x="256.5" y="421.5" class="dot-label">A33</text><text x="547.9" y="394.7" class="dot-label">A34</text><text x="685.5" y="492.0" class="dot-label">A35</text><text x="866.5" y="300.2" class="dot-label">A36</text><text x="919.4" y="303.7" class="dot-label">A37</text><text x="865.6" y="339.6" class="dot-label">A38</text><text x="296.1" y="481.8" class="dot-label">A39</text><text x="138.3" y="504.5" class="dot-label">A40</text><text x="253.0" y="341.9" class="dot-label">A41</text><text x="413.6" y="92.9" class="dot-label">A42</text><text x="553.7" y="181.3" class="dot-label">A43</text><text x="612.5" y="480.1" class="dot-label">A44</text><text x="581.6" y="192.2" class="dot-label">A45</text><text x="566.1" y="602.0" class="dot-label">A46</text><text x="444.8" y="451.4" class="dot-label">A47</text><text x="719.7" y="479.8" class="dot-label">A48</text><text x="840.5" y="328.4" class="dot-label">A49</text><text x="986.2" y="196.9" class="dot-label">A50</text><text x="937.4" y="310.9" class="dot-label">A51</text><text x="873.8" y="264.0" class="dot-label">A52</text><text x="202.2" y="535.8" class="dot-label">A53</text><text x="483.7" y="202.6" class="dot-label">A54</text><text x="217.9" y="231.4" class="dot-label">A55</text><text x="539.9" y="154.6" class="dot-label">A56</text><text x="351.9" y="144.7" class="dot-label">A57</text><text x="408.6" y="181.7" class="dot-label">A58</text><text x="503.6" y="501.4" class="dot-label">A59</text><text x="621.5" y="653.2" class="dot-label">A60</text><text x="881.2" y="412.2" class="dot-label">A61</text><text x="918.0" y="313.3" class="dot-label">A62</text><text x="841.0" y="340.1" class="dot-label">A63</text><text x="936.9" y="313.6" class="dot-label">A64</text><text x="924.5" y="242.3" class="dot-label">A65</text><text x="220.4" y="488.2" class="dot-label">A66</text><text x="222.3" y="485.1" class="dot-label">A67</text><text x="449.0" y="253.4" class="dot-label">A68</text><text x="387.4" y="436.3" class="dot-label">A69</text><text x="401.5" y="580.8" class="dot-label">A70</text><text x="579.2" y="528.0" class="dot-label">A71</text><text x="686.7" y="587.1" class="dot-label">A72</text><text x="619.8" y="504.6" class="dot-label">A73</text><text x="660.6" y="140.8" class="dot-label">A74</text><text x="878.5" y="257.0" class="dot-label">A75</text><text x="955.5" y="428.1" class="dot-label">A76</text><text x="325.4" y="528.2" class="dot-label">A77</text><text x="70.0" y="413.5" class="dot-label">A78</text><text x="279.0" y="583.4" class="dot-label">A79</text><text x="335.2" y="148.0" class="dot-label">A80</text><text x="609.3" y="573.6" class="dot-label">A81</text><text x="848.3" y="377.3" class="dot-label">A82</text><text x="932.1" y="306.3" class="dot-label">A83</text><text x="1069.0" y="310.4" class="dot-label">A84</text><text x="1052.4" y="402.4" class="dot-label">A85</text><text x="117.1" y="531.6" class="dot-label">A86</text><text x="569.1" y="129.5" class="dot-label">A87</text><text x="372.6" y="201.3" class="dot-label">A88</text><text x="363.2" y="116.9" class="dot-label">A89</text><text x="309.4" y="134.2" class="dot-label">A90</text>
+      </svg>
+    </div>
+    <h2>Nearest articles in node2vec space</h2><div class="panel"><table><thead><tr><th>Rank</th><th>PMID</th><th>Cosine</th><th>Year</th><th>Title</th><th>Source query</th><th>Shared MeSH with seed</th></tr></thead><tbody><tr><td>1</td><td>26887648</td><td>0.667</td><td>2016</td><td>Dietary patterns in early childhood and child cognitive and psychomotor development: the Rhea mothe...</td><td>Mediterranean diet pregnancy child neurodevelopme...</td><td>not shown</td></tr><tr><td>2</td><td>28367791</td><td>0.634</td><td>2017</td><td>Dietary patterns and non-communicable disease risk in Indian adults: secondary analysis of Indian M...</td><td>urbanization dietary patterns</td><td>not shown</td></tr><tr><td>3</td><td>25697609</td><td>0.634</td><td>2015</td><td>Dietary patterns in India and their association with obesity and central obesity.</td><td>urbanization dietary patterns</td><td>not shown</td></tr><tr><td>4</td><td>34562095</td><td>0.604</td><td>2022</td><td>Maternal diet quality during pregnancy and child cognition and behavior in a US cohort.</td><td>maternal diet child cognition</td><td>not shown</td></tr><tr><td>5</td><td>33793340</td><td>0.570</td><td>2021</td><td>Hypertension in Low- and Middle-Income Countries.</td><td>urbanization dietary patterns</td><td>not shown</td></tr><tr><td>6</td><td>26111638</td><td>0.568</td><td>2015</td><td>Cerebral Palsy in Children as a Risk Factor for Malnutrition.</td><td>nutrition risk cerebral palsy children</td><td>not shown</td></tr><tr><td>7</td><td>31500109</td><td>0.554</td><td>2019</td><td>Nutritional Status of Children with Cerebral Palsy-Findings from Prospective Hospital-Based Surveil...</td><td>nutrition risk cerebral palsy children</td><td>not shown</td></tr><tr><td>8</td><td>22686384</td><td>0.551</td><td>2012</td><td>Maternal intake of methyl-donor nutrients and child cognition at 3 years of age.</td><td>maternal diet child cognition</td><td>not shown</td></tr><tr><td>9</td><td>20702749</td><td>0.546</td><td>2010</td><td>Dietary patterns are associated with metabolic syndrome in an urban Mexican population.</td><td>urbanization dietary patterns</td><td>not shown</td></tr><tr><td>10</td><td>26581684</td><td>0.524</td><td>2015</td><td>Dietary Patterns Are Associated with Predicted Cardiovascular Disease Risk in an Urban Mexican Adul...</td><td>urbanization dietary patterns</td><td>not shown</td></tr><tr><td>11</td><td>38314711</td><td>0.494</td><td>2024</td><td>Ketogenic Diet: Parental Experiences and Expectations.</td><td>maternal diet child cognition</td><td>not shown</td></tr><tr><td>12</td><td>28195358</td><td>0.427</td><td>2017</td><td>Parkinson&#x27;s disease and Parkinson&#x27;s disease medications have distinct signatures of the gut microbi...</td><td>gut microbiome Parkinson disease</td><td>not shown</td></tr></tbody></table></div>
+    <h2>Article nodes shown in the map</h2><div class="panel"><table><thead><tr><th>Node</th><th>PMID</th><th>Year</th><th>Title</th><th>Journal</th><th>Source query</th><th>MeSH edges</th></tr></thead><tbody><tr><td><strong>A1</strong></td><td>31500109</td><td>2019</td><td>Nutritional Status of Children with Cerebral Palsy-Findings from Prospective Hospital-Based Surveillance in V...</td><td>Nutrients</td><td>nutrition risk cerebral palsy children</td><td>26</td></tr><tr><td><strong>A2</strong></td><td>28195358</td><td>2017</td><td>Parkinson&#x27;s disease and Parkinson&#x27;s disease medications have distinct signatures of the gut microbiome.</td><td>Movement disorders : official journal of the Movement ...</td><td>gut microbiome Parkinson disease</td><td>26</td></tr><tr><td><strong>A3</strong></td><td>26887648</td><td>2016</td><td>Dietary patterns in early childhood and child cognitive and psychomotor development: the Rhea mother-child co...</td><td>The British journal of nutrition</td><td>Mediterranean diet pregnancy child neurodevelopment</td><td>26</td></tr><tr><td><strong>A4</strong></td><td>20702749</td><td>2010</td><td>Dietary patterns are associated with metabolic syndrome in an urban Mexican population.</td><td>The Journal of nutrition</td><td>urbanization dietary patterns</td><td>26</td></tr><tr><td><strong>A5</strong></td><td>22686384</td><td>2012</td><td>Maternal intake of methyl-donor nutrients and child cognition at 3 years of age.</td><td>Paediatric and perinatal epidemiology</td><td>maternal diet child cognition</td><td>25</td></tr><tr><td><strong>A6</strong></td><td>33793340</td><td>2021</td><td>Hypertension in Low- and Middle-Income Countries.</td><td>Circulation research</td><td>urbanization dietary patterns</td><td>25</td></tr><tr><td><strong>A7</strong></td><td>26581684</td><td>2015</td><td>Dietary Patterns Are Associated with Predicted Cardiovascular Disease Risk in an Urban Mexican Adult Populati...</td><td>The Journal of nutrition</td><td>urbanization dietary patterns</td><td>25</td></tr><tr><td><strong>A8</strong></td><td>38314711</td><td>2024</td><td>Ketogenic Diet: Parental Experiences and Expectations.</td><td>Journal of child neurology</td><td>maternal diet child cognition</td><td>24</td></tr><tr><td><strong>A9</strong></td><td>28367791</td><td>2017</td><td>Dietary patterns and non-communicable disease risk in Indian adults: secondary analysis of Indian Migration S...</td><td>Public health nutrition</td><td>urbanization dietary patterns</td><td>24</td></tr><tr><td><strong>A10</strong></td><td>34562095</td><td>2022</td><td>Maternal diet quality during pregnancy and child cognition and behavior in a US cohort.</td><td>The American journal of clinical nutrition</td><td>maternal diet child cognition</td><td>23</td></tr><tr><td><strong>A11</strong></td><td>25697609</td><td>2015</td><td>Dietary patterns in India and their association with obesity and central obesity.</td><td>Public health nutrition</td><td>urbanization dietary patterns</td><td>23</td></tr><tr><td><strong>A12</strong></td><td>26111638</td><td>2015</td><td>Cerebral Palsy in Children as a Risk Factor for Malnutrition.</td><td>Annals of nutrition &amp; metabolism</td><td>nutrition risk cerebral palsy children</td><td>22</td></tr><tr><td><strong>A13</strong></td><td>21795444</td><td>2011</td><td>Measuring body composition and energy expenditure in children with severe neurologic impairment and intellect...</td><td>The American journal of clinical nutrition</td><td>body composition cerebral palsy children</td><td>22</td></tr><tr><td><strong>A14</strong></td><td>1745900</td><td>1991</td><td>Iron deficiency.</td><td>Scientific American</td><td>maternal diet child cognition</td><td>22</td></tr><tr><td><strong>A15</strong></td><td>18353804</td><td>2008</td><td>Maternal fish intake during pregnancy, blood mercury levels, and child cognition at age 3 years in a US cohor...</td><td>American journal of epidemiology</td><td>maternal diet child cognition</td><td>22</td></tr><tr><td><strong>A16</strong></td><td>24507623</td><td>2014</td><td>Dietary patterns and cognitive ability among 12- to 13 year-old adolescents in Selangor, Malaysia.</td><td>Public health nutrition</td><td>urbanization dietary patterns</td><td>22</td></tr><tr><td><strong>A17</strong></td><td>32593667</td><td>2020</td><td>The Pediatric Subjective Global Nutrition Assessment Classifies More Children With Cerebral Palsy as Malnouri...</td><td>Journal of the Academy of Nutrition and Dietetics</td><td>nutrition risk cerebral palsy children</td><td>21</td></tr><tr><td><strong>A18</strong></td><td>22725837</td><td>2012</td><td>Nutritional status of children with cerebral palsy in Turkey.</td><td>Disability and rehabilitation</td><td>nutrition risk cerebral palsy children</td><td>21</td></tr><tr><td><strong>A19</strong></td><td>19926178</td><td>2009</td><td>Anthropometry and body composition analysis in children with cerebral palsy.</td><td>Clinical nutrition (Edinburgh, Scotland)</td><td>body composition cerebral palsy children</td><td>21</td></tr><tr><td><strong>A20</strong></td><td>32249266</td><td>2020</td><td>Impact of Methylmercury and Other Heavy Metals Exposure on Neurocognitive Function in Children Aged 7 Years: ...</td><td>Journal of epidemiology</td><td>Mediterranean diet pregnancy child neurodevelopment</td><td>21</td></tr><tr><td><strong>A21</strong></td><td>30420706</td><td>2018</td><td>Maternal obesity and offspring cognition: the role of inflammation.</td><td>Pediatric research</td><td>maternal diet child cognition</td><td>21</td></tr><tr><td><strong>A22</strong></td><td>17355398</td><td>2007</td><td>Antenatal maternal stress and long-term effects on child neurodevelopment: how and why?</td><td>Journal of child psychology and psychiatry, and allied...</td><td>maternal diet child cognition</td><td>21</td></tr><tr><td><strong>A23</strong></td><td>20383237</td><td>2010</td><td>Findings on dietary patterns in different groups of African origin undergoing nutrition transition.</td><td>Applied physiology, nutrition, and metabolism = Physio...</td><td>urbanization dietary patterns</td><td>21</td></tr><tr><td><strong>A24</strong></td><td>21896249</td><td>2011</td><td>Dietary patterns in an ethnoculturally diverse population of young Canadian adults.</td><td>Canadian journal of dietetic practice and research : a...</td><td>urbanization dietary patterns</td><td>21</td></tr><tr><td><strong>A25</strong></td><td>30902487</td><td>2019</td><td>Nutritional red flags in children with cerebral palsy.</td><td>Clinical nutrition (Edinburgh, Scotland)</td><td>nutrition risk cerebral palsy children</td><td>20</td></tr><tr><td><strong>A26</strong></td><td>39125275</td><td>2024</td><td>Home Enteral Nutrition in Patients with Cerebral Palsy in the Years 2012-2022: A Longitudinal Analysis of Dat...</td><td>Nutrients</td><td>nutrition risk cerebral palsy children</td><td>20</td></tr><tr><td><strong>A27</strong></td><td>33651981</td><td>2021</td><td>High-fiber diet mitigates maternal obesity-induced cognitive and social dysfunction in the offspring via gut-...</td><td>Cell metabolism</td><td>maternal diet child cognition</td><td>20</td></tr><tr><td><strong>A28</strong></td><td>26906232</td><td>2016</td><td>Cognition.</td><td>World review of nutrition and dietetics</td><td>maternal diet child cognition</td><td>20</td></tr><tr><td><strong>A29</strong></td><td>19033373</td><td>2008</td><td>Neonatal thyroxine, maternal thyroid function, and child cognition.</td><td>The Journal of clinical endocrinology and metabolism</td><td>maternal diet child cognition</td><td>20</td></tr><tr><td><strong>A30</strong></td><td>24708913</td><td>2014</td><td>Dietary patterns in urban Ghana and risk of type 2 diabetes.</td><td>The British journal of nutrition</td><td>urbanization dietary patterns</td><td>20</td></tr><tr><td><strong>A31</strong></td><td>25411287</td><td>2014</td><td>Socioeconomic determinants of dietary patterns in low- and middle-income countries: a systematic review.</td><td>The American journal of clinical nutrition</td><td>urbanization dietary patterns</td><td>20</td></tr><tr><td><strong>A32</strong></td><td>7752019</td><td>1995</td><td>Body composition in children with spastic quadriplegic cerebral palsy.</td><td>The Journal of pediatrics</td><td>body composition cerebral palsy children</td><td>19</td></tr><tr><td><strong>A33</strong></td><td>26457021</td><td>2015</td><td>Brain-gut-microbiota axis in Parkinson&#x27;s disease.</td><td>World journal of gastroenterology</td><td>gut microbiome Parkinson disease</td><td>19</td></tr><tr><td><strong>A34</strong></td><td>29382553</td><td>2018</td><td>Maternal and child dietary intake: The role of maternal healthy-eater self-schema.</td><td>Appetite</td><td>maternal diet child cognition</td><td>19</td></tr><tr><td><strong>A35</strong></td><td>32209090</td><td>2020</td><td>Dietary patterns of Brazilian farmers and their relation with sociodemographic, labor, and lifestyle conditio...</td><td>Nutrition journal</td><td>urbanization dietary patterns</td><td>19</td></tr><tr><td><strong>A36</strong></td><td>32893359</td><td>2020</td><td>Nutritional status of children with cerebral palsy attending rehabilitation centers.</td><td>Developmental medicine and child neurology</td><td>nutrition risk cerebral palsy children</td><td>18</td></tr><tr><td><strong>A37</strong></td><td>4940723</td><td>1971</td><td>Body composition in cerebral palsy.</td><td>Nutrition reviews</td><td>body composition cerebral palsy children</td><td>18</td></tr><tr><td><strong>A38</strong></td><td>28077375</td><td>2017</td><td>Body composition, diet, and physical activity: a longitudinal cohort study in preschoolers with cerebral pals...</td><td>The American journal of clinical nutrition</td><td>body composition cerebral palsy children</td><td>18</td></tr><tr><td><strong>A39</strong></td><td>34622235</td><td>2021</td><td>Identification of &lt;i&gt;Faecalibacterium prausnitzii&lt;/i&gt; strains for gut microbiome-based intervention in Alzhei...</td><td>Cell reports. Medicine</td><td>gut microbiome Alzheimer disease</td><td>18</td></tr><tr><td><strong>A40</strong></td><td>40164697</td><td>2025</td><td>Metagenomic analysis characterizes stage-specific gut microbiota in Alzheimer&#x27;s disease.</td><td>Molecular psychiatry</td><td>gut microbiome Alzheimer disease</td><td>18</td></tr><tr><td><strong>A41</strong></td><td>30949921</td><td>2019</td><td>Diet and Inflammation in Cognitive Ageing and Alzheimer&#x27;s Disease.</td><td>Current nutrition reports</td><td>gut microbiome Alzheimer disease</td><td>18</td></tr><tr><td><strong>A42</strong></td><td>40208849</td><td>2025</td><td>Maternal dietary patterns, breastfeeding duration, and their association with child cognitive function and he...</td><td>PLoS medicine</td><td>maternal diet child cognition</td><td>18</td></tr><tr><td><strong>A43</strong></td><td>31973784</td><td>2020</td><td>Influences of the perinatal diet on maternal and child health: insights from the GUSTO study.</td><td>The Proceedings of the Nutrition Society</td><td>maternal diet child cognition</td><td>18</td></tr><tr><td><strong>A44</strong></td><td>29096028</td><td>2018</td><td>The Role of Maternal and Child Characteristics in Chinese Children&#x27;s Dietary Intake Across Three Groups.</td><td>Journal of pediatric psychology</td><td>maternal diet child cognition</td><td>18</td></tr><tr><td><strong>A45</strong></td><td>31943072</td><td>2020</td><td>Influence of fatty acid desaturase (FADS) genotype on maternal and child polyunsaturated fatty acids (PUFA) s...</td><td>Nutrition reviews</td><td>maternal diet child cognition</td><td>18</td></tr><tr><td><strong>A46</strong></td><td>29384335</td><td>2018</td><td>Dietary patterns, dietary lead exposure and hypertension in the older Chinese population.</td><td>Asia Pacific journal of clinical nutrition</td><td>urbanization dietary patterns</td><td>18</td></tr><tr><td><strong>A47</strong></td><td>41830663</td><td>2026</td><td>Dietary patterns and longitudinal frailty progression in older Chinese adults: a nationwide cohort study.</td><td>The journal of nutrition, health &amp; aging</td><td>urbanization dietary patterns</td><td>18</td></tr><tr><td><strong>A48</strong></td><td>29615325</td><td>2018</td><td>Consistency and Generalizability of Dietary Patterns in a Multiethnic Working Population.</td><td>Journal of the Academy of Nutrition and Dietetics</td><td>urbanization dietary patterns</td><td>18</td></tr><tr><td><strong>A49</strong></td><td>23750743</td><td>2013</td><td>Fractures in children with cerebral palsy: a total population study.</td><td>Developmental medicine and child neurology</td><td>nutrition risk cerebral palsy children</td><td>17</td></tr><tr><td><strong>A50</strong></td><td>31237080</td><td>2019</td><td>Total and regional body fat status among children and young people with cerebral palsy: A scoping review.</td><td>Clinical obesity</td><td>body composition cerebral palsy children</td><td>17</td></tr><tr><td><strong>A51</strong></td><td>16522908</td><td>2006</td><td>Reduced body protein in children with spastic quadriplegic cerebral palsy.</td><td>The American journal of clinical nutrition</td><td>body composition cerebral palsy children</td><td>17</td></tr><tr><td><strong>A52</strong></td><td>23208164</td><td>2012</td><td>Relationships between dietary intake and body composition according to gross motor functional ability in pres...</td><td>Annals of nutrition &amp; metabolism</td><td>body composition cerebral palsy children</td><td>17</td></tr><tr><td><strong>A53</strong></td><td>33169684</td><td>2020</td><td>Role of gut-brain axis, gut microbial composition, and probiotic intervention in Alzheimer&#x27;s disease.</td><td>Life sciences</td><td>gut microbiome Alzheimer disease</td><td>17</td></tr><tr><td><strong>A54</strong></td><td>34579057</td><td>2021</td><td>Periconceptional Maternal Diet Characterized by High Glycemic Loading Is Associated with Offspring Behavior i...</td><td>Nutrients</td><td>Mediterranean diet pregnancy child neurodevelopment</td><td>17</td></tr><tr><td><strong>A55</strong></td><td>41902531</td><td>2026</td><td>Maternal low-sodium diet impairs hippocampal neurogenesis and cognition in adult mouse offspring.</td><td>American journal of physiology. Regulatory, integrativ...</td><td>maternal diet child cognition</td><td>17</td></tr><tr><td><strong>A56</strong></td><td>40334748</td><td>2025</td><td>Maternal prenatal nut and seafood consumption and child neuropsychological function from 4 to 15 years of age...</td><td>The American journal of clinical nutrition</td><td>maternal diet child cognition</td><td>17</td></tr><tr><td><strong>A57</strong></td><td>40573132</td><td>2025</td><td>Maternal Diet Quality and Multivitamin Intake During Pregnancy Interact in the Association with Offspring Neu...</td><td>Nutrients</td><td>maternal diet child cognition</td><td>17</td></tr><tr><td><strong>A58</strong></td><td>39163911</td><td>2024</td><td>Socioeconomic adversity, maternal nutrition, and the prenatal programming of offspring cognition and language...</td><td>Brain, behavior, and immunity</td><td>maternal diet child cognition</td><td>17</td></tr><tr><td><strong>A59</strong></td><td>27759064</td><td>2016</td><td>Dietary patterns and mortality from cardiovascular disease: Isfahan Cohort Study.</td><td>European journal of clinical nutrition</td><td>urbanization dietary patterns</td><td>17</td></tr><tr><td><strong>A60</strong></td><td>28693514</td><td>2017</td><td>Disparities in dietary intake and physical activity patterns across the urbanization divide in the Peruvian A...</td><td>The international journal of behavioral nutrition and ...</td><td>urbanization dietary patterns</td><td>17</td></tr><tr><td><strong>A61</strong></td><td>28363511</td><td>2017</td><td>Risk Factors for Malnutrition Among Children With Cerebral Palsy in Botswana.</td><td>Pediatric neurology</td><td>nutrition risk cerebral palsy children</td><td>16</td></tr><tr><td><strong>A62</strong></td><td>16932102</td><td>2006</td><td>Fractures in children with cerebral palsy.</td><td>Journal of pediatric orthopedics</td><td>nutrition risk cerebral palsy children</td><td>16</td></tr><tr><td><strong>A63</strong></td><td>38853095</td><td>2024</td><td>Elevated blood pressure in children with cerebral palsy and its relationship with adiposity and physical acti...</td><td>Disability and health journal</td><td>body composition cerebral palsy children</td><td>16</td></tr><tr><td><strong>A64</strong></td><td>25013156</td><td>2014</td><td>Variability explained by strength, body composition and gait impairment in activity and participation measure...</td><td>Clinical rehabilitation</td><td>body composition cerebral palsy children</td><td>16</td></tr><tr><td><strong>A65</strong></td><td>23123140</td><td>2012</td><td>The use of bioelectrical impedance analysis to estimate total body water in young children with cerebral pals...</td><td>Clinical nutrition (Edinburgh, Scotland)</td><td>body composition cerebral palsy children</td><td>16</td></tr><tr><td><strong>A66</strong></td><td>28164854</td><td>2017</td><td>The Microbiome-Gut-Brain Axis in Health and Disease.</td><td>Gastroenterology clinics of North America</td><td>gut microbiome Parkinson disease</td><td>16</td></tr><tr><td><strong>A67</strong></td><td>40355382</td><td>2025</td><td>The gut-brain axis in Alzheimer&#x27;s disease is shaped by commensal gut microbiota derived extracellular vesicle...</td><td>Gut microbes</td><td>gut microbiome Alzheimer disease</td><td>16</td></tr><tr><td><strong>A68</strong></td><td>38800987</td><td>2024</td><td>Maternal pre-pregnancy diet and prenatal depression: the mediating role of pre-pregnancy weight status and pr...</td><td>The British journal of nutrition</td><td>Mediterranean diet pregnancy child neurodevelopment</td><td>16</td></tr><tr><td><strong>A69</strong></td><td>40056822</td><td>2025</td><td>Associations between dietary B vitamin intakes and cognitive function among elderly individuals: An observati...</td><td>Nutrition (Burbank, Los Angeles County, Calif.)</td><td>maternal diet child cognition</td><td>16</td></tr><tr><td><strong>A70</strong></td><td>39287374</td><td>2024</td><td>Impact of urbanization on gut microbiome mosaics across geographic and dietary contexts.</td><td>mSystems</td><td>urbanization dietary patterns</td><td>16</td></tr><tr><td><strong>A71</strong></td><td>40633388</td><td>2025</td><td>Ambient air pollution, dietary patterns, and the risk of incident cerebrovascular diseases: A prospective coh...</td><td>The Science of the total environment</td><td>urbanization dietary patterns</td><td>16</td></tr><tr><td><strong>A72</strong></td><td>30286315</td><td>2018</td><td>Dietary patterns and colorectal cancer risk in Zimbabwe: A population based case-control study.</td><td>Cancer epidemiology</td><td>urbanization dietary patterns</td><td>16</td></tr><tr><td><strong>A73</strong></td><td>27198234</td><td>2016</td><td>Dietary patterns are associated with bone mineral density in an urban Mexican adult population.</td><td>Osteoporosis international : a journal established as ...</td><td>urbanization dietary patterns</td><td>16</td></tr><tr><td><strong>A74</strong></td><td>18981805</td><td>2008</td><td>Diagnosis, treatment, and prevention of cerebral palsy.</td><td>Clinical obstetrics and gynecology</td><td>nutrition risk cerebral palsy children</td><td>15</td></tr><tr><td><strong>A75</strong></td><td>40721852</td><td>2025</td><td>Relationship between nutritional assessment and nutritional risk screening in hospitalized children with cere...</td><td>Scientific reports</td><td>nutrition risk cerebral palsy children</td><td>15</td></tr><tr><td><strong>A76</strong></td><td>29512149</td><td>2018</td><td>Diagnostic performance of body mass index to identify excess body fat in children with cerebral palsy.</td><td>Developmental medicine and child neurology</td><td>body composition cerebral palsy children</td><td>15</td></tr><tr><td><strong>A77</strong></td><td>40420833</td><td>2025</td><td>Microbiome signatures of virulence in the oral-gut-brain axis influence Parkinson&#x27;s disease and cognitive dec...</td><td>Gut microbes</td><td>gut microbiome Parkinson disease</td><td>15</td></tr><tr><td><strong>A78</strong></td><td>35017199</td><td>2022</td><td>Gut microbiota regulate Alzheimer&#x27;s disease pathologies and cognitive disorders via PUFA-associated neuroinfl...</td><td>Gut</td><td>gut microbiome Alzheimer disease</td><td>15</td></tr><tr><td><strong>A79</strong></td><td>30958695</td><td>2019</td><td>&lt;i&gt;APOE&lt;/i&gt; genotype influences the gut microbiome structure and function in humans and mice: relevance for A...</td><td>FASEB journal : official publication of the Federation...</td><td>gut microbiome Alzheimer disease</td><td>15</td></tr><tr><td><strong>A80</strong></td><td>32531929</td><td>2020</td><td>Choline, Neurological Development and Brain Function: A Systematic Review Focusing on the First 1000 Days.</td><td>Nutrients</td><td>maternal diet child cognition</td><td>15</td></tr><tr><td><strong>A81</strong></td><td>41235216</td><td>2025</td><td>Socioeconomic and demographic factors influencing dietary patterns in Aktobe: a sample of Kazakhstan&#x27;s dietar...</td><td>Frontiers in public health</td><td>urbanization dietary patterns</td><td>15</td></tr><tr><td><strong>A82</strong></td><td>21768315</td><td>2011</td><td>Low weight, morbidity, and mortality in children with cerebral palsy: new clinical growth charts.</td><td>Pediatrics</td><td>nutrition risk cerebral palsy children</td><td>14</td></tr><tr><td><strong>A83</strong></td><td>32213841</td><td>2020</td><td>The Relationship Between Body Composition and Muscle Tone in Children with Cerebral Palsy: A Case-Control Stu...</td><td>Nutrients</td><td>body composition cerebral palsy children</td><td>14</td></tr><tr><td><strong>A84</strong></td><td>15883558</td><td>2005</td><td>Determination of body composition in children with cerebral palsy: bioelectrical impedance analysis and anthr...</td><td>Journal of the American Dietetic Association</td><td>body composition cerebral palsy children</td><td>14</td></tr><tr><td><strong>A85</strong></td><td>10855654</td><td>2000</td><td>Body composition in nutritionally adequate ambulatory and non-ambulatory children with cerebral palsy and a h...</td><td>Developmental medicine and child neurology</td><td>body composition cerebral palsy children</td><td>14</td></tr><tr><td><strong>A86</strong></td><td>37452088</td><td>2023</td><td>Sepsis exacerbates Alzheimer&#x27;s disease pathophysiology, modulates the gut microbiome, increases neuroinflamma...</td><td>Molecular psychiatry</td><td>gut microbiome Alzheimer disease</td><td>14</td></tr><tr><td><strong>A87</strong></td><td>37606923</td><td>2023</td><td>Effect of a Mediterranean Diet or Mindfulness-Based Stress Reduction During Pregnancy on Child Neurodevelopme...</td><td>JAMA network open</td><td>Mediterranean diet pregnancy child neurodevelopment</td><td>14</td></tr><tr><td><strong>A88</strong></td><td>41999106</td><td>2026</td><td>Effects of Mediterranean diet and stress-reduction interventions during pregnancy on fetal brain development ...</td><td>Ultrasound in obstetrics &amp; gynecology : the official j...</td><td>Mediterranean diet pregnancy child neurodevelopment</td><td>14</td></tr><tr><td><strong>A89</strong></td><td>38823254</td><td>2024</td><td>Maternal nutrition and its effects on fetal neurodevelopment.</td><td>Nutrition (Burbank, Los Angeles County, Calif.)</td><td>maternal diet child cognition</td><td>14</td></tr><tr><td><strong>A90</strong></td><td>41461262</td><td>2025</td><td>Maternal Diet Quality during Pregnancy and Child Cognition in United States Cohorts.</td><td>The Journal of nutrition</td><td>maternal diet child cognition</td><td>14</td></tr></tbody></table></div>
+  </main>
+</body>
+</html>

@@ -41,3 +41,4 @@ data/*.pdf
 
 # Generated metric tables. Keep generated charts, because the docs reference them.
 docs/evaluation/**/*.csv
+docs/*.tex
