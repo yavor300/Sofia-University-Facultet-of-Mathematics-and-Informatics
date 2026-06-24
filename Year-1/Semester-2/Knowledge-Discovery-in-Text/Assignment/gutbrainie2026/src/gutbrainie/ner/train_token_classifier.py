@@ -18,6 +18,7 @@ from gutbrainie.ner.bio_tags import (
     entity_labels_from_dataframe,
 )
 from gutbrainie.ner.gliner_runner import EXPERIMENT_QUALITIES, split_articles_by_pmid
+from gutbrainie.ner.model_loading import load_token_classification_model
 from gutbrainie.ner.tokenizers import load_fast_tokenizer
 
 
@@ -98,7 +99,8 @@ def train_token_classifier_experiment(
         max_length=max_length,
     )
 
-    model = transformers.AutoModelForTokenClassification.from_pretrained(
+    model = load_token_classification_model(
+        transformers,
         model_name,
         num_labels=len(label_list),
         id2label=id_to_label,

@@ -10,6 +10,7 @@ import pandas as pd
 
 from gutbrainie.data.articles import load_articles_csv
 from gutbrainie.ner.bio_tags import decode_bio_spans
+from gutbrainie.ner.model_loading import load_token_classification_model
 from gutbrainie.ner.tokenizers import load_fast_tokenizer
 from gutbrainie.submission.export_t611 import entities_to_t611_json
 
@@ -27,7 +28,7 @@ def predict_token_classifier_to_json(
     model_path = Path(model_path)
     tokenizer = load_fast_tokenizer(transformers, str(model_path))
 
-    model = transformers.AutoModelForTokenClassification.from_pretrained(str(model_path))
+    model = load_token_classification_model(transformers, str(model_path))
     device = torch.device("cpu" if use_cpu or not torch.cuda.is_available() else "cuda")
     model.to(device)
     model.eval()
