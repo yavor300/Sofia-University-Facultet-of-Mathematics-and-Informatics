@@ -1,0 +1,186 @@
+PYTHON ?= $(shell if [ -x .venv/bin/python ]; then echo .venv/bin/python; else echo python3; fi)
+PYTHONPATH ?= src
+DATA_ROOT ?= data/gutbrainie2026
+OUTPUTS_ROOT ?= outputs
+QUALITY ?= gold
+CONFIG ?= configs/paths.yaml
+NER_TRANSFORMER_CONFIG ?= configs/ner_transformer.yaml
+GLINER_CONFIG ?= configs/ner_gliner.yaml
+GLINER_CPU_CONFIG ?= configs/ner_gliner_cpu.yaml
+RE_TRANSFORMER_CONFIG ?= configs/re_transformer.yaml
+T611_OUTPUT ?= $(OUTPUTS_ROOT)/submissions/t611_predictions.json
+T621_OUTPUT ?= $(OUTPUTS_ROOT)/submissions/t621_predictions.json
+EDA_QUALITIES ?= gold dev
+EVAL_TASK ?= ner
+GOLD ?= data/gutbrainie2026/Annotations/Dev/csv_format/dev_entities.csv
+PREDICTION ?= outputs/predictions/dev_predictions.csv
+METRICS_OUTPUT ?= $(OUTPUTS_ROOT)/reports/metrics_$(EVAL_TASK).json
+OFFICIAL_REPO ?= external/GutBrainIE_2026_Baseline
+OFFICIAL_ENTRYPOINT ?=
+TRAIN_ENTITIES ?= $(DATA_ROOT)/Annotations/Train/gold_quality/csv_format/train_gold_entities.csv
+ARTICLES ?= $(DATA_ROOT)/Articles/csv_format/articles_dev.csv
+NER_DICTIONARY_OUTPUT ?= $(OUTPUTS_ROOT)/predictions/dev_t611_dictionary.json
+GLINER_EXPERIMENT ?= gold
+GLINER_DATA_DIR ?= $(OUTPUTS_ROOT)/gliner
+GLINER_MODEL ?=
+GLINER_MODEL_DIR ?= $(OUTPUTS_ROOT)/models/gliner_$(GLINER_EXPERIMENT)
+GLINER_TRAIN_DATA ?= $(GLINER_DATA_DIR)/gliner_$(GLINER_EXPERIMENT)_train.jsonl
+GLINER_VALIDATION_DATA ?= $(GLINER_DATA_DIR)/gliner_$(GLINER_EXPERIMENT)_validation.jsonl
+GLINER_OUTPUT ?= $(OUTPUTS_ROOT)/predictions/dev_t611_gliner_$(GLINER_EXPERIMENT).json
+TOKEN_EXPERIMENT ?= gold
+TOKEN_MODEL ?=
+TOKEN_MODEL_DIR ?= $(OUTPUTS_ROOT)/models/token_classifier_$(TOKEN_EXPERIMENT)
+TOKEN_OUTPUT ?= $(OUTPUTS_ROOT)/predictions/dev_t611_token_classifier_$(TOKEN_EXPERIMENT).json
+TOKEN_BATCH_SIZE ?= 8
+TOKEN_MAX_LENGTH ?= 512
+
+CLI = PYTHONPATH=$(PYTHONPATH) $(PYTHON) -m gutbrainie.cli
+VALIDATION_OUTPUT = $(OUTPUTS_ROOT)/reports/data_validation_$(QUALITY).json
+OFFICIAL_ENTRYPOINT_ARG = $(if $(OFFICIAL_ENTRYPOINT),--entrypoint $(OFFICIAL_ENTRYPOINT),)
+
+.PHONY: help setup install install-gliner test cli-help prepare-data validate-all eda eda-all \
+	run-ner-baseline predict-ner-dictionary run-ner-transformer run-re-baseline run-re-transformer \
+	prepare-gliner-data prepare-gliner-all train-gliner train-gliner-cpu train-gliner-smoke \
+	predict-gliner train-token-classifier predict-token-classifier evaluate evaluate-official \
+	export-t611 export-t621 clean
+
+help:
+	@echo "GutBrainIE 2026 commands"
+	@echo ""
+	@echo "Setup and checks:"
+	@echo "  make setup                Create .venv and install requirements/package"
+	@echo "  make install              Install requirements and editable package"
+	@echo "  make install-gliner       Install optional GLiNER dependency"
+	@echo "  make test                 Run pytest"
+	@echo "  make cli-help             Show CLI help"
+	@echo ""
+	@echo "Data validation:"
+	@echo "  make prepare-data         Validate one split; override QUALITY=gold|silver|silver_2025|bronze|dev"
+	@echo "  make validate-all         Generate validation reports for all available train/dev splits"
+	@echo "  make eda                  Generate data statistics CSVs and plots"
+	@echo "  make eda-all              Generate EDA for gold, silver, silver_2025, bronze, and dev"
+	@echo ""
+	@echo "Experiment commands:"
+	@echo "  make run-ner-baseline     Run dictionary NER baseline"
+	@echo "  make predict-ner-dictionary  Run dictionary NER baseline"
+	@echo "  make run-ner-transformer  Run transformer NER command"
+	@echo "  make prepare-gliner-data  Prepare GLiNER JSONL train/validation data"
+	@echo "  make prepare-gliner-all   Prepare all planned GLiNER experiment datasets"
+	@echo "  make train-gliner         Fine-tune GLiNER using prepared JSONL data"
+	@echo "  make train-gliner-cpu     Fine-tune GLiNER with CPU-safe config"
+	@echo "  make train-gliner-smoke   One-command CPU-safe smoke training"
+	@echo "  make predict-gliner       Predict T611 JSON with GLiNER"
+	@echo "  make train-token-classifier  Fine-tune PubMedBERT/BioBERT/SciBERT token classifier"
+	@echo "  make predict-token-classifier  Predict T611 JSON with trained token classifier"
+	@echo "  make run-re-baseline      Run relation baseline"
+	@echo "  make run-re-transformer   Run transformer relation command"
+	@echo "  make evaluate             Run evaluation command"
+	@echo "  make evaluate-official    Run official evaluator wrapper"
+	@echo "  make export-t611          Export T611 JSON"
+	@echo "  make export-t621          Export T621 JSON"
+	@echo ""
+	@echo "Examples:"
+	@echo "  make prepare-data QUALITY=dev"
+	@echo "  make eda EDA_QUALITIES=\"gold dev\""
+	@echo "  make eda-all"
+	@echo "  make evaluate EVAL_TASK=ner GOLD=gold.csv PREDICTION=pred.csv"
+	@echo "  make evaluate-official OFFICIAL_REPO=external/GutBrainIE_2026_Baseline PREDICTION=pred.json"
+	@echo "  make predict-ner-dictionary TRAIN_ENTITIES=train.csv ARTICLES=articles.csv"
+	@echo "  make prepare-gliner-data GLINER_EXPERIMENT=gold_silver"
+	@echo "  make prepare-gliner-all"
+	@echo "  make predict-gliner GLINER_MODEL=outputs/models/gliner_gold ARTICLES=articles.csv"
+	@echo "  make train-gliner-cpu GLINER_EXPERIMENT=gold GLINER_MODEL=urchade/gliner_medium-v2.1"
+	@echo "  make train-token-classifier TOKEN_EXPERIMENT=gold"
+	@echo "  make predict-token-classifier TOKEN_MODEL_DIR=outputs/models/token_classifier_gold"
+
+setup:
+	@$(PYTHON) -m venv .venv
+	@.venv/bin/python -m pip install -r requirements.txt
+	@.venv/bin/python -m pip install -e .
+
+install:
+	@$(PYTHON) -m pip install -r requirements.txt
+	@$(PYTHON) -m pip install -e .
+
+install-gliner:
+	@$(PYTHON) -m pip install -r requirements-gliner.txt
+
+test:
+	@PYTHONPATH=$(PYTHONPATH) $(PYTHON) -m pytest
+
+cli-help:
+	@$(CLI) --help
+
+prepare-data:
+	@$(CLI) prepare-data --data-root $(DATA_ROOT) --quality $(QUALITY) --output $(VALIDATION_OUTPUT)
+
+validate-all:
+	$(MAKE) prepare-data QUALITY=gold
+	$(MAKE) prepare-data QUALITY=silver
+	$(MAKE) prepare-data QUALITY=silver_2025
+	$(MAKE) prepare-data QUALITY=bronze
+	$(MAKE) prepare-data QUALITY=dev
+
+eda:
+	@$(CLI) eda --data-root $(DATA_ROOT) --output-dir $(OUTPUTS_ROOT)/reports --qualities $(EDA_QUALITIES)
+
+eda-all:
+	@$(MAKE) eda EDA_QUALITIES="gold silver silver_2025 bronze dev"
+
+run-ner-baseline:
+	@$(MAKE) predict-ner-dictionary
+
+predict-ner-dictionary:
+	@$(CLI) predict-ner-dictionary --train-entities $(TRAIN_ENTITIES) --articles $(ARTICLES) --output $(NER_DICTIONARY_OUTPUT)
+
+run-ner-transformer:
+	@$(MAKE) predict-gliner
+
+prepare-gliner-data:
+	@$(CLI) prepare-gliner-data --data-root $(DATA_ROOT) --experiment $(GLINER_EXPERIMENT) --output-dir $(GLINER_DATA_DIR)
+
+prepare-gliner-all:
+	@$(MAKE) prepare-gliner-data GLINER_EXPERIMENT=gold
+	@$(MAKE) prepare-gliner-data GLINER_EXPERIMENT=gold_silver
+	@$(MAKE) prepare-gliner-data GLINER_EXPERIMENT=gold_silver_silver_2025
+
+train-gliner:
+	@$(CLI) train-gliner --config $(GLINER_CONFIG) --model "$(GLINER_MODEL)" --train-data $(GLINER_TRAIN_DATA) --validation-data $(GLINER_VALIDATION_DATA) --output-dir $(GLINER_MODEL_DIR)
+
+train-gliner-cpu:
+	@$(CLI) train-gliner --config $(GLINER_CPU_CONFIG) --model "$(GLINER_MODEL)" --train-data $(GLINER_TRAIN_DATA) --validation-data $(GLINER_VALIDATION_DATA) --output-dir $(GLINER_MODEL_DIR)
+
+train-gliner-smoke:
+	@$(MAKE) prepare-gliner-data GLINER_EXPERIMENT=$(GLINER_EXPERIMENT)
+	@$(MAKE) train-gliner-cpu GLINER_EXPERIMENT=$(GLINER_EXPERIMENT) GLINER_MODEL=$(GLINER_MODEL)
+
+predict-gliner:
+	@$(CLI) predict-gliner --config $(GLINER_CONFIG) --model "$(GLINER_MODEL)" --articles $(ARTICLES) --output $(GLINER_OUTPUT)
+
+train-token-classifier:
+	@$(CLI) train-token-classifier --config $(NER_TRANSFORMER_CONFIG) --data-root $(DATA_ROOT) --experiment $(TOKEN_EXPERIMENT) --model "$(TOKEN_MODEL)" --output-dir $(TOKEN_MODEL_DIR)
+
+predict-token-classifier:
+	@$(CLI) predict-token-classifier --model $(TOKEN_MODEL_DIR) --articles $(ARTICLES) --output $(TOKEN_OUTPUT) --batch-size $(TOKEN_BATCH_SIZE) --max-length $(TOKEN_MAX_LENGTH)
+
+run-re-baseline:
+	@$(CLI) run-re-baseline --config $(CONFIG)
+
+run-re-transformer:
+	@$(CLI) run-re-transformer --config $(RE_TRANSFORMER_CONFIG)
+
+evaluate:
+	@$(CLI) evaluate --task $(EVAL_TASK) --gold $(GOLD) --prediction $(PREDICTION) --output $(METRICS_OUTPUT)
+
+evaluate-official:
+	@$(CLI) evaluate-official --official-repo $(OFFICIAL_REPO) --prediction $(PREDICTION) $(OFFICIAL_ENTRYPOINT_ARG)
+
+export-t611:
+	@$(CLI) export-t611 --output $(T611_OUTPUT)
+
+export-t621:
+	@$(CLI) export-t621 --output $(T621_OUTPUT)
+
+clean:
+	@find src tests -name __pycache__ -type d -prune -exec rm -rf {} +
+	@rm -rf .pytest_cache

@@ -1,0 +1,2 @@
+"""Mention-pair candidate generation."""
+

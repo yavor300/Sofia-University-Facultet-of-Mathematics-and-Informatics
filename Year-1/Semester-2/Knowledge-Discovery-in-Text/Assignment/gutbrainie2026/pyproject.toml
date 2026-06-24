@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gutbrainie"
+version = "0.1.0"
+description = "GutBrainIE 2026 T611 named entity recognition and T621 mention-level relation extraction."
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [
+  { name = "Sofia University FMI Course Project" }
+]
+dependencies = []
+
+[project.scripts]
+gutbrainie = "gutbrainie.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-q"
+

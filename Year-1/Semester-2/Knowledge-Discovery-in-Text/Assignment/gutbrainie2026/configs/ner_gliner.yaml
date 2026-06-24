@@ -1,0 +1,21 @@
+model_name: urchade/gliner_medium-v2.1
+labels:
+  - anatomical location
+  - animal
+  - biomedical technique
+  - bacteria
+  - chemical
+  - dietary supplement
+  - DDF
+  - drug
+  - food
+  - gene
+  - human
+  - microbiome
+  - statistical technique
+max_len: 384
+batch_size: 8
+learning_rate: 2.0e-5
+epochs: 5
+threshold: 0.5
+seed: 13

@@ -1,0 +1,4 @@
+candidate_scope: same_article
+use_type_constraints: true
+min_support: 1
+

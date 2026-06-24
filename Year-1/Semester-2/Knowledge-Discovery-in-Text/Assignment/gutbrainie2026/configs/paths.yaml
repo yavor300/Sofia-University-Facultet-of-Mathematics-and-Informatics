@@ -1,0 +1,6 @@
+data_root: data/gutbrainie2026
+outputs_root: outputs
+train_quality: gold
+use_silver: false
+use_bronze: false
+

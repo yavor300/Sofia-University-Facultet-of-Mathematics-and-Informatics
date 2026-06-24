@@ -1,0 +1,23 @@
+pandas
+numpy
+scikit-learn
+tqdm
+pyyaml
+pytest
+seqeval
+transformers
+datasets
+accelerate
+torch
+sentencepiece
+protobuf
+rich
+matplotlib
+jupyter
+
+# Optional dependencies for later phases:
+# gliner
+# spacy
+# ollama
+# openai
+
