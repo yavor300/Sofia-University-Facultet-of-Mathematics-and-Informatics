@@ -80,6 +80,8 @@ make predict-gliner GLINER_MODEL=urchade/gliner_medium-v2.1 \
 make train-gliner-cpu GLINER_EXPERIMENT=gold GLINER_MODEL=urchade/gliner_medium-v2.1
 make train-token-classifier TOKEN_EXPERIMENT=gold
 make train-token-classifier TOKEN_EXPERIMENT=gold NER_TRANSFORMER_CONFIG=configs/ner_transformer_cpu.yaml
+make train-scibert-token-classifier TOKEN_EXPERIMENT=gold
+make train-biobert-token-classifier TOKEN_EXPERIMENT=gold
 make predict-token-classifier TOKEN_MODEL_DIR=outputs/models/token_classifier_gold
 ```
 
@@ -184,15 +186,20 @@ python -m gutbrainie.cli train-token-classifier \
   --output-dir outputs/models/token_classifier_gold_smoke
 ```
 
-To try SciBERT or BioBERT, override the model:
+To try SciBERT or BioBERT, use the dedicated configs:
 
 ```bash
 python -m gutbrainie.cli train-token-classifier \
-  --config configs/ner_transformer.yaml \
-  --model allenai/scibert_scivocab_uncased \
+  --config configs/ner_scibert.yaml \
   --data-root data/gutbrainie2026 \
   --experiment gold \
   --output-dir outputs/models/scibert_gold
+
+python -m gutbrainie.cli train-token-classifier \
+  --config configs/ner_biobert.yaml \
+  --data-root data/gutbrainie2026 \
+  --experiment gold \
+  --output-dir outputs/models/biobert_gold
 ```
 
 Predict T611 JSON with a trained model:
@@ -210,7 +217,36 @@ Makefile equivalents:
 make train-token-classifier TOKEN_EXPERIMENT=gold
 make train-token-classifier TOKEN_EXPERIMENT=gold_silver
 make train-token-classifier TOKEN_EXPERIMENT=gold NER_TRANSFORMER_CONFIG=configs/ner_transformer_cpu.yaml
+make train-scibert-token-classifier TOKEN_EXPERIMENT=gold
+make train-scibert-token-classifier TOKEN_EXPERIMENT=gold_silver
+make train-biobert-token-classifier TOKEN_EXPERIMENT=gold
+make train-biobert-token-classifier TOKEN_EXPERIMENT=gold_silver
 make predict-token-classifier TOKEN_MODEL_DIR=outputs/models/token_classifier_gold
+```
+
+For the full comparison grid:
+
+```bash
+make train-scibert-token-classifier TOKEN_EXPERIMENT=gold
+make train-scibert-token-classifier TOKEN_EXPERIMENT=gold_silver
+make train-scibert-token-classifier TOKEN_EXPERIMENT=gold_silver_silver_2025
+
+make train-biobert-token-classifier TOKEN_EXPERIMENT=gold
+make train-biobert-token-classifier TOKEN_EXPERIMENT=gold_silver
+make train-biobert-token-classifier TOKEN_EXPERIMENT=gold_silver_silver_2025
+```
+
+Predict and evaluate one of those runs by pointing `TOKEN_MODEL_DIR` at the matching model directory:
+
+```bash
+make predict-token-classifier \
+  TOKEN_MODEL_DIR=outputs/models/scibert_gold_silver_silver_2025 \
+  TOKEN_OUTPUT=outputs/predictions/dev_t611_scibert_gold_silver_silver_2025.json
+
+make evaluate EVAL_TASK=ner \
+  GOLD=data/gutbrainie2026/Annotations/Dev/csv_format/dev_entities.csv \
+  PREDICTION=outputs/predictions/dev_t611_scibert_gold_silver_silver_2025.json \
+  METRICS_OUTPUT=outputs/reports/metrics_dev_ner_scibert_gold_silver_silver_2025.json
 ```
 
 ## Evaluation

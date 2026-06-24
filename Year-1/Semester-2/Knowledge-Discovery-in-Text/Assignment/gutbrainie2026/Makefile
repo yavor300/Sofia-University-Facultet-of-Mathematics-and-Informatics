@@ -5,6 +5,8 @@ OUTPUTS_ROOT ?= outputs
 QUALITY ?= gold
 CONFIG ?= configs/paths.yaml
 NER_TRANSFORMER_CONFIG ?= configs/ner_transformer.yaml
+NER_SCIBERT_CONFIG ?= configs/ner_scibert.yaml
+NER_BIOBERT_CONFIG ?= configs/ner_biobert.yaml
 GLINER_CONFIG ?= configs/ner_gliner.yaml
 GLINER_CPU_CONFIG ?= configs/ner_gliner_cpu.yaml
 RE_TRANSFORMER_CONFIG ?= configs/re_transformer.yaml
@@ -41,8 +43,8 @@ OFFICIAL_ENTRYPOINT_ARG = $(if $(OFFICIAL_ENTRYPOINT),--entrypoint $(OFFICIAL_EN
 .PHONY: help setup install install-gliner test cli-help prepare-data validate-all eda eda-all \
 	run-ner-baseline predict-ner-dictionary run-ner-transformer run-re-baseline run-re-transformer \
 	prepare-gliner-data prepare-gliner-all train-gliner train-gliner-cpu train-gliner-smoke \
-	predict-gliner train-token-classifier predict-token-classifier evaluate evaluate-official \
-	export-t611 export-t621 clean
+	predict-gliner train-token-classifier train-scibert-token-classifier train-biobert-token-classifier \
+	predict-token-classifier evaluate evaluate-official export-t611 export-t621 clean
 
 help:
 	@echo "GutBrainIE 2026 commands"
@@ -71,6 +73,8 @@ help:
 	@echo "  make train-gliner-smoke   One-command CPU-safe smoke training"
 	@echo "  make predict-gliner       Predict T611 JSON with GLiNER"
 	@echo "  make train-token-classifier  Fine-tune PubMedBERT/BioBERT/SciBERT token classifier"
+	@echo "  make train-scibert-token-classifier  Fine-tune SciBERT token classifier"
+	@echo "  make train-biobert-token-classifier  Fine-tune BioBERT token classifier"
 	@echo "  make predict-token-classifier  Predict T611 JSON with trained token classifier"
 	@echo "  make run-re-baseline      Run relation baseline"
 	@echo "  make run-re-transformer   Run transformer relation command"
@@ -91,6 +95,8 @@ help:
 	@echo "  make predict-gliner GLINER_MODEL=outputs/models/gliner_gold ARTICLES=articles.csv"
 	@echo "  make train-gliner-cpu GLINER_EXPERIMENT=gold GLINER_MODEL=urchade/gliner_medium-v2.1"
 	@echo "  make train-token-classifier TOKEN_EXPERIMENT=gold"
+	@echo "  make train-scibert-token-classifier TOKEN_EXPERIMENT=gold"
+	@echo "  make train-biobert-token-classifier TOKEN_EXPERIMENT=gold"
 	@echo "  make predict-token-classifier TOKEN_MODEL_DIR=outputs/models/token_classifier_gold"
 
 setup:
@@ -159,6 +165,12 @@ predict-gliner:
 
 train-token-classifier:
 	@$(CLI) train-token-classifier --config $(NER_TRANSFORMER_CONFIG) --data-root $(DATA_ROOT) --experiment $(TOKEN_EXPERIMENT) --model "$(TOKEN_MODEL)" --output-dir $(TOKEN_MODEL_DIR)
+
+train-scibert-token-classifier:
+	@$(CLI) train-token-classifier --config $(NER_SCIBERT_CONFIG) --data-root $(DATA_ROOT) --experiment $(TOKEN_EXPERIMENT) --output-dir $(OUTPUTS_ROOT)/models/scibert_$(TOKEN_EXPERIMENT)
+
+train-biobert-token-classifier:
+	@$(CLI) train-token-classifier --config $(NER_BIOBERT_CONFIG) --data-root $(DATA_ROOT) --experiment $(TOKEN_EXPERIMENT) --output-dir $(OUTPUTS_ROOT)/models/biobert_$(TOKEN_EXPERIMENT)
 
 predict-token-classifier:
 	@$(CLI) predict-token-classifier --model $(TOKEN_MODEL_DIR) --articles $(ARTICLES) --output $(TOKEN_OUTPUT) --batch-size $(TOKEN_BATCH_SIZE) --max-length $(TOKEN_MAX_LENGTH)

@@ -1,0 +1,13 @@
+model_name: dmis-lab/biobert-base-cased-v1.1
+max_length: 512
+batch_size: 4
+learning_rate: 2.0e-5
+epochs: 3
+weight_decay: 0.01
+logging_steps: 25
+save_total_limit: 1
+eval_strategy: epoch
+save_strategy: epoch
+report_to: none
+dataloader_num_workers: 0
+dataloader_pin_memory: false
