@@ -18,6 +18,7 @@ from gutbrainie.ner.bio_tags import (
     entity_labels_from_dataframe,
 )
 from gutbrainie.ner.gliner_runner import EXPERIMENT_QUALITIES, split_articles_by_pmid
+from gutbrainie.ner.tokenizers import load_fast_tokenizer
 
 
 class TokenClassificationDataset:
@@ -58,9 +59,7 @@ def train_token_classifier_experiment(
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    tokenizer = transformers.AutoTokenizer.from_pretrained(model_name, use_fast=True)
-    if not getattr(tokenizer, "is_fast", False):
-        raise ValueError("Token-classification training requires a fast tokenizer with offset mappings.")
+    tokenizer = load_fast_tokenizer(transformers, model_name)
 
     gold = load_split(data_root, "gold")
     gold_train_articles, gold_val_articles = split_articles_by_pmid(gold["articles"], validation_fraction, seed)

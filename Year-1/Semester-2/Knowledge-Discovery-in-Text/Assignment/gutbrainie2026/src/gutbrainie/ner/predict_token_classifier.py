@@ -10,6 +10,7 @@ import pandas as pd
 
 from gutbrainie.data.articles import load_articles_csv
 from gutbrainie.ner.bio_tags import decode_bio_spans
+from gutbrainie.ner.tokenizers import load_fast_tokenizer
 from gutbrainie.submission.export_t611 import entities_to_t611_json
 
 
@@ -24,9 +25,7 @@ def predict_token_classifier_to_json(
     """Run a trained token-classification model and write T611 JSON."""
     transformers, torch = _import_runtime()
     model_path = Path(model_path)
-    tokenizer = transformers.AutoTokenizer.from_pretrained(str(model_path), use_fast=True)
-    if not getattr(tokenizer, "is_fast", False):
-        raise ValueError("Token-classifier prediction requires a fast tokenizer with offset mappings.")
+    tokenizer = load_fast_tokenizer(transformers, str(model_path))
 
     model = transformers.AutoModelForTokenClassification.from_pretrained(str(model_path))
     device = torch.device("cpu" if use_cpu or not torch.cuda.is_available() else "cuda")
