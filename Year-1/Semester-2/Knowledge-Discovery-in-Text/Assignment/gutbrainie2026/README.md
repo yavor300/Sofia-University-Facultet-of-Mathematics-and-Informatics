@@ -80,9 +80,12 @@ make predict-gliner GLINER_MODEL=urchade/gliner_medium-v2.1 \
 make train-gliner-cpu GLINER_EXPERIMENT=gold GLINER_MODEL=urchade/gliner_medium-v2.1
 make train-token-classifier TOKEN_EXPERIMENT=gold
 make train-token-classifier TOKEN_EXPERIMENT=gold NER_TRANSFORMER_CONFIG=configs/ner_transformer_cpu.yaml
+make train-pubmedbert-token-classifier TOKEN_EXPERIMENT=gold
+make train-biomedbert-token-classifier TOKEN_EXPERIMENT=gold
 make train-scibert-token-classifier TOKEN_EXPERIMENT=gold
 make train-biobert-token-classifier TOKEN_EXPERIMENT=gold
 make predict-token-classifier TOKEN_MODEL_DIR=outputs/models/token_classifier_gold
+make predict-re-rule
 ```
 
 ## NER Dictionary Baseline
@@ -174,6 +177,22 @@ python -m gutbrainie.cli train-token-classifier \
   --output-dir outputs/models/token_classifier_gold
 ```
 
+The same Microsoft BiomedBERT model is also available as an explicit named experiment:
+
+```bash
+python -m gutbrainie.cli train-token-classifier \
+  --config configs/ner_pubmedbert.yaml \
+  --data-root data/gutbrainie2026 \
+  --experiment gold \
+  --output-dir outputs/models/pubmedbert_gold
+
+python -m gutbrainie.cli train-token-classifier \
+  --config configs/ner_biomedbert.yaml \
+  --data-root data/gutbrainie2026 \
+  --experiment gold \
+  --output-dir outputs/models/biomedbert_gold
+```
+
 Supported experiments match the GLiNER setup: `gold`, `gold_silver`, and `gold_silver_silver_2025`.
 
 For a bounded CPU smoke run:
@@ -217,6 +236,10 @@ Makefile equivalents:
 make train-token-classifier TOKEN_EXPERIMENT=gold
 make train-token-classifier TOKEN_EXPERIMENT=gold_silver
 make train-token-classifier TOKEN_EXPERIMENT=gold NER_TRANSFORMER_CONFIG=configs/ner_transformer_cpu.yaml
+make train-pubmedbert-token-classifier TOKEN_EXPERIMENT=gold
+make train-pubmedbert-token-classifier TOKEN_EXPERIMENT=gold_silver
+make train-biomedbert-token-classifier TOKEN_EXPERIMENT=gold
+make train-biomedbert-token-classifier TOKEN_EXPERIMENT=gold_silver
 make train-scibert-token-classifier TOKEN_EXPERIMENT=gold
 make train-scibert-token-classifier TOKEN_EXPERIMENT=gold_silver
 make train-biobert-token-classifier TOKEN_EXPERIMENT=gold
@@ -227,6 +250,14 @@ make predict-token-classifier TOKEN_MODEL_DIR=outputs/models/token_classifier_go
 For the full comparison grid:
 
 ```bash
+make train-pubmedbert-token-classifier TOKEN_EXPERIMENT=gold
+make train-pubmedbert-token-classifier TOKEN_EXPERIMENT=gold_silver
+make train-pubmedbert-token-classifier TOKEN_EXPERIMENT=gold_silver_silver_2025
+
+make train-biomedbert-token-classifier TOKEN_EXPERIMENT=gold
+make train-biomedbert-token-classifier TOKEN_EXPERIMENT=gold_silver
+make train-biomedbert-token-classifier TOKEN_EXPERIMENT=gold_silver_silver_2025
+
 make train-scibert-token-classifier TOKEN_EXPERIMENT=gold
 make train-scibert-token-classifier TOKEN_EXPERIMENT=gold_silver
 make train-scibert-token-classifier TOKEN_EXPERIMENT=gold_silver_silver_2025
@@ -247,6 +278,85 @@ make evaluate EVAL_TASK=ner \
   GOLD=data/gutbrainie2026/Annotations/Dev/csv_format/dev_entities.csv \
   PREDICTION=outputs/predictions/dev_t611_scibert_gold_silver_silver_2025.json \
   METRICS_OUTPUT=outputs/reports/metrics_dev_ner_scibert_gold_silver_silver_2025.json
+```
+
+PubMedBERT prediction and evaluation example:
+
+```bash
+make predict-token-classifier \
+  TOKEN_MODEL_DIR=outputs/models/pubmedbert_gold_silver_silver_2025 \
+  TOKEN_OUTPUT=outputs/predictions/dev_t611_pubmedbert_gold_silver_silver_2025.json
+
+make evaluate EVAL_TASK=ner \
+  GOLD=data/gutbrainie2026/Annotations/Dev/csv_format/dev_entities.csv \
+  PREDICTION=outputs/predictions/dev_t611_pubmedbert_gold_silver_silver_2025.json \
+  METRICS_OUTPUT=outputs/reports/metrics_dev_ner_pubmedbert_gold_silver_silver_2025.json
+```
+
+BiomedBERT prediction and evaluation example:
+
+```bash
+make predict-token-classifier \
+  TOKEN_MODEL_DIR=outputs/models/biomedbert_gold_silver_silver_2025 \
+  TOKEN_OUTPUT=outputs/predictions/dev_t611_biomedbert_gold_silver_silver_2025.json
+
+make evaluate EVAL_TASK=ner \
+  GOLD=data/gutbrainie2026/Annotations/Dev/csv_format/dev_entities.csv \
+  PREDICTION=outputs/predictions/dev_t611_biomedbert_gold_silver_silver_2025.json \
+  METRICS_OUTPUT=outputs/reports/metrics_dev_ner_biomedbert_gold_silver_silver_2025.json
+```
+
+## Mention-Level Relation Rule Baseline
+
+The rule baseline generates ordered subject-object mention pairs, filters them by the T621 relation schema, and predicts the most frequent training predicate for each `(subject_label, object_label)` pair when its prior is above a threshold.
+
+Gold-entity mode evaluates RE independently of NER:
+
+```bash
+python -m gutbrainie.cli predict-re-rule \
+  --articles data/gutbrainie2026/Articles/csv_format/articles_dev.csv \
+  --entities data/gutbrainie2026/Annotations/Dev/csv_format/dev_entities.csv \
+  --train-relations data/gutbrainie2026/Annotations/Train/gold_quality/csv_format/train_gold_mention_level_relations.csv \
+  --output outputs/predictions/dev_t621_rule_gold_entities.json
+
+python -m gutbrainie.cli evaluate \
+  --task re \
+  --gold data/gutbrainie2026/Annotations/Dev/csv_format/dev_mention_level_relations.csv \
+  --prediction outputs/predictions/dev_t621_rule_gold_entities.json \
+  --output outputs/reports/metrics_dev_re_rule_gold_entities.json
+```
+
+Predicted-entity mode evaluates the full NER-to-RE pipeline:
+
+```bash
+python -m gutbrainie.cli predict-re-rule \
+  --articles data/gutbrainie2026/Articles/csv_format/articles_dev.csv \
+  --entities outputs/predictions/dev_t611_token_classifier_gold_silver_silver_2025.json \
+  --train-relations data/gutbrainie2026/Annotations/Train/gold_quality/csv_format/train_gold_mention_level_relations.csv \
+  --output outputs/predictions/dev_t621_rule_predicted_entities.json
+```
+
+Makefile equivalents:
+
+```bash
+make predict-re-rule \
+  RE_ENTITIES=data/gutbrainie2026/Annotations/Dev/csv_format/dev_entities.csv \
+  RE_RULE_OUTPUT=outputs/predictions/dev_t621_rule_gold_entities.json
+
+make predict-re-rule \
+  RE_ENTITIES=outputs/predictions/dev_t611_token_classifier_gold_silver_silver_2025.json \
+  RE_RULE_OUTPUT=outputs/predictions/dev_t621_rule_predicted_entities.json
+
+make evaluate EVAL_TASK=re \
+  GOLD=data/gutbrainie2026/Annotations/Dev/csv_format/dev_mention_level_relations.csv \
+  PREDICTION=outputs/predictions/dev_t621_rule_gold_entities.json \
+  METRICS_OUTPUT=outputs/reports/metrics_dev_re_rule_gold_entities.json
+```
+
+Use `RE_RULE_THRESHOLD` and `RE_RULE_MAX_DISTANCE` to make the baseline stricter:
+
+```bash
+make predict-re-rule RE_RULE_THRESHOLD=0.9 RE_RULE_MAX_DISTANCE=0
 ```
 
 ## Evaluation

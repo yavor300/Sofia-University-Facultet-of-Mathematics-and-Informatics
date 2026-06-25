@@ -25,7 +25,7 @@ def predict_token_classifier_to_json(
 ) -> pd.DataFrame:
     """Run a trained token-classification model and write T611 JSON."""
     transformers, torch = _import_runtime()
-    model_path = Path(model_path)
+    model_path = _resolve_model_path(Path(model_path))
     tokenizer = load_fast_tokenizer(transformers, str(model_path))
 
     model = load_token_classification_model(transformers, str(model_path))
@@ -77,6 +77,42 @@ def predict_token_classifier_to_json(
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     return prediction_df
+
+
+def _resolve_model_path(model_path: Path) -> Path:
+    """Resolve a trained model directory, falling back to the latest checkpoint."""
+    if not model_path.exists():
+        raise FileNotFoundError(
+            f"Token-classifier model directory does not exist: {model_path}\n"
+            "Train it first, for example:\n"
+            "  make train-biobert-token-classifier TOKEN_EXPERIMENT=gold_silver_silver_2025"
+        )
+    if _looks_like_saved_model(model_path):
+        return model_path
+
+    checkpoints = sorted(
+        [path for path in model_path.glob("checkpoint-*") if path.is_dir()],
+        key=_checkpoint_sort_key,
+    )
+    for checkpoint in reversed(checkpoints):
+        if _looks_like_saved_model(checkpoint):
+            return checkpoint
+
+    raise FileNotFoundError(
+        f"No saved Hugging Face model files found in {model_path} or its checkpoint-* subdirectories. "
+        "Expected files such as config.json plus model.safetensors or pytorch_model.bin."
+    )
+
+
+def _looks_like_saved_model(path: Path) -> bool:
+    has_config = (path / "config.json").exists()
+    has_weights = (path / "model.safetensors").exists() or (path / "pytorch_model.bin").exists()
+    return has_config and has_weights
+
+
+def _checkpoint_sort_key(path: Path) -> tuple[int, str]:
+    suffix = path.name.removeprefix("checkpoint-")
+    return (int(suffix) if suffix.isdigit() else -1, path.name)
 
 
 def _load_id_to_label(model_path: Path, model: Any) -> dict[int, str]:

@@ -5,6 +5,8 @@ OUTPUTS_ROOT ?= outputs
 QUALITY ?= gold
 CONFIG ?= configs/paths.yaml
 NER_TRANSFORMER_CONFIG ?= configs/ner_transformer.yaml
+NER_PUBMEDBERT_CONFIG ?= configs/ner_pubmedbert.yaml
+NER_BIOMEDBERT_CONFIG ?= configs/ner_biomedbert.yaml
 NER_SCIBERT_CONFIG ?= configs/ner_scibert.yaml
 NER_BIOBERT_CONFIG ?= configs/ner_biobert.yaml
 GLINER_CONFIG ?= configs/ner_gliner.yaml
@@ -21,6 +23,11 @@ OFFICIAL_REPO ?= external/GutBrainIE_2026_Baseline
 OFFICIAL_ENTRYPOINT ?=
 TRAIN_ENTITIES ?= $(DATA_ROOT)/Annotations/Train/gold_quality/csv_format/train_gold_entities.csv
 ARTICLES ?= $(DATA_ROOT)/Articles/csv_format/articles_dev.csv
+RE_ENTITIES ?= $(DATA_ROOT)/Annotations/Dev/csv_format/dev_entities.csv
+TRAIN_RELATIONS ?= $(DATA_ROOT)/Annotations/Train/gold_quality/csv_format/train_gold_mention_level_relations.csv
+RE_RULE_OUTPUT ?= $(OUTPUTS_ROOT)/predictions/dev_t621_rule.json
+RE_RULE_THRESHOLD ?= 0.5
+RE_RULE_MAX_DISTANCE ?=
 NER_DICTIONARY_OUTPUT ?= $(OUTPUTS_ROOT)/predictions/dev_t611_dictionary.json
 GLINER_EXPERIMENT ?= gold
 GLINER_DATA_DIR ?= $(OUTPUTS_ROOT)/gliner
@@ -43,8 +50,9 @@ OFFICIAL_ENTRYPOINT_ARG = $(if $(OFFICIAL_ENTRYPOINT),--entrypoint $(OFFICIAL_EN
 .PHONY: help setup install install-gliner test cli-help prepare-data validate-all eda eda-all \
 	run-ner-baseline predict-ner-dictionary run-ner-transformer run-re-baseline run-re-transformer \
 	prepare-gliner-data prepare-gliner-all train-gliner train-gliner-cpu train-gliner-smoke \
-	predict-gliner train-token-classifier train-scibert-token-classifier train-biobert-token-classifier \
-	predict-token-classifier evaluate evaluate-official export-t611 export-t621 clean
+	predict-gliner train-token-classifier train-pubmedbert-token-classifier \
+	train-biomedbert-token-classifier train-scibert-token-classifier train-biobert-token-classifier \
+	predict-token-classifier predict-re-rule evaluate evaluate-official export-t611 export-t621 clean
 
 help:
 	@echo "GutBrainIE 2026 commands"
@@ -73,10 +81,13 @@ help:
 	@echo "  make train-gliner-smoke   One-command CPU-safe smoke training"
 	@echo "  make predict-gliner       Predict T611 JSON with GLiNER"
 	@echo "  make train-token-classifier  Fine-tune PubMedBERT/BioBERT/SciBERT token classifier"
+	@echo "  make train-pubmedbert-token-classifier  Fine-tune PubMedBERT token classifier"
+	@echo "  make train-biomedbert-token-classifier  Fine-tune BiomedBERT token classifier"
 	@echo "  make train-scibert-token-classifier  Fine-tune SciBERT token classifier"
 	@echo "  make train-biobert-token-classifier  Fine-tune BioBERT token classifier"
 	@echo "  make predict-token-classifier  Predict T611 JSON with trained token classifier"
 	@echo "  make run-re-baseline      Run relation baseline"
+	@echo "  make predict-re-rule      Predict T621 JSON with prior RE baseline"
 	@echo "  make run-re-transformer   Run transformer relation command"
 	@echo "  make evaluate             Run evaluation command"
 	@echo "  make evaluate-official    Run official evaluator wrapper"
@@ -95,9 +106,12 @@ help:
 	@echo "  make predict-gliner GLINER_MODEL=outputs/models/gliner_gold ARTICLES=articles.csv"
 	@echo "  make train-gliner-cpu GLINER_EXPERIMENT=gold GLINER_MODEL=urchade/gliner_medium-v2.1"
 	@echo "  make train-token-classifier TOKEN_EXPERIMENT=gold"
+	@echo "  make train-pubmedbert-token-classifier TOKEN_EXPERIMENT=gold"
+	@echo "  make train-biomedbert-token-classifier TOKEN_EXPERIMENT=gold"
 	@echo "  make train-scibert-token-classifier TOKEN_EXPERIMENT=gold"
 	@echo "  make train-biobert-token-classifier TOKEN_EXPERIMENT=gold"
 	@echo "  make predict-token-classifier TOKEN_MODEL_DIR=outputs/models/token_classifier_gold"
+	@echo "  make predict-re-rule RE_ENTITIES=outputs/predictions/dev_t611_best.json"
 
 setup:
 	@$(PYTHON) -m venv .venv
@@ -166,6 +180,12 @@ predict-gliner:
 train-token-classifier:
 	@$(CLI) train-token-classifier --config $(NER_TRANSFORMER_CONFIG) --data-root $(DATA_ROOT) --experiment $(TOKEN_EXPERIMENT) --model "$(TOKEN_MODEL)" --output-dir $(TOKEN_MODEL_DIR)
 
+train-pubmedbert-token-classifier:
+	@$(CLI) train-token-classifier --config $(NER_PUBMEDBERT_CONFIG) --data-root $(DATA_ROOT) --experiment $(TOKEN_EXPERIMENT) --output-dir $(OUTPUTS_ROOT)/models/pubmedbert_$(TOKEN_EXPERIMENT)
+
+train-biomedbert-token-classifier:
+	@$(CLI) train-token-classifier --config $(NER_BIOMEDBERT_CONFIG) --data-root $(DATA_ROOT) --experiment $(TOKEN_EXPERIMENT) --output-dir $(OUTPUTS_ROOT)/models/biomedbert_$(TOKEN_EXPERIMENT)
+
 train-scibert-token-classifier:
 	@$(CLI) train-token-classifier --config $(NER_SCIBERT_CONFIG) --data-root $(DATA_ROOT) --experiment $(TOKEN_EXPERIMENT) --output-dir $(OUTPUTS_ROOT)/models/scibert_$(TOKEN_EXPERIMENT)
 
@@ -176,7 +196,10 @@ predict-token-classifier:
 	@$(CLI) predict-token-classifier --model $(TOKEN_MODEL_DIR) --articles $(ARTICLES) --output $(TOKEN_OUTPUT) --batch-size $(TOKEN_BATCH_SIZE) --max-length $(TOKEN_MAX_LENGTH)
 
 run-re-baseline:
-	@$(CLI) run-re-baseline --config $(CONFIG)
+	@$(MAKE) predict-re-rule
+
+predict-re-rule:
+	@$(CLI) predict-re-rule --articles $(ARTICLES) --entities $(RE_ENTITIES) --train-relations $(TRAIN_RELATIONS) --output $(RE_RULE_OUTPUT) --threshold $(RE_RULE_THRESHOLD) $(if $(RE_RULE_MAX_DISTANCE),--max-distance $(RE_RULE_MAX_DISTANCE),)
 
 run-re-transformer:
 	@$(CLI) run-re-transformer --config $(RE_TRANSFORMER_CONFIG)

@@ -110,7 +110,25 @@ def build_parser() -> argparse.ArgumentParser:
 
     re_base = subparsers.add_parser("run-re-baseline", help="Run the mention-level relation baseline.")
     re_base.add_argument("--config", default="configs/paths.yaml")
-    re_base.set_defaults(handler=_placeholder_handler)
+    re_base.add_argument("--articles", default="data/gutbrainie2026/Articles/csv_format/articles_dev.csv")
+    re_base.add_argument("--entities", default="data/gutbrainie2026/Annotations/Dev/csv_format/dev_entities.csv")
+    re_base.add_argument(
+        "--train-relations",
+        default="data/gutbrainie2026/Annotations/Train/gold_quality/csv_format/train_gold_mention_level_relations.csv",
+    )
+    re_base.add_argument("--output", default="outputs/predictions/dev_t621_rule.json")
+    re_base.add_argument("--threshold", type=float, default=0.5)
+    re_base.add_argument("--max-distance", type=int)
+    re_base.set_defaults(handler=_predict_re_rule)
+
+    re_rule = subparsers.add_parser("predict-re-rule", help="Predict T621 mention-level relations with the prior baseline.")
+    re_rule.add_argument("--articles", required=True)
+    re_rule.add_argument("--entities", required=True, help="Gold/predicted entities as CSV or T611 JSON.")
+    re_rule.add_argument("--train-relations", required=True)
+    re_rule.add_argument("--output", required=True)
+    re_rule.add_argument("--threshold", type=float, default=0.5)
+    re_rule.add_argument("--max-distance", type=int)
+    re_rule.set_defaults(handler=_predict_re_rule)
 
     re_transformer = subparsers.add_parser("run-re-transformer", help="Run the transformer relation model.")
     re_transformer.add_argument("--config", default="configs/re_transformer.yaml")
@@ -196,9 +214,10 @@ def _evaluate_internal(args: argparse.Namespace) -> int:
         else:
             from gutbrainie.data.annotations import load_mention_relations_csv
             from gutbrainie.evaluation.re_metrics import evaluate_mention_relations
+            from gutbrainie.submission.export_t621 import load_t621_json
 
             gold = load_mention_relations_csv(args.gold)
-            prediction = load_mention_relations_csv(args.prediction)
+            prediction = load_t621_json(args.prediction) if str(args.prediction).endswith(".json") else load_mention_relations_csv(args.prediction)
             metrics = evaluate_mention_relations(gold, prediction)
     except ModuleNotFoundError as exc:
         if exc.name == "pandas":
@@ -354,6 +373,26 @@ def _predict_token_classifier(args: argparse.Namespace) -> int:
     except ModuleNotFoundError as exc:
         raise SystemExit(str(exc)) from exc
     print(f"Token classifier predictions written to {args.output}: entities={len(predictions)}")
+    return 0
+
+
+def _predict_re_rule(args: argparse.Namespace) -> int:
+    from gutbrainie.re.rule_baseline import predict_re_rule_to_json
+
+    try:
+        predictions = predict_re_rule_to_json(
+            articles_path=args.articles,
+            entities_path=args.entities,
+            train_relations_path=args.train_relations,
+            output_path=args.output,
+            threshold=args.threshold,
+            max_distance=args.max_distance,
+        )
+    except ModuleNotFoundError as exc:
+        if exc.name == "pandas":
+            raise SystemExit("Missing dependency 'pandas'. Run: pip install -r requirements.txt") from exc
+        raise
+    print(f"Rule RE predictions written to {args.output}: relations={len(predictions)}")
     return 0
 
 
