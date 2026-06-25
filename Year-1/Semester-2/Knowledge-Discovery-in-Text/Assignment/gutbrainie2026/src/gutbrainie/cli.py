@@ -165,6 +165,12 @@ def build_parser() -> argparse.ArgumentParser:
     atlop_notes.add_argument("--output", default="outputs/reports/atlop_notes.md")
     atlop_notes.set_defaults(handler=_atlop_notes)
 
+    prepare_atlop = subparsers.add_parser("prepare-atlop-data", help="Convert local GutBrainIE data to official ATLOP JSON files.")
+    prepare_atlop.add_argument("--data-root", default="data/gutbrainie2026")
+    prepare_atlop.add_argument("--official-repo", default="external/GutBrainIE_2026_Baseline")
+    prepare_atlop.add_argument("--predicted-entities", help="Optional dev T611 JSON/CSV to convert for ATLOP prediction.")
+    prepare_atlop.set_defaults(handler=_prepare_atlop_data)
+
     run_atlop = subparsers.add_parser("run-atlop", help="Run one official ATLOP reproduction step.")
     run_atlop.add_argument("--official-repo", default="external/GutBrainIE_2026_Baseline")
     run_atlop.add_argument("--action", required=True, choices=["compose", "finetune", "predict"])
@@ -491,6 +497,29 @@ def _atlop_notes(args: argparse.Namespace) -> int:
     print(f"- can compose: {status['can_compose']}")
     print(f"- can fine-tune: {status['can_finetune']}")
     print(f"- can predict: {status['can_predict']}")
+    return 0
+
+
+def _prepare_atlop_data(args: argparse.Namespace) -> int:
+    from gutbrainie.re.atlop_converter import prepare_official_atlop_data
+
+    try:
+        result = prepare_official_atlop_data(
+            data_root=args.data_root,
+            official_repo=args.official_repo,
+            predicted_entities=args.predicted_entities,
+        )
+    except ModuleNotFoundError as exc:
+        if exc.name == "pandas":
+            raise SystemExit("Missing dependency 'pandas'. Run: pip install -r requirements.txt") from exc
+        raise
+
+    print(f"ATLOP data written to {result['output_dir']}")
+    for quality, info in result["files"].items():
+        print(f"- {quality}: {info['path']} documents={info['documents']}")
+    if "predicted_entities" in result:
+        info = result["predicted_entities"]
+        print(f"- predicted entities: {info['path']} documents={info['documents']}")
     return 0
 
 
