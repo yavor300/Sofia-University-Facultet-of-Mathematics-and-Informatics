@@ -57,6 +57,8 @@ make run-ner-transformer
 make run-re-baseline
 make train-re-pair-classifier
 make predict-re-pair-classifier
+make atlop-notes
+make run-atlop
 make run-re-transformer
 make evaluate
 make evaluate-official
@@ -90,6 +92,8 @@ make predict-token-classifier TOKEN_MODEL_DIR=outputs/models/token_classifier_go
 make predict-re-rule
 make train-re-pair-classifier RE_PAIR_EXPERIMENT=gold
 make predict-re-pair-classifier RE_PAIR_MODEL_DIR=outputs/models/re_pair_classifier_gold
+make atlop-notes
+make run-atlop ATLOP_ACTION=compose ATLOP_DRY_RUN=1
 ```
 
 ## NER Dictionary Baseline
@@ -423,6 +427,53 @@ make evaluate EVAL_TASK=re \
   PREDICTION=outputs/predictions/dev_t621_pair_classifier_pubmedbert_entities.json \
   METRICS_OUTPUT=outputs/reports/metrics_dev_re_pair_classifier_pubmedbert_entities.json
 ```
+
+## Optional ATLOP Reproduction
+
+The official baseline uses ATLOP for relation extraction. In this project it is treated as a bonus comparison; the main implemented RE model is the PubMedBERT pair classifier above.
+
+The official repository should live at:
+
+```text
+external/GutBrainIE_2026_Baseline
+```
+
+Refresh the local reproduction checklist:
+
+```bash
+make atlop-notes
+```
+
+This writes:
+
+```text
+outputs/reports/atlop_notes.md
+```
+
+The wrapper does not edit official scripts. It runs the official files under `external/GutBrainIE_2026_Baseline/Train/RE` only when explicitly called.
+
+Dry-run the official commands first:
+
+```bash
+make run-atlop ATLOP_ACTION=compose ATLOP_DRY_RUN=1
+make run-atlop ATLOP_ACTION=finetune ATLOP_DRY_RUN=1
+make run-atlop ATLOP_ACTION=predict ATLOP_DRY_RUN=1
+```
+
+After the official conversion notebooks have created the ATLOP JSON files in `external/GutBrainIE_2026_Baseline/Train/RE/data`, run:
+
+```bash
+make run-atlop ATLOP_ACTION=compose
+make run-atlop ATLOP_ACTION=finetune
+make run-atlop ATLOP_ACTION=predict \
+  ATLOP_OUTPUT=outputs/predictions/atlop_predicted_relations_raw.json
+```
+
+Notes:
+
+- `BaselineModels/RE.zip` may be a Git LFS pointer until `git lfs pull` is run inside the official repo.
+- The copied ATLOP prediction is the official raw relation output; merge or convert it before internal T621 evaluation if needed.
+- ATLOP setup is heavier than the pair classifier and expects CUDA in the official script.
 
 ## Evaluation
 

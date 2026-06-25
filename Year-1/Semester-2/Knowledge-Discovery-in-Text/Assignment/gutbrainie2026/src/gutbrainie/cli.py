@@ -159,6 +159,20 @@ def build_parser() -> argparse.ArgumentParser:
     re_pair_predict.add_argument("--use-cpu", action="store_true")
     re_pair_predict.set_defaults(handler=_predict_re_pair_classifier)
 
+    atlop_notes = subparsers.add_parser("atlop-notes", help="Inspect official ATLOP setup and write reproduction notes.")
+    atlop_notes.add_argument("--official-repo", default="external/GutBrainIE_2026_Baseline")
+    atlop_notes.add_argument("--data-root", default="data/gutbrainie2026")
+    atlop_notes.add_argument("--output", default="outputs/reports/atlop_notes.md")
+    atlop_notes.set_defaults(handler=_atlop_notes)
+
+    run_atlop = subparsers.add_parser("run-atlop", help="Run one official ATLOP reproduction step.")
+    run_atlop.add_argument("--official-repo", default="external/GutBrainIE_2026_Baseline")
+    run_atlop.add_argument("--action", required=True, choices=["compose", "finetune", "predict"])
+    run_atlop.add_argument("--output", default="outputs/predictions/atlop_predicted_relations_raw.json")
+    run_atlop.add_argument("--log", help="Optional log path. Defaults to outputs/reports/atlop_<action>.log.")
+    run_atlop.add_argument("--dry-run", action="store_true")
+    run_atlop.set_defaults(handler=_run_atlop)
+
     evaluate = subparsers.add_parser("evaluate", help="Run internal exact-match evaluation.")
     evaluate.add_argument("--task", required=True, choices=["ner", "re"])
     evaluate.add_argument("--gold", required=True, help="Gold CSV path.")
@@ -462,6 +476,51 @@ def _predict_re_pair_classifier(args: argparse.Namespace) -> int:
         raise SystemExit(str(exc)) from exc
     print(f"RE pair classifier predictions written to {args.output}: relations={len(predictions)}")
     return 0
+
+
+def _atlop_notes(args: argparse.Namespace) -> int:
+    from gutbrainie.re.atlop_wrapper import write_atlop_notes
+
+    status = write_atlop_notes(
+        official_repo=args.official_repo,
+        output_path=args.output,
+        data_root=args.data_root,
+    )
+    print(f"ATLOP reproduction notes written to {status['output']}")
+    print(f"- official repo exists: {status['official_repo_exists']}")
+    print(f"- can compose: {status['can_compose']}")
+    print(f"- can fine-tune: {status['can_finetune']}")
+    print(f"- can predict: {status['can_predict']}")
+    return 0
+
+
+def _run_atlop(args: argparse.Namespace) -> int:
+    from gutbrainie.re.atlop_wrapper import run_atlop_action
+
+    log_path = args.log or f"outputs/reports/atlop_{args.action}.log"
+    try:
+        result = run_atlop_action(
+            official_repo=args.official_repo,
+            action=args.action,
+            output_path=args.output,
+            log_path=log_path,
+            dry_run=args.dry_run,
+        )
+    except FileNotFoundError as exc:
+        raise SystemExit(str(exc)) from exc
+
+    command = " ".join(result["command"])
+    print(f"ATLOP {args.action} command: {command}")
+    print(f"- cwd: {result['cwd']}")
+    if args.dry_run:
+        print("- dry run only; no official script was executed")
+        return 0
+    print(f"- return code: {result['returncode']}")
+    if result.get("log_path"):
+        print(f"- log: {result['log_path']}")
+    if result.get("output_path"):
+        print(f"- copied prediction output: {result['output_path']}")
+    return int(result["returncode"])
 
 
 def main(argv: Sequence[str] | None = None) -> int:

@@ -21,6 +21,11 @@ PREDICTION ?= outputs/predictions/dev_predictions.csv
 METRICS_OUTPUT ?= $(OUTPUTS_ROOT)/reports/metrics_$(EVAL_TASK).json
 OFFICIAL_REPO ?= external/GutBrainIE_2026_Baseline
 OFFICIAL_ENTRYPOINT ?=
+ATLOP_ACTION ?= compose
+ATLOP_OUTPUT ?= $(OUTPUTS_ROOT)/predictions/atlop_predicted_relations_raw.json
+ATLOP_NOTES_OUTPUT ?= $(OUTPUTS_ROOT)/reports/atlop_notes.md
+ATLOP_LOG ?= $(OUTPUTS_ROOT)/reports/atlop_$(ATLOP_ACTION).log
+ATLOP_DRY_RUN ?=
 TRAIN_ENTITIES ?= $(DATA_ROOT)/Annotations/Train/gold_quality/csv_format/train_gold_entities.csv
 ARTICLES ?= $(DATA_ROOT)/Articles/csv_format/articles_dev.csv
 RE_ENTITIES ?= $(DATA_ROOT)/Annotations/Dev/csv_format/dev_entities.csv
@@ -54,6 +59,7 @@ CLI = PYTHONPATH=$(PYTHONPATH) $(PYTHON) -m gutbrainie.cli
 VALIDATION_OUTPUT = $(OUTPUTS_ROOT)/reports/data_validation_$(QUALITY).json
 OFFICIAL_ENTRYPOINT_ARG = $(if $(OFFICIAL_ENTRYPOINT),--entrypoint $(OFFICIAL_ENTRYPOINT),)
 RE_PAIR_MODEL_ARG = $(if $(RE_PAIR_MODEL),--model $(RE_PAIR_MODEL),)
+ATLOP_DRY_RUN_ARG = $(if $(ATLOP_DRY_RUN),--dry-run,)
 
 .PHONY: help setup install install-gliner test cli-help prepare-data validate-all eda eda-all \
 	run-ner-baseline predict-ner-dictionary run-ner-transformer run-re-baseline run-re-transformer \
@@ -61,7 +67,7 @@ RE_PAIR_MODEL_ARG = $(if $(RE_PAIR_MODEL),--model $(RE_PAIR_MODEL),)
 	predict-gliner train-token-classifier train-pubmedbert-token-classifier \
 	train-biomedbert-token-classifier train-scibert-token-classifier train-biobert-token-classifier \
 	predict-token-classifier predict-re-rule train-re-pair-classifier predict-re-pair-classifier \
-	evaluate evaluate-official export-t611 export-t621 clean
+	atlop-notes run-atlop evaluate evaluate-official export-t611 export-t621 clean
 
 help:
 	@echo "GutBrainIE 2026 commands"
@@ -99,6 +105,8 @@ help:
 	@echo "  make predict-re-rule      Predict T621 JSON with prior RE baseline"
 	@echo "  make train-re-pair-classifier  Fine-tune PubMedBERT RE pair classifier"
 	@echo "  make predict-re-pair-classifier  Predict T621 JSON with trained RE pair classifier"
+	@echo "  make atlop-notes           Inspect optional official ATLOP setup"
+	@echo "  make run-atlop             Run optional official ATLOP step; override ATLOP_ACTION=compose|finetune|predict"
 	@echo "  make run-re-transformer   Run transformer relation command"
 	@echo "  make evaluate             Run evaluation command"
 	@echo "  make evaluate-official    Run official evaluator wrapper"
@@ -125,6 +133,8 @@ help:
 	@echo "  make predict-re-rule RE_ENTITIES=outputs/predictions/dev_t611_best.json"
 	@echo "  make train-re-pair-classifier RE_PAIR_EXPERIMENT=gold"
 	@echo "  make predict-re-pair-classifier RE_PAIR_MODEL_DIR=outputs/models/re_pair_classifier_gold RE_ENTITIES=outputs/predictions/dev_t611_best.json"
+	@echo "  make atlop-notes"
+	@echo "  make run-atlop ATLOP_ACTION=compose ATLOP_DRY_RUN=1"
 
 setup:
 	@$(PYTHON) -m venv .venv
@@ -222,6 +232,12 @@ train-re-pair-classifier:
 
 predict-re-pair-classifier:
 	@$(CLI) predict-re-pair-classifier --model $(RE_PAIR_MODEL_DIR) --articles $(ARTICLES) --entities $(RE_ENTITIES) --output $(RE_PAIR_OUTPUT) --threshold $(RE_PAIR_THRESHOLD) --batch-size $(RE_PAIR_BATCH_SIZE) --max-length $(RE_PAIR_MAX_LENGTH)
+
+atlop-notes:
+	@$(CLI) atlop-notes --official-repo $(OFFICIAL_REPO) --data-root $(DATA_ROOT) --output $(ATLOP_NOTES_OUTPUT)
+
+run-atlop:
+	@$(CLI) run-atlop --official-repo $(OFFICIAL_REPO) --action $(ATLOP_ACTION) --output $(ATLOP_OUTPUT) --log $(ATLOP_LOG) $(ATLOP_DRY_RUN_ARG)
 
 evaluate:
 	@$(CLI) evaluate --task $(EVAL_TASK) --gold $(GOLD) --prediction $(PREDICTION) --output $(METRICS_OUTPUT)
