@@ -1,0 +1,7 @@
+# Optional dependencies for reproducing the official ATLOP RE baseline.
+#
+# The official baseline imports AdamW from transformers.optimization, so keep
+# transformers in the supported 4.x range documented by the upstream repo.
+transformers>=4.38.2,<=4.45.2
+ujson
+opt-einsum==3.3.0

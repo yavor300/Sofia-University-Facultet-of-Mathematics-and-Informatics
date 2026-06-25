@@ -452,6 +452,12 @@ outputs/reports/atlop_notes.md
 
 The wrapper does not edit official scripts. It runs the official files under `external/GutBrainIE_2026_Baseline/Train/RE` only when explicitly called.
 
+Install the optional ATLOP dependencies before running official training:
+
+```bash
+make install-atlop
+```
+
 Dry-run the official commands first:
 
 ```bash
@@ -460,11 +466,20 @@ make run-atlop ATLOP_ACTION=finetune ATLOP_DRY_RUN=1
 make run-atlop ATLOP_ACTION=predict ATLOP_DRY_RUN=1
 ```
 
-After the official conversion notebooks have created the ATLOP JSON files in `external/GutBrainIE_2026_Baseline/Train/RE/data`, run:
+Create the ATLOP JSON files in `external/GutBrainIE_2026_Baseline/Train/RE/data`, compose the official training files, then fine-tune:
 
 ```bash
+make prepare-atlop-data
 make run-atlop ATLOP_ACTION=compose
 make run-atlop ATLOP_ACTION=finetune
+```
+
+For prediction, also convert the dev NER predictions into ATLOP input format:
+
+```bash
+make prepare-atlop-data \
+  ATLOP_PREDICTED_ENTITIES=outputs/predictions/dev_t611_pubmedbert_gold_silver_silver_2025.json
+
 make run-atlop ATLOP_ACTION=predict \
   ATLOP_OUTPUT=outputs/predictions/atlop_predicted_relations_raw.json
 ```

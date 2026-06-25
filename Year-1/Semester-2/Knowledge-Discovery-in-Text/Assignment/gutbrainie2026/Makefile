@@ -63,7 +63,7 @@ RE_PAIR_MODEL_ARG = $(if $(RE_PAIR_MODEL),--model $(RE_PAIR_MODEL),)
 ATLOP_DRY_RUN_ARG = $(if $(ATLOP_DRY_RUN),--dry-run,)
 ATLOP_PREDICTED_ENTITIES_ARG = $(if $(ATLOP_PREDICTED_ENTITIES),--predicted-entities $(ATLOP_PREDICTED_ENTITIES),)
 
-.PHONY: help setup install install-gliner test cli-help prepare-data validate-all eda eda-all \
+.PHONY: help setup install install-gliner install-atlop test cli-help prepare-data validate-all eda eda-all \
 	run-ner-baseline predict-ner-dictionary run-ner-transformer run-re-baseline run-re-transformer \
 	prepare-gliner-data prepare-gliner-all train-gliner train-gliner-cpu train-gliner-smoke \
 	predict-gliner train-token-classifier train-pubmedbert-token-classifier \
@@ -78,6 +78,7 @@ help:
 	@echo "  make setup                Create .venv and install requirements/package"
 	@echo "  make install              Install requirements and editable package"
 	@echo "  make install-gliner       Install optional GLiNER dependency"
+	@echo "  make install-atlop        Install optional official ATLOP dependencies"
 	@echo "  make test                 Run pytest"
 	@echo "  make cli-help             Show CLI help"
 	@echo ""
@@ -151,6 +152,9 @@ install:
 
 install-gliner:
 	@$(PYTHON) -m pip install -r requirements-gliner.txt
+
+install-atlop:
+	@$(PYTHON) -m pip install -r requirements-atlop.txt
 
 test:
 	@PYTHONPATH=$(PYTHONPATH) $(PYTHON) -m pytest
