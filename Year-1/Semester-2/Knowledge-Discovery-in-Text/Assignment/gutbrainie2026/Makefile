@@ -28,6 +28,13 @@ TRAIN_RELATIONS ?= $(DATA_ROOT)/Annotations/Train/gold_quality/csv_format/train_
 RE_RULE_OUTPUT ?= $(OUTPUTS_ROOT)/predictions/dev_t621_rule.json
 RE_RULE_THRESHOLD ?= 0.5
 RE_RULE_MAX_DISTANCE ?=
+RE_PAIR_EXPERIMENT ?= gold
+RE_PAIR_MODEL ?=
+RE_PAIR_MODEL_DIR ?= $(OUTPUTS_ROOT)/models/re_pair_classifier_$(RE_PAIR_EXPERIMENT)
+RE_PAIR_OUTPUT ?= $(OUTPUTS_ROOT)/predictions/dev_t621_pair_classifier_$(RE_PAIR_EXPERIMENT).json
+RE_PAIR_THRESHOLD ?= 0.5
+RE_PAIR_BATCH_SIZE ?= 8
+RE_PAIR_MAX_LENGTH ?= 512
 NER_DICTIONARY_OUTPUT ?= $(OUTPUTS_ROOT)/predictions/dev_t611_dictionary.json
 GLINER_EXPERIMENT ?= gold
 GLINER_DATA_DIR ?= $(OUTPUTS_ROOT)/gliner
@@ -46,13 +53,15 @@ TOKEN_MAX_LENGTH ?= 512
 CLI = PYTHONPATH=$(PYTHONPATH) $(PYTHON) -m gutbrainie.cli
 VALIDATION_OUTPUT = $(OUTPUTS_ROOT)/reports/data_validation_$(QUALITY).json
 OFFICIAL_ENTRYPOINT_ARG = $(if $(OFFICIAL_ENTRYPOINT),--entrypoint $(OFFICIAL_ENTRYPOINT),)
+RE_PAIR_MODEL_ARG = $(if $(RE_PAIR_MODEL),--model $(RE_PAIR_MODEL),)
 
 .PHONY: help setup install install-gliner test cli-help prepare-data validate-all eda eda-all \
 	run-ner-baseline predict-ner-dictionary run-ner-transformer run-re-baseline run-re-transformer \
 	prepare-gliner-data prepare-gliner-all train-gliner train-gliner-cpu train-gliner-smoke \
 	predict-gliner train-token-classifier train-pubmedbert-token-classifier \
 	train-biomedbert-token-classifier train-scibert-token-classifier train-biobert-token-classifier \
-	predict-token-classifier predict-re-rule evaluate evaluate-official export-t611 export-t621 clean
+	predict-token-classifier predict-re-rule train-re-pair-classifier predict-re-pair-classifier \
+	evaluate evaluate-official export-t611 export-t621 clean
 
 help:
 	@echo "GutBrainIE 2026 commands"
@@ -88,6 +97,8 @@ help:
 	@echo "  make predict-token-classifier  Predict T611 JSON with trained token classifier"
 	@echo "  make run-re-baseline      Run relation baseline"
 	@echo "  make predict-re-rule      Predict T621 JSON with prior RE baseline"
+	@echo "  make train-re-pair-classifier  Fine-tune PubMedBERT RE pair classifier"
+	@echo "  make predict-re-pair-classifier  Predict T621 JSON with trained RE pair classifier"
 	@echo "  make run-re-transformer   Run transformer relation command"
 	@echo "  make evaluate             Run evaluation command"
 	@echo "  make evaluate-official    Run official evaluator wrapper"
@@ -112,6 +123,8 @@ help:
 	@echo "  make train-biobert-token-classifier TOKEN_EXPERIMENT=gold"
 	@echo "  make predict-token-classifier TOKEN_MODEL_DIR=outputs/models/token_classifier_gold"
 	@echo "  make predict-re-rule RE_ENTITIES=outputs/predictions/dev_t611_best.json"
+	@echo "  make train-re-pair-classifier RE_PAIR_EXPERIMENT=gold"
+	@echo "  make predict-re-pair-classifier RE_PAIR_MODEL_DIR=outputs/models/re_pair_classifier_gold RE_ENTITIES=outputs/predictions/dev_t611_best.json"
 
 setup:
 	@$(PYTHON) -m venv .venv
@@ -202,7 +215,13 @@ predict-re-rule:
 	@$(CLI) predict-re-rule --articles $(ARTICLES) --entities $(RE_ENTITIES) --train-relations $(TRAIN_RELATIONS) --output $(RE_RULE_OUTPUT) --threshold $(RE_RULE_THRESHOLD) $(if $(RE_RULE_MAX_DISTANCE),--max-distance $(RE_RULE_MAX_DISTANCE),)
 
 run-re-transformer:
-	@$(CLI) run-re-transformer --config $(RE_TRANSFORMER_CONFIG)
+	@$(MAKE) predict-re-pair-classifier
+
+train-re-pair-classifier:
+	@$(CLI) train-re-pair-classifier --config $(RE_TRANSFORMER_CONFIG) --data-root $(DATA_ROOT) --experiment $(RE_PAIR_EXPERIMENT) $(RE_PAIR_MODEL_ARG) --output-dir $(RE_PAIR_MODEL_DIR)
+
+predict-re-pair-classifier:
+	@$(CLI) predict-re-pair-classifier --model $(RE_PAIR_MODEL_DIR) --articles $(ARTICLES) --entities $(RE_ENTITIES) --output $(RE_PAIR_OUTPUT) --threshold $(RE_PAIR_THRESHOLD) --batch-size $(RE_PAIR_BATCH_SIZE) --max-length $(RE_PAIR_MAX_LENGTH)
 
 evaluate:
 	@$(CLI) evaluate --task $(EVAL_TASK) --gold $(GOLD) --prediction $(PREDICTION) --output $(METRICS_OUTPUT)

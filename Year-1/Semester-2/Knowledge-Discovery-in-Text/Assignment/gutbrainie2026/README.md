@@ -55,6 +55,8 @@ make train-token-classifier
 make predict-token-classifier
 make run-ner-transformer
 make run-re-baseline
+make train-re-pair-classifier
+make predict-re-pair-classifier
 make run-re-transformer
 make evaluate
 make evaluate-official
@@ -86,6 +88,8 @@ make train-scibert-token-classifier TOKEN_EXPERIMENT=gold
 make train-biobert-token-classifier TOKEN_EXPERIMENT=gold
 make predict-token-classifier TOKEN_MODEL_DIR=outputs/models/token_classifier_gold
 make predict-re-rule
+make train-re-pair-classifier RE_PAIR_EXPERIMENT=gold
+make predict-re-pair-classifier RE_PAIR_MODEL_DIR=outputs/models/re_pair_classifier_gold
 ```
 
 ## NER Dictionary Baseline
@@ -357,6 +361,67 @@ Use `RE_RULE_THRESHOLD` and `RE_RULE_MAX_DISTANCE` to make the baseline stricter
 
 ```bash
 make predict-re-rule RE_RULE_THRESHOLD=0.9 RE_RULE_MAX_DISTANCE=0
+```
+
+## Mention-Level Relation Pair Classifier
+
+The trainable RE model creates one sequence-classification example per candidate mention pair. It inserts typed subject/object markers into the title, abstract, or title-plus-abstract context, samples negative `no_relation` examples, and fine-tunes the encoder configured in `configs/re_transformer.yaml`.
+
+Train on gold only:
+
+```bash
+python -m gutbrainie.cli train-re-pair-classifier \
+  --config configs/re_transformer.yaml \
+  --data-root data/gutbrainie2026 \
+  --experiment gold \
+  --output-dir outputs/models/re_pair_classifier_gold
+```
+
+Supported experiments are `gold`, `gold_silver`, and `gold_silver_silver_2025`:
+
+```bash
+make train-re-pair-classifier RE_PAIR_EXPERIMENT=gold
+make train-re-pair-classifier RE_PAIR_EXPERIMENT=gold_silver
+make train-re-pair-classifier RE_PAIR_EXPERIMENT=gold_silver_silver_2025
+```
+
+Use `RE_PAIR_MODEL` to try another encoder, for example BioLinkBERT:
+
+```bash
+make train-re-pair-classifier \
+  RE_PAIR_EXPERIMENT=gold \
+  RE_PAIR_MODEL=michiyasunaga/BioLinkBERT-base \
+  RE_PAIR_MODEL_DIR=outputs/models/re_pair_classifier_biolinkbert_gold
+```
+
+Gold-entity mode evaluates the relation classifier independently from NER:
+
+```bash
+make predict-re-pair-classifier \
+  RE_PAIR_MODEL_DIR=outputs/models/re_pair_classifier_gold_silver_silver_2025 \
+  ARTICLES=data/gutbrainie2026/Articles/csv_format/articles_dev.csv \
+  RE_ENTITIES=data/gutbrainie2026/Annotations/Dev/csv_format/dev_entities.csv \
+  RE_PAIR_OUTPUT=outputs/predictions/dev_t621_pair_classifier_gold_entities.json
+
+make evaluate EVAL_TASK=re \
+  GOLD=data/gutbrainie2026/Annotations/Dev/csv_format/dev_mention_level_relations.csv \
+  PREDICTION=outputs/predictions/dev_t621_pair_classifier_gold_entities.json \
+  METRICS_OUTPUT=outputs/reports/metrics_dev_re_pair_classifier_gold_entities.json
+```
+
+Predicted-entity mode evaluates the full NER-to-RE pipeline:
+
+```bash
+make predict-re-pair-classifier \
+  RE_PAIR_MODEL_DIR=outputs/models/re_pair_classifier_gold_silver_silver_2025 \
+  ARTICLES=data/gutbrainie2026/Articles/csv_format/articles_dev.csv \
+  RE_ENTITIES=outputs/predictions/dev_t611_pubmedbert_gold_silver_silver_2025.json \
+  RE_PAIR_OUTPUT=outputs/predictions/dev_t621_pair_classifier_pubmedbert_entities.json
+
+make evaluate EVAL_TASK=re \
+  GOLD=data/gutbrainie2026/Annotations/Dev/csv_format/dev_mention_level_relations.csv \
+  PREDICTION=outputs/predictions/dev_t621_pair_classifier_pubmedbert_entities.json \
+  METRICS_OUTPUT=outputs/reports/metrics_dev_re_pair_classifier_pubmedbert_entities.json
 ```
 
 ## Evaluation

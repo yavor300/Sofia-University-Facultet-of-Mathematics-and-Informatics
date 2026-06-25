@@ -11,6 +11,8 @@ def test_cli_help(capsys):
     assert "predict-token-classifier" in captured.out
     assert "run-re-transformer" in captured.out
     assert "predict-re-rule" in captured.out
+    assert "train-re-pair-classifier" in captured.out
+    assert "predict-re-pair-classifier" in captured.out
     assert "evaluate-official" in captured.out
 
 

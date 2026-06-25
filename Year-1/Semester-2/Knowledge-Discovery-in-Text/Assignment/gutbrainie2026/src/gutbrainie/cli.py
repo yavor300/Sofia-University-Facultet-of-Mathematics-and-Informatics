@@ -134,6 +134,31 @@ def build_parser() -> argparse.ArgumentParser:
     re_transformer.add_argument("--config", default="configs/re_transformer.yaml")
     re_transformer.set_defaults(handler=_placeholder_handler)
 
+    re_pair_train = subparsers.add_parser("train-re-pair-classifier", help="Fine-tune a mention-level RE pair classifier.")
+    re_pair_train.add_argument("--config", default="configs/re_transformer.yaml")
+    re_pair_train.add_argument("--data-root", default="data/gutbrainie2026")
+    re_pair_train.add_argument(
+        "--experiment",
+        default="gold",
+        choices=["gold", "gold_silver", "gold_silver_silver_2025"],
+    )
+    re_pair_train.add_argument("--model", default=None)
+    re_pair_train.add_argument("--output-dir", default="outputs/models/re_pair_classifier_gold")
+    re_pair_train.add_argument("--validation-fraction", type=float, default=0.15)
+    re_pair_train.add_argument("--seed", type=int, default=13)
+    re_pair_train.set_defaults(handler=_train_re_pair_classifier)
+
+    re_pair_predict = subparsers.add_parser("predict-re-pair-classifier", help="Predict T621 relations with a trained RE pair classifier.")
+    re_pair_predict.add_argument("--model", required=True)
+    re_pair_predict.add_argument("--articles", default="data/gutbrainie2026/Articles/csv_format/articles_dev.csv")
+    re_pair_predict.add_argument("--entities", required=True, help="Gold/predicted entities as CSV or T611 JSON.")
+    re_pair_predict.add_argument("--output", default="outputs/predictions/dev_t621_pair_classifier.json")
+    re_pair_predict.add_argument("--threshold", type=float, default=0.5)
+    re_pair_predict.add_argument("--batch-size", type=int, default=8)
+    re_pair_predict.add_argument("--max-length", type=int, default=512)
+    re_pair_predict.add_argument("--use-cpu", action="store_true")
+    re_pair_predict.set_defaults(handler=_predict_re_pair_classifier)
+
     evaluate = subparsers.add_parser("evaluate", help="Run internal exact-match evaluation.")
     evaluate.add_argument("--task", required=True, choices=["ner", "re"])
     evaluate.add_argument("--gold", required=True, help="Gold CSV path.")
@@ -393,6 +418,49 @@ def _predict_re_rule(args: argparse.Namespace) -> int:
             raise SystemExit("Missing dependency 'pandas'. Run: pip install -r requirements.txt") from exc
         raise
     print(f"Rule RE predictions written to {args.output}: relations={len(predictions)}")
+    return 0
+
+
+def _train_re_pair_classifier(args: argparse.Namespace) -> int:
+    from gutbrainie.re.train_pair_classifier import train_pair_classifier_experiment
+
+    try:
+        metadata = train_pair_classifier_experiment(
+            data_root=args.data_root,
+            experiment=args.experiment,
+            output_dir=args.output_dir,
+            config_path=args.config,
+            validation_fraction=args.validation_fraction,
+            seed=args.seed,
+            model_name=args.model,
+        )
+    except ModuleNotFoundError as exc:
+        raise SystemExit(str(exc)) from exc
+    print(f"RE pair classifier written to {metadata['output_dir']}")
+    print(f"- train examples: {metadata['train_examples']}")
+    print(f"- validation examples: {metadata['validation_examples']}")
+    print(f"- positive train examples: {metadata['positive_train_examples']}")
+    print(f"- labels: {metadata['label_count']}")
+    return 0
+
+
+def _predict_re_pair_classifier(args: argparse.Namespace) -> int:
+    from gutbrainie.re.predict_pair_classifier import predict_pair_classifier_to_json
+
+    try:
+        predictions = predict_pair_classifier_to_json(
+            model_path=args.model,
+            articles_path=args.articles,
+            entities_path=args.entities,
+            output_path=args.output,
+            threshold=args.threshold,
+            batch_size=args.batch_size,
+            max_length=args.max_length,
+            use_cpu=args.use_cpu,
+        )
+    except ModuleNotFoundError as exc:
+        raise SystemExit(str(exc)) from exc
+    print(f"RE pair classifier predictions written to {args.output}: relations={len(predictions)}")
     return 0
 
 
