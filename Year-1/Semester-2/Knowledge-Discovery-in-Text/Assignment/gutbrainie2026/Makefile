@@ -41,6 +41,15 @@ RE_PAIR_OUTPUT ?= $(OUTPUTS_ROOT)/predictions/dev_t621_pair_classifier_$(RE_PAIR
 RE_PAIR_THRESHOLD ?= 0.5
 RE_PAIR_BATCH_SIZE ?= 8
 RE_PAIR_MAX_LENGTH ?= 512
+OLLAMA_MODEL ?= llama3.1:8b-instruct
+OLLAMA_BASE_URL ?= http://localhost:11434
+OLLAMA_OUTPUT ?= $(OUTPUTS_ROOT)/predictions/dev_t621_ollama_llama31.json
+OLLAMA_DECISIONS_OUTPUT ?= $(OUTPUTS_ROOT)/reports/dev_t621_ollama_llama31_decisions.jsonl
+OLLAMA_THRESHOLD ?= 0.5
+OLLAMA_MAX_CANDIDATES ?= 200
+OLLAMA_MAX_DISTANCE ?= 0
+OLLAMA_TIMEOUT ?= 120
+OLLAMA_TEMPERATURE ?= 0.0
 NER_DICTIONARY_OUTPUT ?= $(OUTPUTS_ROOT)/predictions/dev_t611_dictionary.json
 GLINER_EXPERIMENT ?= gold
 GLINER_DATA_DIR ?= $(OUTPUTS_ROOT)/gliner
@@ -69,7 +78,7 @@ ATLOP_PREDICTED_ENTITIES_ARG = $(if $(ATLOP_PREDICTED_ENTITIES),--predicted-enti
 	predict-gliner train-token-classifier train-pubmedbert-token-classifier \
 	train-biomedbert-token-classifier train-scibert-token-classifier train-biobert-token-classifier \
 	predict-token-classifier predict-re-rule train-re-pair-classifier predict-re-pair-classifier \
-	atlop-notes prepare-atlop-data run-atlop evaluate evaluate-official export-t611 export-t621 clean
+	predict-re-ollama atlop-notes prepare-atlop-data run-atlop evaluate evaluate-official export-t611 export-t621 clean
 
 help:
 	@echo "GutBrainIE 2026 commands"
@@ -108,6 +117,7 @@ help:
 	@echo "  make predict-re-rule      Predict T621 JSON with prior RE baseline"
 	@echo "  make train-re-pair-classifier  Fine-tune PubMedBERT RE pair classifier"
 	@echo "  make predict-re-pair-classifier  Predict T621 JSON with trained RE pair classifier"
+	@echo "  make predict-re-ollama    Verify T621 candidates with local Ollama"
 	@echo "  make atlop-notes           Inspect optional official ATLOP setup"
 	@echo "  make prepare-atlop-data    Convert local data to official ATLOP JSON files"
 	@echo "  make run-atlop             Run optional official ATLOP step; override ATLOP_ACTION=compose|finetune|predict"
@@ -137,6 +147,7 @@ help:
 	@echo "  make predict-re-rule RE_ENTITIES=outputs/predictions/dev_t611_best.json"
 	@echo "  make train-re-pair-classifier RE_PAIR_EXPERIMENT=gold"
 	@echo "  make predict-re-pair-classifier RE_PAIR_MODEL_DIR=outputs/models/re_pair_classifier_gold RE_ENTITIES=outputs/predictions/dev_t611_best.json"
+	@echo "  make predict-re-ollama RE_ENTITIES=outputs/predictions/dev_t611_best.json OLLAMA_MODEL=llama3.1:8b-instruct"
 	@echo "  make atlop-notes"
 	@echo "  make prepare-atlop-data"
 	@echo "  make run-atlop ATLOP_ACTION=compose ATLOP_DRY_RUN=1"
@@ -240,6 +251,9 @@ train-re-pair-classifier:
 
 predict-re-pair-classifier:
 	@$(CLI) predict-re-pair-classifier --model $(RE_PAIR_MODEL_DIR) --articles $(ARTICLES) --entities $(RE_ENTITIES) --output $(RE_PAIR_OUTPUT) --threshold $(RE_PAIR_THRESHOLD) --batch-size $(RE_PAIR_BATCH_SIZE) --max-length $(RE_PAIR_MAX_LENGTH)
+
+predict-re-ollama:
+	@$(CLI) predict-re-ollama --articles $(ARTICLES) --entities $(RE_ENTITIES) --model $(OLLAMA_MODEL) --base-url $(OLLAMA_BASE_URL) --output $(OLLAMA_OUTPUT) --threshold $(OLLAMA_THRESHOLD) --max-candidates $(OLLAMA_MAX_CANDIDATES) --max-distance $(OLLAMA_MAX_DISTANCE) --timeout $(OLLAMA_TIMEOUT) --temperature $(OLLAMA_TEMPERATURE) --decisions-output $(OLLAMA_DECISIONS_OUTPUT)
 
 atlop-notes:
 	@$(CLI) atlop-notes --official-repo $(OFFICIAL_REPO) --data-root $(DATA_ROOT) --output $(ATLOP_NOTES_OUTPUT)

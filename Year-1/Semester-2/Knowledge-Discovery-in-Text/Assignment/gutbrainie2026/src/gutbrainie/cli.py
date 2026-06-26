@@ -159,6 +159,20 @@ def build_parser() -> argparse.ArgumentParser:
     re_pair_predict.add_argument("--use-cpu", action="store_true")
     re_pair_predict.set_defaults(handler=_predict_re_pair_classifier)
 
+    re_ollama = subparsers.add_parser("predict-re-ollama", help="Verify T621 candidates with a local Ollama LLM.")
+    re_ollama.add_argument("--articles", default="data/gutbrainie2026/Articles/csv_format/articles_dev.csv")
+    re_ollama.add_argument("--entities", required=True, help="Gold/predicted entities as CSV or T611 JSON.")
+    re_ollama.add_argument("--model", default="llama3.1:8b-instruct")
+    re_ollama.add_argument("--base-url", default="http://localhost:11434")
+    re_ollama.add_argument("--output", default="outputs/predictions/dev_t621_ollama_llama31.json")
+    re_ollama.add_argument("--threshold", type=float, default=0.5)
+    re_ollama.add_argument("--max-candidates", type=int, default=200)
+    re_ollama.add_argument("--max-distance", type=int, default=0)
+    re_ollama.add_argument("--timeout", type=float, default=120)
+    re_ollama.add_argument("--temperature", type=float, default=0.0)
+    re_ollama.add_argument("--decisions-output", help="Optional JSONL audit log of LLM decisions.")
+    re_ollama.set_defaults(handler=_predict_re_ollama)
+
     atlop_notes = subparsers.add_parser("atlop-notes", help="Inspect official ATLOP setup and write reproduction notes.")
     atlop_notes.add_argument("--official-repo", default="external/GutBrainIE_2026_Baseline")
     atlop_notes.add_argument("--data-root", default="data/gutbrainie2026")
@@ -481,6 +495,31 @@ def _predict_re_pair_classifier(args: argparse.Namespace) -> int:
     except ModuleNotFoundError as exc:
         raise SystemExit(str(exc)) from exc
     print(f"RE pair classifier predictions written to {args.output}: relations={len(predictions)}")
+    return 0
+
+
+def _predict_re_ollama(args: argparse.Namespace) -> int:
+    from gutbrainie.llm.ollama_relation_verifier import predict_re_ollama_to_json
+
+    try:
+        predictions = predict_re_ollama_to_json(
+            articles_path=args.articles,
+            entities_path=args.entities,
+            output_path=args.output,
+            model=args.model,
+            base_url=args.base_url,
+            threshold=args.threshold,
+            max_candidates=args.max_candidates,
+            max_distance=args.max_distance,
+            timeout=args.timeout,
+            temperature=args.temperature,
+            decisions_output=args.decisions_output,
+        )
+    except RuntimeError as exc:
+        raise SystemExit(str(exc)) from exc
+    print(f"Ollama RE predictions written to {args.output}: relations={len(predictions)}")
+    if args.decisions_output:
+        print(f"- decisions: {args.decisions_output}")
     return 0
 
 

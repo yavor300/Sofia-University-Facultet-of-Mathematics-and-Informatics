@@ -57,7 +57,9 @@ make run-ner-transformer
 make run-re-baseline
 make train-re-pair-classifier
 make predict-re-pair-classifier
+make predict-re-ollama
 make atlop-notes
+make prepare-atlop-data
 make run-atlop
 make run-re-transformer
 make evaluate
@@ -427,6 +429,44 @@ make evaluate EVAL_TASK=re \
   PREDICTION=outputs/predictions/dev_t621_pair_classifier_pubmedbert_entities.json \
   METRICS_OUTPUT=outputs/reports/metrics_dev_re_pair_classifier_pubmedbert_entities.json
 ```
+
+## Optional Ollama Relation Verification
+
+LLM experiments are optional and are used here for mention-level relation verification, not as the main project solution. The default local model is `llama3.1:8b-instruct`.
+
+Pull and serve the model with Ollama:
+
+```bash
+ollama pull llama3.1:8b-instruct
+ollama serve
+```
+
+Run a bounded dev experiment over the first candidate pairs:
+
+```bash
+make predict-re-ollama \
+  RE_ENTITIES=outputs/predictions/dev_t611_pubmedbert_gold_silver_silver_2025.json \
+  OLLAMA_MODEL=llama3.1:8b-instruct \
+  OLLAMA_MAX_CANDIDATES=200 \
+  OLLAMA_OUTPUT=outputs/predictions/dev_t621_ollama_llama31.json \
+  OLLAMA_DECISIONS_OUTPUT=outputs/reports/dev_t621_ollama_llama31_decisions.jsonl
+```
+
+Evaluate it like any other T621 prediction:
+
+```bash
+make evaluate EVAL_TASK=re \
+  GOLD=data/gutbrainie2026/Annotations/Dev/csv_format/dev_mention_level_relations.csv \
+  PREDICTION=outputs/predictions/dev_t621_ollama_llama31.json \
+  METRICS_OUTPUT=outputs/reports/metrics_dev_re_ollama_llama31.json
+```
+
+Useful controls:
+
+- `OLLAMA_MAX_CANDIDATES`: caps the number of LLM calls.
+- `OLLAMA_MAX_DISTANCE`: defaults to same-sentence candidates only.
+- `OLLAMA_THRESHOLD`: minimum returned confidence for keeping a relation.
+- `OLLAMA_DECISIONS_OUTPUT`: JSONL audit log of prompts/results.
 
 ## Optional ATLOP Reproduction
 
