@@ -14,10 +14,13 @@ protobuf
 rich
 matplotlib
 jupyter
+streamlit
+plotly
+networkx
+pyvis
 
 # Optional dependencies for later phases:
 # gliner
 # spacy
 # ollama
 # openai
-

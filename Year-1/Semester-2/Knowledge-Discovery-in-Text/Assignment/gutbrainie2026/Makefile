@@ -59,6 +59,25 @@ GPT_MAX_CANDIDATES ?= 50
 GPT_MAX_DISTANCE ?= 0
 GPT_TIMEOUT ?= 120
 GPT_TEMPERATURE ?= 0.0
+PIPELINE_SPLIT ?= dev
+PIPELINE_NER_BACKEND ?= token-classifier
+PIPELINE_RE_BACKEND ?= pair-classifier
+PIPELINE_NER_MODEL ?= $(OUTPUTS_ROOT)/models/pubmedbert_gold_silver_silver_2025
+PIPELINE_RE_MODEL ?= $(OUTPUTS_ROOT)/models/re_pair_classifier_gold_silver_silver_2025
+PIPELINE_OUTPUT_DIR ?= $(OUTPUTS_ROOT)/predictions/pipeline_$(PIPELINE_SPLIT)
+PIPELINE_METRICS_OUTPUT ?= $(OUTPUTS_ROOT)/reports/pipeline_$(PIPELINE_SPLIT)_metrics.json
+PIPELINE_CONFIG_OUTPUT ?= $(PIPELINE_OUTPUT_DIR)/pipeline_config.json
+PIPELINE_ARTICLES ?=
+PIPELINE_TRAIN_ENTITIES ?=
+PIPELINE_TRAIN_RELATIONS ?= $(TRAIN_RELATIONS)
+PIPELINE_NER_CONFIG ?= $(GLINER_CONFIG)
+PIPELINE_NER_BATCH_SIZE ?= 8
+PIPELINE_NER_MAX_LENGTH ?= 512
+PIPELINE_RE_THRESHOLD ?= 0.5
+PIPELINE_RE_BATCH_SIZE ?= 8
+PIPELINE_RE_MAX_LENGTH ?= 512
+PIPELINE_USE_CPU ?=
+STREAMLIT_PORT ?= 8501
 NER_DICTIONARY_OUTPUT ?= $(OUTPUTS_ROOT)/predictions/dev_t611_dictionary.json
 GLINER_EXPERIMENT ?= gold
 GLINER_DATA_DIR ?= $(OUTPUTS_ROOT)/gliner
@@ -81,6 +100,10 @@ RE_PAIR_MODEL_ARG = $(if $(RE_PAIR_MODEL),--model $(RE_PAIR_MODEL),)
 ATLOP_DRY_RUN_ARG = $(if $(ATLOP_DRY_RUN),--dry-run,)
 ATLOP_PREDICTED_ENTITIES_ARG = $(if $(ATLOP_PREDICTED_ENTITIES),--predicted-entities $(ATLOP_PREDICTED_ENTITIES),)
 GPT_MODEL_ARG = $(if $(GPT_MODEL),--model $(GPT_MODEL),)
+PIPELINE_ARTICLES_ARG = $(if $(PIPELINE_ARTICLES),--articles $(PIPELINE_ARTICLES),)
+PIPELINE_TRAIN_ENTITIES_ARG = $(if $(PIPELINE_TRAIN_ENTITIES),--train-entities $(PIPELINE_TRAIN_ENTITIES),)
+PIPELINE_TRAIN_RELATIONS_ARG = $(if $(PIPELINE_TRAIN_RELATIONS),--train-relations $(PIPELINE_TRAIN_RELATIONS),)
+PIPELINE_USE_CPU_ARG = $(if $(PIPELINE_USE_CPU),--use-cpu,)
 
 .PHONY: help setup install install-gliner install-atlop test cli-help prepare-data validate-all eda eda-all \
 	install-gpt \
@@ -89,7 +112,7 @@ GPT_MODEL_ARG = $(if $(GPT_MODEL),--model $(GPT_MODEL),)
 	predict-gliner train-token-classifier train-pubmedbert-token-classifier \
 	train-biomedbert-token-classifier train-scibert-token-classifier train-biobert-token-classifier \
 	predict-token-classifier predict-re-rule train-re-pair-classifier predict-re-pair-classifier \
-	predict-re-ollama predict-re-gpt atlop-notes prepare-atlop-data run-atlop evaluate evaluate-official export-t611 export-t621 clean
+	predict-re-ollama predict-re-gpt run-pipeline app atlop-notes prepare-atlop-data run-atlop evaluate evaluate-official export-t611 export-t621 clean
 
 help:
 	@echo "GutBrainIE 2026 commands"
@@ -131,6 +154,8 @@ help:
 	@echo "  make predict-re-pair-classifier  Predict T621 JSON with trained RE pair classifier"
 	@echo "  make predict-re-ollama    Verify T621 candidates with local Ollama"
 	@echo "  make predict-re-gpt       Verify T621 candidates with OpenAI GPT"
+	@echo "  make run-pipeline         Run end-to-end NER then RE prediction"
+	@echo "  make app                  Start Streamlit visualization demo"
 	@echo "  make atlop-notes           Inspect optional official ATLOP setup"
 	@echo "  make prepare-atlop-data    Convert local data to official ATLOP JSON files"
 	@echo "  make run-atlop             Run optional official ATLOP step; override ATLOP_ACTION=compose|finetune|predict"
@@ -162,6 +187,8 @@ help:
 	@echo "  make predict-re-pair-classifier RE_PAIR_MODEL_DIR=outputs/models/re_pair_classifier_gold RE_ENTITIES=outputs/predictions/dev_t611_best.json"
 	@echo "  make predict-re-ollama RE_ENTITIES=outputs/predictions/dev_t611_best.json OLLAMA_MODEL=llama3.1:8b"
 	@echo "  make predict-re-gpt RE_ENTITIES=outputs/predictions/dev_t611_best.json GPT_MAX_CANDIDATES=50"
+	@echo "  make run-pipeline PIPELINE_NER_MODEL=outputs/models/pubmedbert_gold_silver_silver_2025 PIPELINE_RE_MODEL=outputs/models/re_pair_classifier_gold_silver_silver_2025"
+	@echo "  make app"
 	@echo "  make atlop-notes"
 	@echo "  make prepare-atlop-data"
 	@echo "  make run-atlop ATLOP_ACTION=compose ATLOP_DRY_RUN=1"
@@ -275,6 +302,12 @@ predict-re-ollama:
 predict-re-gpt:
 	@$(CLI) predict-re-gpt --articles $(ARTICLES) --entities $(RE_ENTITIES) $(GPT_MODEL_ARG) --env-file $(GPT_ENV_FILE) --output $(GPT_OUTPUT) --threshold $(GPT_THRESHOLD) --max-candidates $(GPT_MAX_CANDIDATES) --max-distance $(GPT_MAX_DISTANCE) --timeout $(GPT_TIMEOUT) --temperature $(GPT_TEMPERATURE) --decisions-output $(GPT_DECISIONS_OUTPUT)
 
+run-pipeline:
+	@$(CLI) run-pipeline --data-root $(DATA_ROOT) --split $(PIPELINE_SPLIT) $(PIPELINE_ARTICLES_ARG) --ner-backend $(PIPELINE_NER_BACKEND) --re-backend $(PIPELINE_RE_BACKEND) --ner-model $(PIPELINE_NER_MODEL) --re-model $(PIPELINE_RE_MODEL) --output-dir $(PIPELINE_OUTPUT_DIR) --metrics-output $(PIPELINE_METRICS_OUTPUT) --config-output $(PIPELINE_CONFIG_OUTPUT) --ner-config $(PIPELINE_NER_CONFIG) $(PIPELINE_TRAIN_ENTITIES_ARG) $(PIPELINE_TRAIN_RELATIONS_ARG) --ner-batch-size $(PIPELINE_NER_BATCH_SIZE) --ner-max-length $(PIPELINE_NER_MAX_LENGTH) --re-threshold $(PIPELINE_RE_THRESHOLD) --re-batch-size $(PIPELINE_RE_BATCH_SIZE) --re-max-length $(PIPELINE_RE_MAX_LENGTH) $(PIPELINE_USE_CPU_ARG)
+
+app:
+	@PYTHONPATH=$(PYTHONPATH) $(PYTHON) -m streamlit run app/streamlit_app.py --server.port $(STREAMLIT_PORT)
+
 atlop-notes:
 	@$(CLI) atlop-notes --official-repo $(OFFICIAL_REPO) --data-root $(DATA_ROOT) --output $(ATLOP_NOTES_OUTPUT)
 
@@ -297,5 +330,5 @@ export-t621:
 	@$(CLI) export-t621 --output $(T621_OUTPUT)
 
 clean:
-	@find src tests -name __pycache__ -type d -prune -exec rm -rf {} +
+	@find src tests app -name __pycache__ -type d -prune -exec rm -rf {} +
 	@rm -rf .pytest_cache

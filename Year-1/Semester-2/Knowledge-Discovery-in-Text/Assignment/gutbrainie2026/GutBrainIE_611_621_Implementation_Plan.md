@@ -1169,6 +1169,643 @@ outputs/reports/pipeline_dev_metrics.json
 
 ---
 
+# Frontend Phase: Interactive Visualization Demo for GutBrainIE Tasks T611 and T621
+
+## Goal
+
+Implement a lightweight frontend application that demonstrates the full GutBrainIE information extraction pipeline for:
+
+* **Task 6.1.1 / T611 — Named Entity Recognition**
+* **Task 6.2.1 / T621 — Mention-Level Relation Extraction**
+
+The frontend should allow users to inspect PubMed articles, visualize predicted biomedical entities, compare predictions against gold annotations when available, and explore extracted mention-level relations.
+
+The main purpose of this frontend is not production deployment, but **course project demonstration, error analysis, and model interpretability**.
+
+---
+
+## Recommended Technology
+
+Use **Streamlit** for the first frontend version.
+
+Reasons:
+
+* Very fast to implement.
+* Works directly with Python backend code.
+* Easy to run locally.
+* Suitable for academic demos.
+* Supports tables, charts, colored HTML spans, file upload, filters, and interactive controls.
+* Avoids the overhead of a separate React/FastAPI architecture.
+
+Suggested frontend location:
+
+```text
+app/
+├── streamlit_app.py
+├── components/
+│   ├── entity_highlighter.py
+│   ├── relation_viewer.py
+│   ├── metrics_dashboard.py
+│   └── article_selector.py
+└── README.md
+```
+
+---
+
+## Input Files
+
+The frontend should be able to load:
+
+### Articles
+
+```text
+data/gutbrainie2026/Articles/csv_format/articles_dev.csv
+data/gutbrainie2026/Test_Data/articles_test.csv
+```
+
+### Gold annotations, when available
+
+```text
+data/gutbrainie2026/Annotations/Dev/csv_format/dev_entities.csv
+data/gutbrainie2026/Annotations/Dev/csv_format/dev_mention_level_relations.csv
+```
+
+### Model predictions
+
+```text
+runs/ner_dictionary_baseline/dev_predictions_t611.json
+runs/re_baseline/dev_predictions_t621.json
+runs/*/evaluation_report.json
+```
+
+The frontend should support both:
+
+1. **Development mode** — articles + gold annotations + predictions.
+2. **Test/demo mode** — articles + predictions only.
+
+---
+
+## Main Pages
+
+The application should contain the following pages or tabs.
+
+---
+
+## 1. Project Overview Page
+
+This page should briefly explain the project.
+
+Show:
+
+* Project name.
+* Dataset: GutBrainIE 2026.
+* Input: PubMed title and abstract.
+* Output:
+
+  * biomedical entities for T611,
+  * mention-level relations for T621.
+* Short explanation of the two implemented subtasks.
+* Current implemented models:
+
+  * dictionary/rule-based NER baseline,
+  * transformer NER model, if available,
+  * rule-based or classifier-based RE model, if available.
+
+Example text:
+
+> This application visualizes a biomedical information extraction pipeline for the GutBrainIE 2026 challenge. The system detects biomedical entity mentions in PubMed titles and abstracts and extracts relations between these mentions. The demo supports visual inspection of model predictions, comparison with gold annotations, and error analysis for both NER and relation extraction.
+
+---
+
+## 2. Dataset Explorer Page
+
+This page should allow the user to inspect the dataset.
+
+Features:
+
+* Select dataset split:
+
+  * Train Gold
+  * Train Silver
+  * Train Silver 2025
+  * Train Bronze
+  * Dev
+  * Test
+* Show number of articles.
+* Show number of entities if annotations are available.
+* Show number of mention-level relations if annotations are available.
+* Show entity label distribution.
+* Show relation predicate distribution.
+* Search by PMID.
+* Search by keyword in title or abstract.
+
+Useful visualizations:
+
+* Bar chart of entity label counts.
+* Bar chart of relation predicate counts.
+* Table of articles with:
+
+  * PMID
+  * title
+  * year
+  * number of entities
+  * number of relations
+
+---
+
+## 3. T611 NER Visualization Page
+
+This is the most important frontend page.
+
+The page should let the user select a PubMed article and visualize entity predictions inside the title and abstract.
+
+### Features
+
+* Select article by PMID.
+* Display article metadata:
+
+  * PMID
+  * title
+  * journal
+  * year
+* Show title and abstract.
+* Highlight predicted entities using colored spans.
+* Use a different color for each entity label.
+* Show a legend for entity labels.
+* Show table of predicted entities:
+
+  * text span
+  * label
+  * location
+  * start index
+  * end index
+
+### Gold comparison mode
+
+If gold annotations are available, support comparison between:
+
+* gold entities,
+* predicted entities.
+
+Display entity status:
+
+* **True Positive** — exact span and label match.
+* **False Positive** — predicted entity not present in gold.
+* **False Negative** — gold entity missed by the model.
+
+Suggested color coding:
+
+* Green: true positive.
+* Red: false positive.
+* Orange: false negative.
+* Neutral label colors: when no gold data is available.
+
+### Required matching rule
+
+For T611, an entity prediction is considered correct only if all of the following match:
+
+```text
+pmid, location, start_idx, end_idx, label
+```
+
+### Example UI layout
+
+```text
+[Article selector]
+
+PMID: 34870091
+Title: ...
+Journal: ...
+Year: ...
+
+[Highlighted title]
+
+[Highlighted abstract]
+
+[Entity legend]
+
+[Predicted entities table]
+
+[Gold vs Prediction comparison table]
+```
+
+---
+
+## 4. T621 Relation Extraction Visualization Page
+
+This page should visualize mention-level relations between detected or gold entity mentions.
+
+### Features
+
+* Select article by PMID.
+* Display title and abstract with highlighted entities.
+* Show extracted relations as a table.
+* Show relation triples in readable format:
+
+```text
+subject mention → predicate → object mention
+```
+
+Example:
+
+```text
+gut microbiota → is linked to → Parkinson's disease
+Lactobacillus → influence → inflammation
+short-chain fatty acids → produced by → microbiome
+```
+
+### Relation table columns
+
+```text
+subject_text_span
+subject_label
+predicate
+object_text_span
+object_label
+status
+```
+
+If gold relations are available, include comparison status:
+
+* True Positive
+* False Positive
+* False Negative
+
+### Optional graph visualization
+
+Add a relation graph for the selected article:
+
+* Nodes: entity mentions.
+* Node label: text span.
+* Node type: entity label.
+* Edges: predicates.
+* Edge label: relation predicate.
+
+Recommended Python packages:
+
+```text
+networkx
+pyvis
+```
+
+Or simpler Streamlit-native approach:
+
+* show relation triples as cards,
+* avoid graph visualization if implementation becomes too complex.
+
+### Relation cards
+
+Each extracted relation can be displayed as a card:
+
+```text
+Subject: gut microbiota [microbiome]
+Predicate: is linked to
+Object: depression [DDF]
+```
+
+This is often easier to understand than a dense graph.
+
+---
+
+## 5. Metrics Dashboard Page
+
+This page should show model evaluation results.
+
+Load evaluation reports from:
+
+```text
+runs/*/evaluation_report.json
+```
+
+Show separate sections for:
+
+* T611 NER metrics
+* T621 Mention-Level RE metrics
+
+### Metrics to show
+
+For each task:
+
+* micro precision
+* micro recall
+* micro F1
+* macro precision
+* macro recall
+* macro F1
+* number of true positives
+* number of false positives
+* number of false negatives
+
+### Per-label metrics
+
+For T611:
+
+* entity label
+* precision
+* recall
+* F1
+* support
+
+For T621:
+
+* predicate or relation type
+* precision
+* recall
+* F1
+* support
+
+### Visualizations
+
+Add:
+
+* bar chart of per-label F1 for NER,
+* bar chart of per-predicate F1 for RE,
+* confusion or error summary if available.
+
+The dashboard should make it easy to explain which entity types and relation predicates are easy or difficult for the model.
+
+---
+
+## 6. Error Analysis Page
+
+This page should help analyze model mistakes.
+
+### For T611
+
+Show:
+
+* missed entities,
+* wrong labels,
+* boundary errors,
+* frequent false positives,
+* frequent false negatives.
+
+Boundary error example:
+
+```text
+Gold: "intestinal microbiome"
+Prediction: "microbiome"
+```
+
+### For T621
+
+Show:
+
+* missed relations,
+* wrong predicates,
+* relations predicted with correct entities but wrong predicate,
+* relations impossible because NER missed one of the mentions.
+
+Important analysis categories:
+
+```text
+NER error caused RE error
+Correct entities but wrong relation
+Correct subject and object but wrong predicate
+Spurious relation between unrelated mentions
+```
+
+This is useful for the final report because relation extraction quality depends strongly on entity extraction quality.
+
+---
+
+## 7. Single Text Demo Page
+
+Add a page where the user can paste a custom biomedical title and abstract.
+
+The page should allow:
+
+* input custom title,
+* input custom abstract,
+* run NER prediction,
+* run relation extraction prediction if available,
+* visualize detected entities and relations.
+
+For Phase 1, this page can support only the dictionary/rule-based NER baseline.
+
+For later phases, it can support:
+
+* transformer NER model,
+* relation classifier,
+* LLM-assisted relation extraction.
+
+---
+
+## Implementation Steps
+
+### Step 1 — Add frontend dependencies
+
+Update `requirements.txt`:
+
+```text
+streamlit
+plotly
+networkx
+pyvis
+```
+
+Use `plotly` for charts because it integrates well with Streamlit.
+
+---
+
+### Step 2 — Create Streamlit entry point
+
+Create:
+
+```text
+app/streamlit_app.py
+```
+
+The app should define sidebar navigation:
+
+```text
+Project Overview
+Dataset Explorer
+T611 NER Visualization
+T621 Relation Visualization
+Metrics Dashboard
+Error Analysis
+Single Text Demo
+```
+
+---
+
+### Step 3 — Reuse backend loaders
+
+Do not duplicate data loading logic inside the frontend.
+
+Import existing project modules:
+
+```python
+from gutbrainie.data_loader import load_articles_csv, load_entities_csv
+from gutbrainie.submission.export_t611 import load_t611_predictions
+from gutbrainie.evaluation.ner_eval import evaluate_ner_predictions
+```
+
+If needed, add small frontend adapter functions, but keep core logic in `src/gutbrainie`.
+
+---
+
+### Step 4 — Implement entity highlighter
+
+Create:
+
+```text
+app/components/entity_highlighter.py
+```
+
+The highlighter should:
+
+* receive raw text,
+* receive entity mentions for either `title` or `abstract`,
+* sort entities by start offset,
+* avoid broken HTML when entities overlap,
+* return safe HTML with colored spans.
+
+Function example:
+
+```python
+def highlight_entities(text: str, entities: list[EntityMention]) -> str:
+    ...
+```
+
+Use `st.markdown(..., unsafe_allow_html=True)` to render highlighted spans.
+
+---
+
+### Step 5 — Implement relation viewer
+
+Create:
+
+```text
+app/components/relation_viewer.py
+```
+
+The relation viewer should support two modes:
+
+1. Table mode.
+2. Card mode.
+
+Graph mode can be optional.
+
+---
+
+### Step 6 — Implement metrics dashboard
+
+Create:
+
+```text
+app/components/metrics_dashboard.py
+```
+
+It should:
+
+* load JSON evaluation reports,
+* display summary metrics using `st.metric`,
+* display per-label results using tables,
+* display charts using Plotly.
+
+---
+
+### Step 7 — Add run command
+
+The frontend should run with:
+
+```bash
+streamlit run app/streamlit_app.py
+```
+
+Add this command to the README.
+
+---
+
+## Expected Output
+
+After this frontend phase, the project should provide a visual demo where a user can:
+
+* browse GutBrainIE articles,
+* inspect predicted T611 entities,
+* compare NER predictions with gold annotations,
+* inspect T621 mention-level relations,
+* compare relation predictions with gold annotations,
+* view evaluation metrics,
+* analyze errors,
+* run a small custom text demo.
+
+---
+
+## Suggested Implementation Order
+
+Implement the frontend in this order:
+
+```text
+1. Project Overview page
+2. Dataset Explorer page
+3. T611 NER Visualization page
+4. Metrics Dashboard page for T611
+5. T621 Relation Visualization page
+6. Metrics Dashboard extension for T621
+7. Error Analysis page
+8. Single Text Demo page
+```
+
+The first usable demo should focus on T611 because it is easier to visualize and explain. T621 visualization should be added after relation extraction predictions exist.
+
+---
+
+## Minimal Version for Course Presentation
+
+If time is limited, implement only:
+
+```text
+1. Dataset Explorer
+2. T611 highlighted entity visualization
+3. T621 relation table/cards
+4. Metrics dashboard
+```
+
+This is enough for a strong course project demonstration.
+
+---
+
+## Optional Advanced Features
+
+If the core frontend is finished, add:
+
+* model selector:
+
+  * dictionary baseline,
+  * PubMedBERT,
+  * BioBERT,
+  * SciBERT,
+  * GLiNER,
+  * GPT/Ollama assisted extraction;
+* side-by-side model comparison;
+* export selected article visualization as HTML;
+* filter by entity label;
+* filter by relation predicate;
+* show examples of best and worst predictions;
+* show cases where NER errors propagate into RE errors.
+
+---
+
+## Acceptance Criteria
+
+The frontend phase is complete when:
+
+* `streamlit run app/streamlit_app.py` starts successfully.
+* The user can select an article by PMID.
+* The title and abstract are displayed.
+* T611 entity predictions are highlighted.
+* T611 predictions can be compared against gold annotations on Dev.
+* T621 relations are displayed for an article.
+* Evaluation metrics are shown from JSON report files.
+* The app works without modifying the original dataset files.
+* The app can be demonstrated locally during the course presentation.
+
+
+---
+
 ## Phase 10 — Submission Export
 
 ### Goal

@@ -188,6 +188,28 @@ def build_parser() -> argparse.ArgumentParser:
     re_gpt.add_argument("--decisions-output", help="Optional JSONL audit log of GPT decisions.")
     re_gpt.set_defaults(handler=_predict_re_gpt)
 
+    pipeline = subparsers.add_parser("run-pipeline", help="Run end-to-end T611 NER plus T621 RE prediction.")
+    pipeline.add_argument("--data-root", default="data/gutbrainie2026")
+    pipeline.add_argument("--split", default="dev", choices=["dev", "test", "gold", "silver", "silver_2025", "bronze"])
+    pipeline.add_argument("--articles", help="Optional article CSV override.")
+    pipeline.add_argument("--ner-model", required=True)
+    pipeline.add_argument("--re-model", required=True)
+    pipeline.add_argument("--output-dir", default="outputs/predictions/pipeline_dev")
+    pipeline.add_argument("--metrics-output", help="Optional combined metrics/config JSON output path.")
+    pipeline.add_argument("--config-output", help="Optional pipeline config JSON output path.")
+    pipeline.add_argument("--ner-backend", default="token-classifier", choices=["token-classifier", "gliner", "dictionary"])
+    pipeline.add_argument("--re-backend", default="pair-classifier", choices=["pair-classifier", "rule"])
+    pipeline.add_argument("--ner-config", default="configs/ner_gliner.yaml")
+    pipeline.add_argument("--train-entities", help="Training entities CSV for dictionary NER.")
+    pipeline.add_argument("--train-relations", help="Training mention-level relations CSV for rule RE.")
+    pipeline.add_argument("--ner-batch-size", type=int, default=8)
+    pipeline.add_argument("--ner-max-length", type=int, default=512)
+    pipeline.add_argument("--re-threshold", type=float, default=0.5)
+    pipeline.add_argument("--re-batch-size", type=int, default=8)
+    pipeline.add_argument("--re-max-length", type=int, default=512)
+    pipeline.add_argument("--use-cpu", action="store_true")
+    pipeline.set_defaults(handler=_run_pipeline)
+
     atlop_notes = subparsers.add_parser("atlop-notes", help="Inspect official ATLOP setup and write reproduction notes.")
     atlop_notes.add_argument("--official-repo", default="external/GutBrainIE_2026_Baseline")
     atlop_notes.add_argument("--data-root", default="data/gutbrainie2026")
@@ -561,6 +583,41 @@ def _predict_re_gpt(args: argparse.Namespace) -> int:
     print(f"GPT RE predictions written to {args.output}: relations={len(predictions)}")
     if args.decisions_output:
         print(f"- decisions: {args.decisions_output}")
+    return 0
+
+
+def _run_pipeline(args: argparse.Namespace) -> int:
+    from gutbrainie.pipeline import run_prediction_pipeline
+
+    try:
+        result = run_prediction_pipeline(
+            data_root=args.data_root,
+            split=args.split,
+            articles_path=args.articles,
+            ner_model=args.ner_model,
+            re_model=args.re_model,
+            output_dir=args.output_dir,
+            metrics_output=args.metrics_output,
+            config_output=args.config_output,
+            ner_backend=args.ner_backend,
+            re_backend=args.re_backend,
+            ner_config=args.ner_config,
+            train_entities=args.train_entities,
+            train_relations=args.train_relations,
+            ner_batch_size=args.ner_batch_size,
+            ner_max_length=args.ner_max_length,
+            re_threshold=args.re_threshold,
+            re_batch_size=args.re_batch_size,
+            re_max_length=args.re_max_length,
+            use_cpu=args.use_cpu,
+        )
+    except (FileNotFoundError, ValueError, ModuleNotFoundError) as exc:
+        raise SystemExit(str(exc)) from exc
+    print(f"Pipeline completed for split '{args.split}'")
+    print(f"- entities: {result['outputs']['entities']} ({result['counts']['entities']})")
+    print(f"- mention relations: {result['outputs']['mention_relations']} ({result['counts']['mention_relations']})")
+    print(f"- config: {result['outputs']['config']}")
+    print(f"- metrics: {result['outputs']['metrics']}")
     return 0
 
 

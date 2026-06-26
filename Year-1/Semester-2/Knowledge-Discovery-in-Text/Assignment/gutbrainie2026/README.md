@@ -59,6 +59,8 @@ make train-re-pair-classifier
 make predict-re-pair-classifier
 make predict-re-ollama
 make predict-re-gpt
+make run-pipeline
+make app
 make atlop-notes
 make prepare-atlop-data
 make run-atlop
@@ -98,6 +100,10 @@ make predict-re-pair-classifier RE_PAIR_MODEL_DIR=outputs/models/re_pair_classif
 make atlop-notes
 make run-atlop ATLOP_ACTION=compose ATLOP_DRY_RUN=1
 make predict-re-gpt RE_ENTITIES=outputs/predictions/dev_t611_pubmedbert_gold_silver_silver_2025.json GPT_MAX_CANDIDATES=50
+make run-pipeline \
+  PIPELINE_NER_MODEL=outputs/models/pubmedbert_gold_silver_silver_2025 \
+  PIPELINE_RE_MODEL=outputs/models/re_pair_classifier_gold_silver_silver_2025
+make app
 ```
 
 ## NER Dictionary Baseline
@@ -431,6 +437,89 @@ make evaluate EVAL_TASK=re \
   PREDICTION=outputs/predictions/dev_t621_pair_classifier_pubmedbert_entities.json \
   METRICS_OUTPUT=outputs/reports/metrics_dev_re_pair_classifier_pubmedbert_entities.json
 ```
+
+## End-to-End Prediction Pipeline
+
+The pipeline command runs NER, feeds the predicted T611 entities into RE candidate generation, runs the RE model, writes T611/T621 JSON files, logs the full run configuration, and evaluates automatically when `--split dev` has gold annotations.
+
+Default Makefile settings assume the strongest current local path: PubMedBERT-style token-classifier NER plus the PubMedBERT RE pair classifier.
+
+```bash
+make run-pipeline \
+  PIPELINE_SPLIT=dev \
+  PIPELINE_NER_MODEL=outputs/models/pubmedbert_gold_silver_silver_2025 \
+  PIPELINE_RE_MODEL=outputs/models/re_pair_classifier_gold_silver_silver_2025 \
+  PIPELINE_OUTPUT_DIR=outputs/predictions/pipeline_dev \
+  PIPELINE_METRICS_OUTPUT=outputs/reports/pipeline_dev_metrics.json
+```
+
+Equivalent CLI:
+
+```bash
+python -m gutbrainie.cli run-pipeline \
+  --data-root data/gutbrainie2026 \
+  --split dev \
+  --ner-backend token-classifier \
+  --re-backend pair-classifier \
+  --ner-model outputs/models/pubmedbert_gold_silver_silver_2025 \
+  --re-model outputs/models/re_pair_classifier_gold_silver_silver_2025 \
+  --output-dir outputs/predictions/pipeline_dev \
+  --metrics-output outputs/reports/pipeline_dev_metrics.json
+```
+
+Outputs:
+
+```text
+outputs/predictions/pipeline_dev/dev_t611_entities.json
+outputs/predictions/pipeline_dev/dev_t621_mention_relations.json
+outputs/predictions/pipeline_dev/pipeline_config.json
+outputs/reports/pipeline_dev_metrics.json
+```
+
+For test articles, switch the split. The command writes predictions and config, but skips evaluation because test gold labels are not available locally:
+
+```bash
+make run-pipeline \
+  PIPELINE_SPLIT=test \
+  PIPELINE_NER_MODEL=outputs/models/pubmedbert_gold_silver_silver_2025 \
+  PIPELINE_RE_MODEL=outputs/models/re_pair_classifier_gold_silver_silver_2025 \
+  PIPELINE_OUTPUT_DIR=outputs/predictions/pipeline_test \
+  PIPELINE_METRICS_OUTPUT=outputs/reports/pipeline_test_metrics.json
+```
+
+Useful controls:
+
+- `PIPELINE_NER_BACKEND`: `token-classifier`, `gliner`, or `dictionary`.
+- `PIPELINE_RE_BACKEND`: `pair-classifier` or `rule`.
+- `PIPELINE_USE_CPU=1`: force CPU inference.
+- `PIPELINE_RE_THRESHOLD`: pair-classifier confidence threshold.
+
+## Streamlit Visualization Demo
+
+The frontend demo lives in `app/` and is intended for course presentation, error analysis, and model interpretability.
+
+Install dependencies, then start the app:
+
+```bash
+pip install -r requirements.txt
+make app
+```
+
+Equivalent command:
+
+```bash
+PYTHONPATH=src streamlit run app/streamlit_app.py
+```
+
+The app includes:
+
+- project overview;
+- dataset explorer with label/predicate distributions;
+- T611 entity highlighting with true-positive, false-positive, and false-negative comparison on dev;
+- T621 relation cards and tables;
+- metrics dashboard from `outputs/reports/*.json`;
+- error-analysis views;
+- custom-text dictionary NER demo.
 
 ## Optional Ollama Relation Verification
 

@@ -15,6 +15,7 @@ def test_cli_help(capsys):
     assert "predict-re-pair-classifier" in captured.out
     assert "predict-re-ollama" in captured.out
     assert "predict-re-gpt" in captured.out
+    assert "run-pipeline" in captured.out
     assert "atlop-notes" in captured.out
     assert "run-atlop" in captured.out
     assert "evaluate-official" in captured.out
