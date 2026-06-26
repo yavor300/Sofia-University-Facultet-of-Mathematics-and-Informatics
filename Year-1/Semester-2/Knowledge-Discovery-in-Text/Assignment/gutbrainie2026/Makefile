@@ -50,6 +50,15 @@ OLLAMA_MAX_CANDIDATES ?= 200
 OLLAMA_MAX_DISTANCE ?= 0
 OLLAMA_TIMEOUT ?= 120
 OLLAMA_TEMPERATURE ?= 0.0
+GPT_MODEL ?=
+GPT_ENV_FILE ?= .env
+GPT_OUTPUT ?= $(OUTPUTS_ROOT)/predictions/dev_t621_gpt.json
+GPT_DECISIONS_OUTPUT ?= $(OUTPUTS_ROOT)/reports/dev_t621_gpt_decisions.jsonl
+GPT_THRESHOLD ?= 0.5
+GPT_MAX_CANDIDATES ?= 50
+GPT_MAX_DISTANCE ?= 0
+GPT_TIMEOUT ?= 120
+GPT_TEMPERATURE ?= 0.0
 NER_DICTIONARY_OUTPUT ?= $(OUTPUTS_ROOT)/predictions/dev_t611_dictionary.json
 GLINER_EXPERIMENT ?= gold
 GLINER_DATA_DIR ?= $(OUTPUTS_ROOT)/gliner
@@ -71,14 +80,16 @@ OFFICIAL_ENTRYPOINT_ARG = $(if $(OFFICIAL_ENTRYPOINT),--entrypoint $(OFFICIAL_EN
 RE_PAIR_MODEL_ARG = $(if $(RE_PAIR_MODEL),--model $(RE_PAIR_MODEL),)
 ATLOP_DRY_RUN_ARG = $(if $(ATLOP_DRY_RUN),--dry-run,)
 ATLOP_PREDICTED_ENTITIES_ARG = $(if $(ATLOP_PREDICTED_ENTITIES),--predicted-entities $(ATLOP_PREDICTED_ENTITIES),)
+GPT_MODEL_ARG = $(if $(GPT_MODEL),--model $(GPT_MODEL),)
 
 .PHONY: help setup install install-gliner install-atlop test cli-help prepare-data validate-all eda eda-all \
+	install-gpt \
 	run-ner-baseline predict-ner-dictionary run-ner-transformer run-re-baseline run-re-transformer \
 	prepare-gliner-data prepare-gliner-all train-gliner train-gliner-cpu train-gliner-smoke \
 	predict-gliner train-token-classifier train-pubmedbert-token-classifier \
 	train-biomedbert-token-classifier train-scibert-token-classifier train-biobert-token-classifier \
 	predict-token-classifier predict-re-rule train-re-pair-classifier predict-re-pair-classifier \
-	predict-re-ollama atlop-notes prepare-atlop-data run-atlop evaluate evaluate-official export-t611 export-t621 clean
+	predict-re-ollama predict-re-gpt atlop-notes prepare-atlop-data run-atlop evaluate evaluate-official export-t611 export-t621 clean
 
 help:
 	@echo "GutBrainIE 2026 commands"
@@ -88,6 +99,7 @@ help:
 	@echo "  make install              Install requirements and editable package"
 	@echo "  make install-gliner       Install optional GLiNER dependency"
 	@echo "  make install-atlop        Install optional official ATLOP dependencies"
+	@echo "  make install-gpt          Install optional OpenAI dependency"
 	@echo "  make test                 Run pytest"
 	@echo "  make cli-help             Show CLI help"
 	@echo ""
@@ -118,6 +130,7 @@ help:
 	@echo "  make train-re-pair-classifier  Fine-tune PubMedBERT RE pair classifier"
 	@echo "  make predict-re-pair-classifier  Predict T621 JSON with trained RE pair classifier"
 	@echo "  make predict-re-ollama    Verify T621 candidates with local Ollama"
+	@echo "  make predict-re-gpt       Verify T621 candidates with OpenAI GPT"
 	@echo "  make atlop-notes           Inspect optional official ATLOP setup"
 	@echo "  make prepare-atlop-data    Convert local data to official ATLOP JSON files"
 	@echo "  make run-atlop             Run optional official ATLOP step; override ATLOP_ACTION=compose|finetune|predict"
@@ -148,6 +161,7 @@ help:
 	@echo "  make train-re-pair-classifier RE_PAIR_EXPERIMENT=gold"
 	@echo "  make predict-re-pair-classifier RE_PAIR_MODEL_DIR=outputs/models/re_pair_classifier_gold RE_ENTITIES=outputs/predictions/dev_t611_best.json"
 	@echo "  make predict-re-ollama RE_ENTITIES=outputs/predictions/dev_t611_best.json OLLAMA_MODEL=llama3.1:8b"
+	@echo "  make predict-re-gpt RE_ENTITIES=outputs/predictions/dev_t611_best.json GPT_MAX_CANDIDATES=50"
 	@echo "  make atlop-notes"
 	@echo "  make prepare-atlop-data"
 	@echo "  make run-atlop ATLOP_ACTION=compose ATLOP_DRY_RUN=1"
@@ -166,6 +180,9 @@ install-gliner:
 
 install-atlop:
 	@$(PYTHON) -m pip install -r requirements-atlop.txt
+
+install-gpt:
+	@$(PYTHON) -m pip install -r requirements-gpt.txt
 
 test:
 	@PYTHONPATH=$(PYTHONPATH) $(PYTHON) -m pytest
@@ -254,6 +271,9 @@ predict-re-pair-classifier:
 
 predict-re-ollama:
 	@$(CLI) predict-re-ollama --articles $(ARTICLES) --entities $(RE_ENTITIES) --model $(OLLAMA_MODEL) --base-url $(OLLAMA_BASE_URL) --output $(OLLAMA_OUTPUT) --threshold $(OLLAMA_THRESHOLD) --max-candidates $(OLLAMA_MAX_CANDIDATES) --max-distance $(OLLAMA_MAX_DISTANCE) --timeout $(OLLAMA_TIMEOUT) --temperature $(OLLAMA_TEMPERATURE) --decisions-output $(OLLAMA_DECISIONS_OUTPUT)
+
+predict-re-gpt:
+	@$(CLI) predict-re-gpt --articles $(ARTICLES) --entities $(RE_ENTITIES) $(GPT_MODEL_ARG) --env-file $(GPT_ENV_FILE) --output $(GPT_OUTPUT) --threshold $(GPT_THRESHOLD) --max-candidates $(GPT_MAX_CANDIDATES) --max-distance $(GPT_MAX_DISTANCE) --timeout $(GPT_TIMEOUT) --temperature $(GPT_TEMPERATURE) --decisions-output $(GPT_DECISIONS_OUTPUT)
 
 atlop-notes:
 	@$(CLI) atlop-notes --official-repo $(OFFICIAL_REPO) --data-root $(DATA_ROOT) --output $(ATLOP_NOTES_OUTPUT)

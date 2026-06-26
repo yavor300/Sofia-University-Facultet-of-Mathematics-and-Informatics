@@ -58,6 +58,7 @@ make run-re-baseline
 make train-re-pair-classifier
 make predict-re-pair-classifier
 make predict-re-ollama
+make predict-re-gpt
 make atlop-notes
 make prepare-atlop-data
 make run-atlop
@@ -96,6 +97,7 @@ make train-re-pair-classifier RE_PAIR_EXPERIMENT=gold
 make predict-re-pair-classifier RE_PAIR_MODEL_DIR=outputs/models/re_pair_classifier_gold
 make atlop-notes
 make run-atlop ATLOP_ACTION=compose ATLOP_DRY_RUN=1
+make predict-re-gpt RE_ENTITIES=outputs/predictions/dev_t611_pubmedbert_gold_silver_silver_2025.json GPT_MAX_CANDIDATES=50
 ```
 
 ## NER Dictionary Baseline
@@ -467,6 +469,50 @@ Useful controls:
 - `OLLAMA_MAX_DISTANCE`: defaults to same-sentence candidates only.
 - `OLLAMA_THRESHOLD`: minimum returned confidence for keeping a relation.
 - `OLLAMA_DECISIONS_OUTPUT`: JSONL audit log of prompts/results.
+
+## Optional GPT Relation Verification
+
+GPT experiments use the same candidate generation, schema filtering, prompt format, confidence threshold, T621 export, and JSONL audit log as the Ollama verifier. This makes the local Llama and OpenAI runs directly comparable.
+
+Install the optional OpenAI dependency:
+
+```bash
+make install-gpt
+```
+
+Create `.env` from `.env.example` and set at least:
+
+```text
+OPENAI_API_KEY=
+OPENAI_JUDGE_MODEL=gpt-4o-mini
+```
+
+Run a bounded dev experiment over predicted PubMedBERT entities:
+
+```bash
+make predict-re-gpt \
+  RE_ENTITIES=outputs/predictions/dev_t611_pubmedbert_gold_silver_silver_2025.json \
+  GPT_MAX_CANDIDATES=50 \
+  GPT_OUTPUT=outputs/predictions/dev_t621_gpt_pubmedbert_entities.json \
+  GPT_DECISIONS_OUTPUT=outputs/reports/dev_t621_gpt_pubmedbert_entities_decisions.jsonl
+```
+
+Evaluate it like any other T621 prediction:
+
+```bash
+make evaluate EVAL_TASK=re \
+  GOLD=data/gutbrainie2026/Annotations/Dev/csv_format/dev_mention_level_relations.csv \
+  PREDICTION=outputs/predictions/dev_t621_gpt_pubmedbert_entities.json \
+  METRICS_OUTPUT=outputs/reports/metrics_dev_re_gpt_pubmedbert_entities.json
+```
+
+Useful controls:
+
+- `GPT_MODEL`: overrides `OPENAI_JUDGE_MODEL` from `.env`.
+- `GPT_MAX_CANDIDATES`: caps paid API calls.
+- `GPT_MAX_DISTANCE`: defaults to same-sentence candidates only.
+- `GPT_THRESHOLD`: minimum returned confidence for keeping a relation.
+- `GPT_DECISIONS_OUTPUT`: JSONL audit log of prompts/results.
 
 ## Optional ATLOP Reproduction
 

@@ -173,6 +173,21 @@ def build_parser() -> argparse.ArgumentParser:
     re_ollama.add_argument("--decisions-output", help="Optional JSONL audit log of LLM decisions.")
     re_ollama.set_defaults(handler=_predict_re_ollama)
 
+    re_gpt = subparsers.add_parser("predict-re-gpt", help="Verify T621 candidates with OpenAI GPT.")
+    re_gpt.add_argument("--articles", default="data/gutbrainie2026/Articles/csv_format/articles_dev.csv")
+    re_gpt.add_argument("--entities", required=True, help="Gold/predicted entities as CSV or T611 JSON.")
+    re_gpt.add_argument("--model", help="OpenAI model. Defaults to OPENAI_JUDGE_MODEL from .env, then gpt-4o-mini.")
+    re_gpt.add_argument("--env-file", default=".env", help="Local dotenv file containing OPENAI_API_KEY and optional OPENAI_JUDGE_MODEL.")
+    re_gpt.add_argument("--api-key-env", default="OPENAI_API_KEY")
+    re_gpt.add_argument("--output", default="outputs/predictions/dev_t621_gpt.json")
+    re_gpt.add_argument("--threshold", type=float, default=0.5)
+    re_gpt.add_argument("--max-candidates", type=int, default=50)
+    re_gpt.add_argument("--max-distance", type=int, default=0)
+    re_gpt.add_argument("--timeout", type=float, default=120)
+    re_gpt.add_argument("--temperature", type=float, default=0.0)
+    re_gpt.add_argument("--decisions-output", help="Optional JSONL audit log of GPT decisions.")
+    re_gpt.set_defaults(handler=_predict_re_gpt)
+
     atlop_notes = subparsers.add_parser("atlop-notes", help="Inspect official ATLOP setup and write reproduction notes.")
     atlop_notes.add_argument("--official-repo", default="external/GutBrainIE_2026_Baseline")
     atlop_notes.add_argument("--data-root", default="data/gutbrainie2026")
@@ -518,6 +533,32 @@ def _predict_re_ollama(args: argparse.Namespace) -> int:
     except RuntimeError as exc:
         raise SystemExit(str(exc)) from exc
     print(f"Ollama RE predictions written to {args.output}: relations={len(predictions)}")
+    if args.decisions_output:
+        print(f"- decisions: {args.decisions_output}")
+    return 0
+
+
+def _predict_re_gpt(args: argparse.Namespace) -> int:
+    from gutbrainie.llm.gpt_relation_verifier import predict_re_gpt_to_json
+
+    try:
+        predictions = predict_re_gpt_to_json(
+            articles_path=args.articles,
+            entities_path=args.entities,
+            output_path=args.output,
+            model=args.model,
+            env_path=args.env_file,
+            api_key_env=args.api_key_env,
+            threshold=args.threshold,
+            max_candidates=args.max_candidates,
+            max_distance=args.max_distance,
+            timeout=args.timeout,
+            temperature=args.temperature,
+            decisions_output=args.decisions_output,
+        )
+    except (RuntimeError, ModuleNotFoundError) as exc:
+        raise SystemExit(str(exc)) from exc
+    print(f"GPT RE predictions written to {args.output}: relations={len(predictions)}")
     if args.decisions_output:
         print(f"- decisions: {args.decisions_output}")
     return 0

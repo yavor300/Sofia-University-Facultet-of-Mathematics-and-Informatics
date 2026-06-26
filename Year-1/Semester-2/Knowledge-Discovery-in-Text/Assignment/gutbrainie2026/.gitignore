@@ -5,6 +5,9 @@ __pycache__/
 .venv/
 venv/
 *.egg-info/
+.env
+.env.*
+!.env.example
 
 data/gutbrainie2026/
 outputs/models/
