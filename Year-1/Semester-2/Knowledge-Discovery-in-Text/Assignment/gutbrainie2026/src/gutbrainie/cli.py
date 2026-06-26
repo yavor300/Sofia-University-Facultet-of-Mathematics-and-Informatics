@@ -162,7 +162,7 @@ def build_parser() -> argparse.ArgumentParser:
     re_ollama = subparsers.add_parser("predict-re-ollama", help="Verify T621 candidates with a local Ollama LLM.")
     re_ollama.add_argument("--articles", default="data/gutbrainie2026/Articles/csv_format/articles_dev.csv")
     re_ollama.add_argument("--entities", required=True, help="Gold/predicted entities as CSV or T611 JSON.")
-    re_ollama.add_argument("--model", default="llama3.1:8b-instruct")
+    re_ollama.add_argument("--model", default="llama3.1:8b")
     re_ollama.add_argument("--base-url", default="http://localhost:11434")
     re_ollama.add_argument("--output", default="outputs/predictions/dev_t621_ollama_llama31.json")
     re_ollama.add_argument("--threshold", type=float, default=0.5)

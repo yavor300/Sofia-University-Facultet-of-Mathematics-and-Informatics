@@ -41,7 +41,7 @@ RE_PAIR_OUTPUT ?= $(OUTPUTS_ROOT)/predictions/dev_t621_pair_classifier_$(RE_PAIR
 RE_PAIR_THRESHOLD ?= 0.5
 RE_PAIR_BATCH_SIZE ?= 8
 RE_PAIR_MAX_LENGTH ?= 512
-OLLAMA_MODEL ?= llama3.1:8b-instruct
+OLLAMA_MODEL ?= llama3.1:8b
 OLLAMA_BASE_URL ?= http://localhost:11434
 OLLAMA_OUTPUT ?= $(OUTPUTS_ROOT)/predictions/dev_t621_ollama_llama31.json
 OLLAMA_DECISIONS_OUTPUT ?= $(OUTPUTS_ROOT)/reports/dev_t621_ollama_llama31_decisions.jsonl
@@ -147,7 +147,7 @@ help:
 	@echo "  make predict-re-rule RE_ENTITIES=outputs/predictions/dev_t611_best.json"
 	@echo "  make train-re-pair-classifier RE_PAIR_EXPERIMENT=gold"
 	@echo "  make predict-re-pair-classifier RE_PAIR_MODEL_DIR=outputs/models/re_pair_classifier_gold RE_ENTITIES=outputs/predictions/dev_t611_best.json"
-	@echo "  make predict-re-ollama RE_ENTITIES=outputs/predictions/dev_t611_best.json OLLAMA_MODEL=llama3.1:8b-instruct"
+	@echo "  make predict-re-ollama RE_ENTITIES=outputs/predictions/dev_t611_best.json OLLAMA_MODEL=llama3.1:8b"
 	@echo "  make atlop-notes"
 	@echo "  make prepare-atlop-data"
 	@echo "  make run-atlop ATLOP_ACTION=compose ATLOP_DRY_RUN=1"

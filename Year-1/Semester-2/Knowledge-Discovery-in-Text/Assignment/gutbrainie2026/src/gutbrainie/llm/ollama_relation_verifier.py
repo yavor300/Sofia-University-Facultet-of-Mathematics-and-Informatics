@@ -18,7 +18,7 @@ from gutbrainie.re.relation_schema import VALID_RELATIONS, valid_predicates
 from gutbrainie.re.rule_baseline import MENTION_RELATION_COLUMNS, deduplicate_mention_relations, load_entities
 from gutbrainie.submission.export_t621 import mention_relations_to_t621_json
 
-DEFAULT_OLLAMA_MODEL = "llama3.1:8b-instruct"
+DEFAULT_OLLAMA_MODEL = "llama3.1:8b"
 DEFAULT_OLLAMA_URL = "http://localhost:11434"
 NO_RELATION = "no_relation"
 

@@ -432,12 +432,12 @@ make evaluate EVAL_TASK=re \
 
 ## Optional Ollama Relation Verification
 
-LLM experiments are optional and are used here for mention-level relation verification, not as the main project solution. The default local model is `llama3.1:8b-instruct`.
+LLM experiments are optional and are used here for mention-level relation verification, not as the main project solution. The default local Ollama model tag is `llama3.1:8b`.
 
 Pull and serve the model with Ollama:
 
 ```bash
-ollama pull llama3.1:8b-instruct
+ollama pull llama3.1:8b
 ollama serve
 ```
 
@@ -446,7 +446,7 @@ Run a bounded dev experiment over the first candidate pairs:
 ```bash
 make predict-re-ollama \
   RE_ENTITIES=outputs/predictions/dev_t611_pubmedbert_gold_silver_silver_2025.json \
-  OLLAMA_MODEL=llama3.1:8b-instruct \
+  OLLAMA_MODEL=llama3.1:8b \
   OLLAMA_MAX_CANDIDATES=200 \
   OLLAMA_OUTPUT=outputs/predictions/dev_t621_ollama_llama31.json \
   OLLAMA_DECISIONS_OUTPUT=outputs/reports/dev_t621_ollama_llama31_decisions.jsonl
