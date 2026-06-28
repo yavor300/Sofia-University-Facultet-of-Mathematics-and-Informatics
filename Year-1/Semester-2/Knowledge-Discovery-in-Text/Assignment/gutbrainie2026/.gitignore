@@ -20,3 +20,6 @@ outputs/reports/
 *.bin
 *.safetensors
 external/
+GutBrainIE_Presentation_Notes_BG.md
+Presentation.pptx
+notebooks/outputs/.matplotlib

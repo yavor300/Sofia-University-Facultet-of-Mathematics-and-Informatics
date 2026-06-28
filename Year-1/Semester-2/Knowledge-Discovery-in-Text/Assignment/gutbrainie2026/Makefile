@@ -92,6 +92,8 @@ TOKEN_MODEL_DIR ?= $(OUTPUTS_ROOT)/models/token_classifier_$(TOKEN_EXPERIMENT)
 TOKEN_OUTPUT ?= $(OUTPUTS_ROOT)/predictions/dev_t611_token_classifier_$(TOKEN_EXPERIMENT).json
 TOKEN_BATCH_SIZE ?= 8
 TOKEN_MAX_LENGTH ?= 512
+EXPERIMENT_RESULTS_OUTPUT ?= $(OUTPUTS_ROOT)/experiment_results.csv
+EXPERIMENT_RESULTS_COPY ?= $(OUTPUTS_ROOT)/experiment_results_gutbrainie.csv
 
 CLI = PYTHONPATH=$(PYTHONPATH) $(PYTHON) -m gutbrainie.cli
 VALIDATION_OUTPUT = $(OUTPUTS_ROOT)/reports/data_validation_$(QUALITY).json
@@ -112,7 +114,8 @@ PIPELINE_USE_CPU_ARG = $(if $(PIPELINE_USE_CPU),--use-cpu,)
 	predict-gliner train-token-classifier train-pubmedbert-token-classifier \
 	train-biomedbert-token-classifier train-scibert-token-classifier train-biobert-token-classifier \
 	predict-token-classifier predict-re-rule train-re-pair-classifier predict-re-pair-classifier \
-	predict-re-ollama predict-re-gpt run-pipeline app atlop-notes prepare-atlop-data run-atlop evaluate evaluate-official export-t611 export-t621 clean
+	predict-re-ollama predict-re-gpt run-pipeline app atlop-notes prepare-atlop-data run-atlop \
+	evaluate evaluate-official export-t611 export-t621 experiment-results clean
 
 help:
 	@echo "GutBrainIE 2026 commands"
@@ -156,6 +159,7 @@ help:
 	@echo "  make predict-re-gpt       Verify T621 candidates with OpenAI GPT"
 	@echo "  make run-pipeline         Run end-to-end NER then RE prediction"
 	@echo "  make app                  Start Streamlit visualization demo"
+	@echo "  make experiment-results   Build final T611/T621 experiment comparison CSV"
 	@echo "  make atlop-notes           Inspect optional official ATLOP setup"
 	@echo "  make prepare-atlop-data    Convert local data to official ATLOP JSON files"
 	@echo "  make run-atlop             Run optional official ATLOP step; override ATLOP_ACTION=compose|finetune|predict"
@@ -189,6 +193,7 @@ help:
 	@echo "  make predict-re-gpt RE_ENTITIES=outputs/predictions/dev_t611_best.json GPT_MAX_CANDIDATES=50"
 	@echo "  make run-pipeline PIPELINE_NER_MODEL=outputs/models/pubmedbert_gold_silver_silver_2025 PIPELINE_RE_MODEL=outputs/models/re_pair_classifier_gold_silver_silver_2025"
 	@echo "  make app"
+	@echo "  make experiment-results"
 	@echo "  make atlop-notes"
 	@echo "  make prepare-atlop-data"
 	@echo "  make run-atlop ATLOP_ACTION=compose ATLOP_DRY_RUN=1"
@@ -307,6 +312,9 @@ run-pipeline:
 
 app:
 	@PYTHONPATH=$(PYTHONPATH) $(PYTHON) -m streamlit run app/streamlit_app.py --server.port $(STREAMLIT_PORT)
+
+experiment-results:
+	@$(PYTHON) scripts/build_experiment_results.py --reports-dir $(OUTPUTS_ROOT)/reports --predictions-dir $(OUTPUTS_ROOT)/predictions --output $(EXPERIMENT_RESULTS_OUTPUT) --copy-output $(EXPERIMENT_RESULTS_COPY)
 
 atlop-notes:
 	@$(CLI) atlop-notes --official-repo $(OFFICIAL_REPO) --data-root $(DATA_ROOT) --output $(ATLOP_NOTES_OUTPUT)

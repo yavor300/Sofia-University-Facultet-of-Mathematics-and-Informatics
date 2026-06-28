@@ -1,0 +1,470 @@
+% !TeX program = pdflatex
+% Документация за курсов проект. Съвместима с pdfLaTeX.
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{cmap}
+\usepackage[T2A]{fontenc}
+\usepackage[english,bulgarian]{babel}
+\selectlanguage{bulgarian}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{microtype}
+\usepackage{setspace}
+\onehalfspacing
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt}
+\usepackage[table]{xcolor}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{amsmath}
+\usepackage{longtable,booktabs,array,multirow}
+\usepackage{etoolbox}
+\AtBeginEnvironment{longtable}{\small}
+\setlength{\LTleft}{0pt}
+\setlength{\LTright}{0pt}
+\usepackage{enumitem}
+\setlist{itemsep=2pt,topsep=4pt}
+\usepackage{fancyvrb}
+\usepackage{fvextra}
+\DefineVerbatimEnvironment{verbatim}{Verbatim}{breaklines=true,breakanywhere=true,fontsize=\small}
+\usepackage[hidelinks]{hyperref}
+
+\providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\providecommand{\pandocbounded}[1]{#1}
+\providecommand{\passthrough}[1]{#1}
+\sloppy
+\hbadness=10000
+\hfuzz=5pt
+
+\definecolor{bestgreen}{RGB}{218,245,222}
+\definecolor{softyellow}{RGB}{255,246,205}
+\definecolor{headerblue}{RGB}{35,67,97}
+\definecolor{lightblue}{RGB}{232,240,248}
+\definecolor{lightgray}{RGB}{245,245,245}
+
+\newcommand{\metric}[1]{\textbf{#1}}
+\newcommand{\maybeincludegraphics}[2][]{%
+  \IfFileExists{#2}{\includegraphics[#1]{#2}}{\fbox{\parbox{0.85\linewidth}{Липсва файлът с изображението: \texttt{\detokenize{#2}}}}}%
+}
+
+\begin{document}
+
+\begin{titlepage}
+\centering
+\vspace*{1.2cm}
+{\Large Софийски университет ``Св. Климент Охридски''\\[0.2cm]}
+{\large Факултет по математика и информатика\\[1.2cm]}
+
+{\Huge\bfseries Извличане на същности и връзки от научни резюмета\\[0.6cm]}
+
+{\Large Документация за курсов проект\\[1.2cm]}
+
+\begin{tabular}{r >{\raggedright\arraybackslash}p{10.5cm}}
+Изготвил: & Явор Чамов \\
+Факултетен номер: & 4MI3400787 \\
+Предмет: & Извличане на знания от текст \\
+Преподаватели: & проф. д-р Иван Койчев, проф. д-р Преслав Наков,\newline гл. ас. Димитър Димитров \\
+Задачи: & Разпознаване на именувани същности;\newline Извличане на връзки \\
+Основен резултат: & PubMedBERT за разпознаване на именувани същности и BioLinkBERT за извличане на връзки \\
+\end{tabular}
+
+\vspace{1.2cm}
+
+\noindent \textbf{Декларация за липса на плагиатство}\\[0.2cm]
+Декларирам, че настоящата курсова работа е моя собствена разработка, като всички използвани източници, идеи, илюстрации, данни и програмен код от други автори са коректно цитирани. Разбирам, че при установяване на плагиатство работата може да бъде оценена със ``Слаб''.
+
+\vspace{1.0cm}
+
+\noindent \textbf{Дата:} \today \hfill \textbf{Подпис:} \rule{4cm}{0.4pt}
+
+\vfill
+{\large \today}
+
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+\section{Въведение}
+
+Настоящият документ описва цялостната работа по курсовия проект върху GutBrainIE 2026. Задачата е свързана с автоматично извличане на знания от научни заглавия и резюмета от PubMed, посветени на връзката между чревната микробиота и заболявания на нервната система или психичното здраве.
+
+Работата е насочена към две задачи. Първата е T611, при която системата трябва да открива споменавания на биомедицински същности и да им задава етикет. Втората е T621, при която трябва да се откриват връзки между вече намерени текстови споменавания. Така проектът преминава от разпознаване на отделни обекти към изграждане на малки твърдения от вида ``субект -- отношение -- обект''.
+
+Целта на проекта не е само да се получи висок числов резултат, а да се изгради възпроизводима верига за обработка: четене на данни, проверка на отместванията, обучение, оценяване, сравнение на различни подходи, изводи от грешките и кратък потребителски изглед за представяне на резултатите.
+
+\section{Описание на задачите}
+
+\subsection{T611: разпознаване на именувани същности}
+
+При T611 входът е заглавие и резюме на научна статия. Изходът е списък от същности. Всяка същност съдържа място на срещане, начална и крайна позиция в текста, самия текстов откъс и етикет. За тази задача не се изисква връзка към външен речник или понятие.
+
+\begin{verbatim}
+{
+  "PMID": {
+    "entities": [
+      {
+        "start_idx": 75,
+        "end_idx": 82,
+        "location": "title",
+        "text_span": "patients",
+        "label": "human"
+      }
+    ]
+  }
+}
+\end{verbatim}
+
+Наличните етикети включват заболявания и находки, химични вещества, микробиом, бактерии, хора, животни, гени, храни, лекарства, хранителни добавки, анатомични места, биомедицински похвати и статистически похвати. Точните имена на етикетите се запазват в изходните файлове, защото са част от официалния формат.
+
+\subsection{T621: извличане на връзки между споменавания}
+
+При T621 входът отново е статия, но задачата вече е да се намери връзка между две текстови споменавания. Всяка връзка се представя чрез субект, сказуемо и обект. Изходът съдържа текстовия откъс и етикета на субекта, вида на връзката, както и текстовия откъс и етикета на обекта.
+
+\begin{verbatim}
+{
+  "PMID": {
+    "mention_level_relations": [
+      {
+        "subject_text_span": "intestinal microbiome",
+        "subject_label": "microbiome",
+        "predicate": "located in",
+        "object_text_span": "patients",
+        "object_label": "human"
+      }
+    ]
+  }
+}
+\end{verbatim}
+
+Тази задача е по-трудна от T611, защото грешките от разпознаването на същности се пренасят към извличането на връзки. Затова в проекта са разгледани два режима: оценяване със златни същности и крайно оценяване с предсказани същности.
+
+\section{Набор от данни}
+
+Данните са разделени на златен, сребърен, сребърен от 2025 г., бронзов и развоен набор. Златният набор е най-надежден и служи като основа за обучение и вътрешна проверка. Сребърните набори се използват като допълнителни примери. Бронзовият набор е най-голям, но е по-шумен и затова не е използван като основна проверка.
+
+\begin{longtable}{p{3.1cm}rrrrr}
+\caption{Обобщение на използваните набори от данни.}\\
+\toprule
+\textbf{Набор} & \textbf{Статии} & \textbf{Същности} & \textbf{Връзки} & \textbf{Същности/статия} & \textbf{Връзки/статия} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Набор} & \textbf{Статии} & \textbf{Същности} & \textbf{Връзки} & \textbf{Същности/статия} & \textbf{Връзки/статия} \\
+\midrule
+\endhead
+Златен & 639 & 20 530 & 7 892 & 32.13 & 12.35 \\
+Сребърен & 811 & 26 134 & 10 487 & 32.22 & 12.93 \\
+Сребърен 2025 & 499 & 15 275 & 7 420 & 30.61 & 14.87 \\
+Бронзов & 2 972 & 89 987 & 28 230 & 30.28 & 9.50 \\
+Развоен & 80 & 2 521 & 1 139 & 31.51 & 14.24 \\
+\bottomrule
+\end{longtable}
+
+Златният набор съдържа 639 статии и 20 530 същности. Развойният набор съдържа 80 статии и 2 521 същности. Тези стойности показват, че всяка статия съдържа средно много на брой същности и връзки. Това прави задачата подходяща за обучени езикови подходи, но изисква точна обработка на позициите в текста.
+
+\section{Неравномерност на етикетите}
+
+Разпределението на етикетите не е равномерно. Най-честият етикет за същности е \texttt{DDF}, а при връзките най-често се срещат \texttt{influence}, \texttt{located in}, \texttt{target} и \texttt{is linked to}. Това е важна причина да се следят едновременно Micro-F1 и Macro-F1. Micro-F1 дава общата успеваемост, докато Macro-F1 показва дали системата се справя и с редките етикети.
+
+\begin{figure}[H]
+\centering
+\maybeincludegraphics[width=0.95\linewidth]{entity_distribution.png}
+\caption{Разпределение на етикетите за същности.}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\maybeincludegraphics[width=0.95\linewidth]{relation_distribution.png}
+\caption{Разпределение на видовете връзки.}
+\end{figure}
+
+\begin{longtable}{p{2.5cm}p{2.7cm}rrp{2.8cm}rr}
+\caption{Най-чести етикети и степен на неравномерност по набори.}\\
+\toprule
+\textbf{Набор} & \textbf{Най-честа същност} & \textbf{Дял} & \textbf{Съотн.} & \textbf{Най-честа връзка} & \textbf{Дял} & \textbf{Съотн.} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Набор} & \textbf{Най-честа същност} & \textbf{Дял} & \textbf{Съотн.} & \textbf{Най-честа връзка} & \textbf{Дял} & \textbf{Съотн.} \\
+\midrule
+\endhead
+Златен & \texttt{DDF} & 33.7\% & 25.49 & \texttt{influence} & 17.5\% & 197.57 \\
+Сребърен & \texttt{DDF} & 32.5\% & 21.69 & \texttt{influence} & 19.1\% & 501.75 \\
+Сребърен 2025 & \texttt{DDF} & 36.6\% & 34.47 & \texttt{influence} & 23.7\% & 219.88 \\
+Бронзов & \texttt{DDF} & 38.4\% & 30.21 & \texttt{influence} & 22.2\% & 3129.50 \\
+Развоен & \texttt{DDF} & 31.5\% & 22.66 & \texttt{located in} & 17.2\% & 49.00 \\
+\bottomrule
+\end{longtable}
+
+При бронзовия набор неравномерността на връзките е най-силна: най-честата връзка е хиляди пъти по-честа от най-рядката. Затова бронзовите примери са подходящи само за внимателни допълнителни опити, но не и за надеждна проверка.
+
+\subsection{Най-чести същности и връзки}
+
+\begin{minipage}{0.48\linewidth}
+\begin{longtable}{lr}
+\caption{Най-чести етикети за същности.}\\
+\toprule
+\textbf{Етикет} & \textbf{Брой} \\
+\midrule
+\texttt{DDF} & 56 350 \\
+\texttt{chemical} & 22 720 \\
+\texttt{microbiome} & 14 618 \\
+\texttt{human} & 11 051 \\
+\texttt{anatomical location} & 10 088 \\
+\texttt{bacteria} & 9 837 \\
+\texttt{biomedical technique} & 7 395 \\
+\texttt{animal} & 5 837 \\
+\bottomrule
+\end{longtable}
+\end{minipage}
+\hfill
+\begin{minipage}{0.48\linewidth}
+\begin{longtable}{lr}
+\caption{Най-чести видове връзки.}\\
+\toprule
+\textbf{Връзка} & \textbf{Брой} \\
+\midrule
+\texttt{influence} & 11 568 \\
+\texttt{located in} & 7 445 \\
+\texttt{target} & 7 116 \\
+\texttt{is linked to} & 6 373 \\
+\texttt{affect} & 5 187 \\
+\texttt{impact} & 3 018 \\
+\texttt{is a} & 2 777 \\
+\texttt{interact} & 2 238 \\
+\bottomrule
+\end{longtable}
+\end{minipage}
+
+\section{Подготовка и проверка на данните}
+
+Данните са прочетени основно от файловете с разделител \texttt{|}. Всички PubMed номера се обработват като низове, за да не се получат разминавания между статии и бележки. За T611 позициите се проверяват отделно в заглавието и в резюмето. Ако \texttt{location} е \texttt{title}, тогава \texttt{start\_idx} и \texttt{end\_idx} се отнасят към заглавието; ако е \texttt{abstract}, те се отнасят към резюмето.
+
+Тази проверка е важна, защото при разпознаването на същности правилният текстов откъс не е достатъчен. За вярно предсказание трябва да съвпаднат номерът на статията, мястото, началната позиция, крайната позиция и етикетът. При извличането на връзки се сравняват текстовият откъс и етикетът на субекта, видът връзка, както и текстовият откъс и етикетът на обекта.
+
+\section{Архитектура на решението}
+
+Системата е изградена като последователна верига от стъпки:
+
+\begin{enumerate}
+\item четене на статии, същности и връзки;
+\item проверка на отместванията и премахване на точни повторения;
+\item начален речников подход за T611;
+\item обучени подходи за T611 чрез токенно разпознаване;
+\item създаване на кандидат-двойки за T621;
+\item начален правилов подход за T621;
+\item обучен класификатор на двойки за T621;
+\item оценяване, сравнение и запис на изхода в нужния вид;
+\item потребителски изглед за преглед на статии, същности, връзки и грешки.
+\end{enumerate}
+
+За T611 основният силен подход е токенно разпознаване с предварително обучени биомедицински езикови мрежи. За T621 основният подход е класификатор на двойки: за всяка възможна двойка същности се създава пример, в текста се отбелязват субектът и обектът, а системата избира вид връзка или липса на връзка.
+
+\section{Разделяне на данните и опити}
+
+Основната стратегия е развойният набор да не се използва за обучение. Той се пази за крайна проверка. Златният набор се разделя вътрешно на 85\% обучение и 15\% проверка. След това се правят опити с добавяне на сребърен и сребърен 2025 набор. Бронзовият набор не е основен източник за обучение, защото е шумен и силно неравномерен.
+
+Разгледаните главни групи опити са:
+
+\begin{itemize}
+\item начални речникови и правилови подходи;
+\item GLiNER за разпознаване на същности;
+\item BioBERT, SciBERT и PubMedBERT за токенно разпознаване;
+\item класификатори на двойки за връзки с PubMedBERT и BioLinkBERT;
+\item крайна верига, при която T621 използва същностите, предсказани от T611;
+\item малки опити с езикови помощници за сравнение, без да са основното решение.
+\end{itemize}
+
+\section{Мерки за оценяване}
+
+Използвани са точност, пълнота и F1. Точността показва каква част от предсказанията са верни. Пълнотата показва каква част от златните примери са намерени. F1 е средна хармонична стойност между тях.
+
+\begin{align*}
+P &= \frac{TP}{TP + FP}, \\
+R &= \frac{TP}{TP + FN}, \\
+F1 &= \frac{2PR}{P + R}.
+\end{align*}
+
+Micro-F1 обединява всички верни, грешни и пропуснати примери преди изчисляването. Macro-F1 първо изчислява стойност по етикет, а после усреднява. При този проект Macro-F1 е особено важен, защото показва дали редките същности и връзки не се пренебрегват.
+
+\section{Резултати за T611}
+
+Таблица \ref{tab:ner-results} показва резултатите за T611 в реда на проведените опити. Най-добрият ред е оцветен. Началният речников подход е оставен в таблицата, защото показва долната граница и доказва нуждата от обучени подходи.
+
+\begin{longtable}{p{3.6cm}p{3.0cm}p{3.2cm}rr} \caption{Най-добри резултати за T611 -- разпознаване на същности.}\label{tab:ner-results}\\ \toprule \textbf{Опит} & \textbf{Модел} & \textbf{Обучение} & \textbf{Micro-F1} & \textbf{Macro-F1} \\ \midrule \endfirsthead \toprule \textbf{Опит} & \textbf{Модел} & \textbf{Обучение} & \textbf{Micro-F1} & \textbf{Macro-F1} \\ \midrule \endhead NER-PubMedBERT-GS25 & PubMedBERT & gold+silver+silver\_2025 & 0.8092 & 0.7472 \\ NER-PubMedBERT-GS & PubMedBERT & gold+silver & 0.8034 & 0.7311 \\ NER-SciBERT-GS25 & SciBERT & gold+silver+silver\_2025 & 0.7880 & 0.7198 \\ NER-SciBERT-GS & SciBERT & gold+silver & 0.7838 & 0.7158 \\ NER-BioBERT-GS & BioBERT & gold+silver & 0.7686 & 0.6975 \\ NER-PubMedBERT-G & PubMedBERT & gold & 0.7664 & 0.6270 \\ NER-GLiNER-GS & GLiNER & gold+silver & 0.6868 & 0.5828 \\ NER-Dictionary & речник & gold & 0.0013 & 0.0005 \\ \bottomrule \end{longtable}
+
+Първите редове са обучени токенни класификатори с различни предварително обучени биомедицински модели. GLiNER и речниковият подход са оставени като сравнителни базови линии: GLiNER показва силата на span-based подход без класическо BIO декодиране, а речникът показва колко недостатъчно е само точното съвпадение с видени откъси.
+
+\begin{figure}[H]
+\centering
+\maybeincludegraphics[width=0.98\linewidth]{t611_ner_dev_f1_by_experiment.png}
+\caption{Сравнение на Micro-F1 и Macro-F1 за опитите по T611 върху развойния набор.}
+\label{fig:t611-ner-dev-f1-by-experiment}
+\end{figure}
+
+Най-добър резултат за T611 постига \texttt{ner\_pubmedbert\_gold\_silver\_silver\_2025}. Той достига \metric{Micro-F1 = 0.8092} и \metric{Macro-F1 = 0.7472}. Това е най-добрият общ резултат и същевременно най-добрият баланс между честите и редките етикети. Добавянето на сребърните данни помага силно, а добавянето на сребърния набор от 2025 г. дава малко допълнително подобрение за PubMedBERT.
+
+GLiNER е полезен като сравнителен подход, но в тези опити остава под токенните подходи. Речниковият подход е твърде строг, защото разчита на точно срещане на вече видяни откъси и не може надеждно да открива нови изрази или различни граници.
+
+\section{Резултати за T621}
+
+T621 е оценена в два режима. Първият използва златни същности от развойния набор. Той показва доколко добре се справя самият подход за връзки. Вторият режим използва същностите, предсказани от T611. Той е по-реалистичен, защото отразява цялата верига.
+\newline
+\newline
+\begin{longtable}{p{3.1cm}p{2.6cm}p{2.2cm}p{4.2cm}rr}
+\caption{Най-добри резултати за T621 -- извличане на връзки.}\label{tab:re-results}\\
+\toprule
+\textbf{Опит} & \textbf{RE модел} & \textbf{RE обучение} & \textbf{Същности / NER вход} & \textbf{Micro-F1} & \textbf{Macro-F1} \\
+\midrule
+\endfirsthead
+
+\toprule
+\textbf{Опит} & \textbf{RE модел} & \textbf{RE обучение} & \textbf{Същности / NER вход} & \textbf{Micro-F1} & \textbf{Macro-F1} \\
+\midrule
+\endhead
+
+RE-BioLinkBERT-Gold
+& BioLinkBERT 
+& gold+silver 
+& златни dev същности 
+& 0.5257 
+& 0.4978 \\
+
+RE-BioLinkBERT-E2E-PubMedBERT-GS
+& BioLinkBERT 
+& gold+silver 
+& PubMedBERT NER, обучен с gold+silver 
+& 0.3842 
+& 0.3117 \\
+
+RE-BioLinkBERT-E2E-PubMedBERT-GS25
+& BioLinkBERT
+& gold+silver 
+& PubMedBERT NER, обучен с gold+silver+silver 2025 
+& 0.3810 
+& 0.3125 \\
+
+\bottomrule
+\end{longtable}
+
+Последните два реда използват един и същ модел за извличане на връзки, но различен вход от T611. Първият краен вариант използва същности от PubMedBERT, обучен върху gold+silver, а вторият използва същности от PubMedBERT, обучен върху gold+silver+silver 2025.
+
+\begin{figure}[H]
+\centering
+\maybeincludegraphics[width=0.98\linewidth]{t621_re_dev_f1_by_experiment.png}
+\caption{Сравнение на Micro-F1 и Macro-F1 за опитите по T621 върху развойния набор.}
+\label{fig:t621-re-dev-f1-by-experiment}
+\end{figure}
+
+Най-добрият резултат за T621 при златни същности е \texttt{re\_pair\_classifier\_biolinkbert\_gold\_silver\_gold\_entities}. Той достига \metric{Micro-F1 = 0.5257} и \metric{Macro-F1 = 0.4978}. Този резултат показва, че класификаторът на двойки с BioLinkBERT е подходящ за биомедицински връзки, когато същностите са дадени правилно.
+
+Най-добрият краен резултат е \texttt{re\_pair\_classifier\_biolinkbert\_gold\_silver\_pubmedbert\_gold\_silver\_entities}. Той достига \metric{Micro-F1 = 0.3842} и \metric{Macro-F1 = 0.3117}. Това е по-ниско от оценяването със златни същности, защото пропуски и грешни граници от T611 водят до пропуснати или грешни двойки при T621.
+
+Много близък краен вариант е \texttt{re\_pair\_classifier\_biolinkbert\_gold\_silver\_pubmedbert\_gold\_silver\_silver\_2025\_entities}. Той има \metric{Micro-F1 = 0.3810} и \metric{Macro-F1 = 0.3125}. Макар общият резултат да е малко по-нисък, Macro-F1 е малко по-висок, което означава, че при част от по-редките връзки поведението може да е по-добро.
+
+\section{Анализ на грешките}
+
+Основните грешки при T611 са свързани с границите на същностите и с близки по смисъл етикети. Например химично вещество и лекарство могат да бъдат объркани, ако текстът не дава достатъчен знак за употребата на веществото. Също така понякога системата открива само част от израза, например \texttt{microbiome} вместо \texttt{intestinal microbiome}. Такива грешки се отчитат като грешни, защото границите не съвпадат точно.
+
+При T621 грешките са повече поради две причини. Първо, броят на възможните двойки същности в една статия е голям. Второ, дори когато двете същности са намерени правилно, видът на връзката може да е труден за разграничаване. Най-чести обърквания се очакват между близки отношения като \texttt{impact} и \texttt{influence}, както и при посоката на връзката.
+
+\begin{longtable}{lll r}
+\caption{Най-чести тройки от тип субект--връзка--обект.}\\
+\toprule
+\textbf{Субект} & \textbf{Връзка} & \textbf{Обект} & \textbf{Брой} \\
+\midrule
+\texttt{microbiome} & \texttt{is linked to} & \texttt{DDF} & 6 373 \\
+\texttt{chemical} & \texttt{influence} & \texttt{DDF} & 5 857 \\
+\texttt{DDF} & \texttt{target} & \texttt{human} & 5 217 \\
+\texttt{DDF} & \texttt{affect} & \texttt{DDF} & 5 187 \\
+\texttt{DDF} & \texttt{is a} & \texttt{DDF} & 2 777 \\
+\texttt{dietary supplement} & \texttt{influence} & \texttt{DDF} & 2 615 \\
+\texttt{bacteria} & \texttt{influence} & \texttt{DDF} & 2 126 \\
+\texttt{DDF} & \texttt{target} & \texttt{animal} & 1 899 \\
+\texttt{chemical} & \texttt{located in} & \texttt{anatomical location} & 1 821 \\
+\texttt{DDF} & \texttt{strike} & \texttt{anatomical location} & 1 387 \\
+\bottomrule
+\end{longtable}
+
+Крайното извличане на връзки зависи силно от T611. Ако същност липсва, нито една връзка с нея не може да бъде намерена. Ако границата или етикетът са грешни, правилна връзка може да бъде оценена като грешна. Затова в доклада се разграничават ``извличане на връзки със златни същности'' и ``крайно извличане на връзки''.
+
+\section{Потребителски изглед за представяне}
+
+За представяне на проекта е предвиден лек потребителски изглед. Основната му цел е да показва работата на системата, а не да бъде завършен продукт. Подходящ избор е Streamlit, защото позволява бързо да се показват таблици, цветно отбелязани същности, връзки и мерки.
+
+Минималният изглед съдържа:
+
+\begin{itemize}
+\item избор на статия по PubMed номер;
+\item показване на заглавие и резюме;
+\item цветно отбелязване на същностите от T611;
+\item таблица с връзките от T621;
+\item сравнение със златните бележки, когато са налични;
+\item табло с Micro-F1, Macro-F1, точност и пълнота;
+\item преглед на грешни и пропуснати примери.
+\end{itemize}
+
+Този изглед е полезен за защита на проекта, защото числата от таблиците се свързват с видими примери от реални статии. Така се показва не само кой подход е най-добър, но и как точно изглеждат правилните и грешните предсказания.
+
+\section{Обсъждане}
+
+Резултатите показват, че за T611 най-добре работи PubMedBERT, обучен върху златен, сребърен и сребърен 2025 набор. Причината е, че този подход използва предварително научени биомедицински езикови представяния и получава достатъчно примери за различните етикети.
+
+За T621 най-силен е BioLinkBERT в ролята на класификатор на двойки. Това е очаквано, защото задачата изисква разбиране на връзката между две същности в биомедицински контекст. Разликата между резултата със златни същности и крайния резултат показва, че подобряването на T611 ще има пряк положителен ефект върху T621.
+
+Сребърните данни са полезни, но не всяко добавяне води до подобрение при всяка настройка. При T611 сребърният 2025 набор помага на PubMedBERT, но при крайната T621 верига вариантът с най-силната самостоятелна T611 система не е най-добър по Micro-F1. Това показва, че най-добрият извличач на същности не винаги дава най-добрата входна основа за извличане на връзки.
+
+\section{Ограничения}
+
+Проектът има няколко ограничения. Първо, оценяването изисква точно съвпадение на граници и етикети, което наказва дори малки разлики в текстовия откъс. Второ, редките етикети имат малко примери и затова Macro-F1 остава по-нисък от Micro-F1. Трето, при T621 броят на кандидат-двойките е голям и се налага внимателно избиране на отрицателни примери. Четвърто, бронзовият набор е голям, но шумен; употребата му без контрол може да влоши резултатите.
+
+\section{Заключение}
+
+В проекта е изградена пълна верига за извличане на същности и връзки от биомедицински научни резюмета. Най-добрият подход за T611 е PubMedBERT, обучен върху златни и сребърни данни, включително сребърния набор от 2025 г. Най-добрият подход за T621 при златни същности е BioLinkBERT класификатор на двойки, обучен върху златен и сребърен набор. Най-добрият краен подход за T621 използва BioLinkBERT за връзки и същности, предсказани от PubMedBERT.
+
+Основният извод е, че качеството на разпознаването на същности е решаващо за крайното извличане на връзки. Затова бъдеща работа трябва да се насочи към по-добра обработка на границите, повече примери за редките етикети, по-добро филтриране на кандидат-двойките и по-добър анализ на грешките по вид същност и вид връзка.
+
+\section*{Източници}
+\addcontentsline{toc}{section}{Източници и използвани файлове}
+
+\begin{itemize}
+\item Официална страница на GutBrainIE 2026: 
+\url{https://hereditary.dei.unipd.it/challenges/gutbrainie/2026/}
+
+\item Официално хранилище с начални решения: 
+\url{https://github.com/MMartinelli-hub/GutBrainIE_2026_Baseline}
+
+\item Yu Gu, Robert Tinn, Hao Cheng, Michael Lucas, Naoto Usuyama, Xiaodong Liu, Tristan Naumann, Jianfeng Gao, Hoifung Poon. 
+\textit{Domain-Specific Language Model Pretraining for Biomedical Natural Language Processing}. 
+ACM Transactions on Computing for Healthcare, 2021. 
+Статията описва PubMedBERT/BiomedBERT, използван като най-добър модел за разпознаване на именувани същности в проекта. 
+\url{https://arxiv.org/abs/2007.15779}
+
+\item Michihiro Yasunaga, Jure Leskovec, Percy Liang. 
+\textit{LinkBERT: Pretraining Language Models with Document Links}. 
+ACL 2022. 
+Статията описва LinkBERT и неговия биомедицински вариант BioLinkBERT, използван като най-добър модел за извличане на връзки в проекта. 
+\url{https://aclanthology.org/2022.acl-long.551/}
+
+\item Jinhyuk Lee, Wonjin Yoon, Sungdong Kim, Donghyeon Kim, Sunkyu Kim, Chan Ho So, Jaewoo Kang. 
+\textit{BioBERT: a pre-trained biomedical language representation model for biomedical text mining}. 
+Bioinformatics, 2020. 
+Използван като сравнителен биомедицински модел за разпознаване на същности. 
+\url{https://academic.oup.com/bioinformatics/article/36/4/1234/5566506}
+
+\item Iz Beltagy, Kyle Lo, Arman Cohan. 
+\textit{SciBERT: A Pretrained Language Model for Scientific Text}. 
+EMNLP-IJCNLP 2019. 
+Използван като сравнителен модел, предварително обучен върху научни текстове. 
+\url{https://aclanthology.org/D19-1371/}
+
+\item Jacob Devlin, Ming-Wei Chang, Kenton Lee, Kristina Toutanova. 
+\textit{BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding}. 
+NAACL 2019. 
+Основна архитектура, върху която са изградени използваните модели от семейството на BERT. 
+\url{https://aclanthology.org/N19-1423/}
+\end{itemize}
+\end{document}

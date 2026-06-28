@@ -1,4 +1,4 @@
-# GutBrainIE 2026 T611/T621
+# GutBrainIE 2026 T611/T621 Information Extraction
 
 Course project for the GutBrainIE 2026 challenge.
 
@@ -6,6 +6,33 @@ Focused subtasks:
 
 - `T611`: Named Entity Recognition
 - `T621`: Mention-Level Relation Extraction
+
+The repository contains a complete local pipeline for loading the GutBrainIE data, validating annotations, running exploratory analysis, training/evaluating several NER and RE models, generating end-to-end predictions, and visualizing outputs in a Streamlit demo.
+
+## Project Status
+
+Implemented components:
+
+- data loaders and offset validation for articles, entities, and mention-level relations;
+- exploratory data analysis and imbalance reports;
+- internal exact-match evaluation for T611 and T621;
+- T611 dictionary baseline, GLiNER experiments, and transformer token classifiers;
+- T621 relation-prior baseline, transformer pair classifier, BioLinkBERT experiments, and optional LLM-assisted verifiers;
+- optional official ATLOP baseline wrapper and notes;
+- one-command end-to-end prediction pipeline;
+- Streamlit frontend for dataset browsing, entity highlighting, relation inspection, metrics, and error analysis;
+- final experiment summary table for report writing.
+
+Main final artifacts:
+
+```text
+outputs/experiment_results.csv
+outputs/experiment_results_gutbrainie.csv
+outputs/reports/
+outputs/predictions/
+app/streamlit_app.py
+notebooks/01_data_exploration.ipynb
+```
 
 ## Setup
 
@@ -61,6 +88,7 @@ make predict-re-ollama
 make predict-re-gpt
 make run-pipeline
 make app
+make experiment-results
 make atlop-notes
 make prepare-atlop-data
 make run-atlop
@@ -104,7 +132,55 @@ make run-pipeline \
   PIPELINE_NER_MODEL=outputs/models/pubmedbert_gold_silver_silver_2025 \
   PIPELINE_RE_MODEL=outputs/models/re_pair_classifier_gold_silver_silver_2025
 make app
+make experiment-results
 ```
+
+## Final Dev Results
+
+All final experiment rows are collected with:
+
+```bash
+make experiment-results
+```
+
+This reads `outputs/reports/metrics_dev_*.json` and writes:
+
+```text
+outputs/experiment_results.csv
+outputs/experiment_results_gutbrainie.csv
+```
+
+The table includes canonical experiments, legacy/ambiguous filenames, self-check rows, prediction paths, metric paths, and report filters. Use `include_in_report=true` and `status=canonical` for the clean report comparison.
+
+### Best T611 NER Runs
+
+| Experiment | Model | Precision | Recall | Micro-F1 | Macro-F1 |
+|---|---|---:|---:|---:|---:|
+| `ner_pubmedbert_gold_silver_silver_2025` | PubMedBERT token classifier | 0.7892 | 0.8302 | 0.8092 | 0.7472 |
+| `ner_pubmedbert_gold_silver` | PubMedBERT token classifier | 0.7836 | 0.8243 | 0.8034 | 0.7311 |
+| `ner_scibert_gold_silver_silver_2025` | SciBERT token classifier | 0.7599 | 0.8183 | 0.7880 | 0.7198 |
+| `ner_scibert_gold_silver` | SciBERT token classifier | 0.7547 | 0.8152 | 0.7838 | 0.7158 |
+| `ner_biobert_gold_silver` | BioBERT token classifier | 0.7478 | 0.7906 | 0.7686 | 0.6975 |
+| `ner_pubmedbert_gold` | PubMedBERT token classifier | 0.7443 | 0.7898 | 0.7664 | 0.6270 |
+
+Best standalone NER model: `ner_pubmedbert_gold_silver_silver_2025`.
+
+### Best T621 RE Runs
+
+| Experiment | Entity Input | Precision | Recall | Micro-F1 | Macro-F1 |
+|---|---|---:|---:|---:|---:|
+| `re_pair_classifier_biolinkbert_gold_silver_gold_entities` | gold entities | 0.4457 | 0.6409 | 0.5257 | 0.4978 |
+| `re_pair_classifier_biolinkbert_gold_gold_entities` | gold entities | 0.4629 | 0.6032 | 0.5238 | 0.4516 |
+| `re_pair_classifier_gold_silver_gold_entities` | gold entities | 0.4396 | 0.6198 | 0.5144 | 0.4462 |
+| `re_pair_classifier_gold_gold_entities` | gold entities | 0.4390 | 0.5970 | 0.5060 | 0.4810 |
+| `re_pair_classifier_biolinkbert_gold_silver_pubmedbert_gold_silver_entities` | predicted PubMedBERT entities | 0.3101 | 0.5048 | 0.3842 | 0.3117 |
+| `re_pair_classifier_biolinkbert_gold_silver_pubmedbert_gold_silver_silver_2025_entities` | predicted PubMedBERT entities | 0.3050 | 0.5075 | 0.3810 | 0.3125 |
+
+Best RE model with gold entities: `re_pair_classifier_biolinkbert_gold_silver_gold_entities`.
+
+Best end-to-end RE model: `re_pair_classifier_biolinkbert_gold_silver_pubmedbert_gold_silver_entities`.
+
+The end-to-end score is lower than gold-entity RE because T621 depends directly on upstream T611 entity mentions. This is expected and useful for the final report: the relation classifier is stronger when entity boundaries and labels are correct, while real pipeline performance is capped by NER errors.
 
 ## NER Dictionary Baseline
 
@@ -349,9 +425,9 @@ Predicted-entity mode evaluates the full NER-to-RE pipeline:
 ```bash
 python -m gutbrainie.cli predict-re-rule \
   --articles data/gutbrainie2026/Articles/csv_format/articles_dev.csv \
-  --entities outputs/predictions/dev_t611_token_classifier_gold_silver_silver_2025.json \
+  --entities outputs/predictions/dev_t611_pubmedbert_gold_silver_silver_2025.json \
   --train-relations data/gutbrainie2026/Annotations/Train/gold_quality/csv_format/train_gold_mention_level_relations.csv \
-  --output outputs/predictions/dev_t621_rule_predicted_entities.json
+  --output outputs/predictions/dev_t621_rule_ner_pubmedbert_gold_silver_silver_2025_entities.json
 ```
 
 Makefile equivalents:
@@ -362,13 +438,18 @@ make predict-re-rule \
   RE_RULE_OUTPUT=outputs/predictions/dev_t621_rule_gold_entities.json
 
 make predict-re-rule \
-  RE_ENTITIES=outputs/predictions/dev_t611_token_classifier_gold_silver_silver_2025.json \
-  RE_RULE_OUTPUT=outputs/predictions/dev_t621_rule_predicted_entities.json
+  RE_ENTITIES=outputs/predictions/dev_t611_pubmedbert_gold_silver_silver_2025.json \
+  RE_RULE_OUTPUT=outputs/predictions/dev_t621_rule_ner_pubmedbert_gold_silver_silver_2025_entities.json
 
 make evaluate EVAL_TASK=re \
   GOLD=data/gutbrainie2026/Annotations/Dev/csv_format/dev_mention_level_relations.csv \
   PREDICTION=outputs/predictions/dev_t621_rule_gold_entities.json \
   METRICS_OUTPUT=outputs/reports/metrics_dev_re_rule_gold_entities.json
+
+make evaluate EVAL_TASK=re \
+  GOLD=data/gutbrainie2026/Annotations/Dev/csv_format/dev_mention_level_relations.csv \
+  PREDICTION=outputs/predictions/dev_t621_rule_ner_pubmedbert_gold_silver_silver_2025_entities.json \
+  METRICS_OUTPUT=outputs/reports/metrics_dev_re_rule_ner_pubmedbert_gold_silver_silver_2025_entities.json
 ```
 
 Use `RE_RULE_THRESHOLD` and `RE_RULE_MAX_DISTANCE` to make the baseline stricter:
@@ -412,43 +493,43 @@ Gold-entity mode evaluates the relation classifier independently from NER:
 
 ```bash
 make predict-re-pair-classifier \
-  RE_PAIR_MODEL_DIR=outputs/models/re_pair_classifier_gold_silver_silver_2025 \
+  RE_PAIR_MODEL_DIR=outputs/models/re_pair_classifier_biolinkbert_gold_silver \
   ARTICLES=data/gutbrainie2026/Articles/csv_format/articles_dev.csv \
   RE_ENTITIES=data/gutbrainie2026/Annotations/Dev/csv_format/dev_entities.csv \
-  RE_PAIR_OUTPUT=outputs/predictions/dev_t621_pair_classifier_gold_entities.json
+  RE_PAIR_OUTPUT=outputs/predictions/dev_t621_pair_classifier_biolinkbert_gold_silver_gold_entities.json
 
 make evaluate EVAL_TASK=re \
   GOLD=data/gutbrainie2026/Annotations/Dev/csv_format/dev_mention_level_relations.csv \
-  PREDICTION=outputs/predictions/dev_t621_pair_classifier_gold_entities.json \
-  METRICS_OUTPUT=outputs/reports/metrics_dev_re_pair_classifier_gold_entities.json
+  PREDICTION=outputs/predictions/dev_t621_pair_classifier_biolinkbert_gold_silver_gold_entities.json \
+  METRICS_OUTPUT=outputs/reports/metrics_dev_re_pair_classifier_biolinkbert_gold_silver_gold_entities.json
 ```
 
 Predicted-entity mode evaluates the full NER-to-RE pipeline:
 
 ```bash
 make predict-re-pair-classifier \
-  RE_PAIR_MODEL_DIR=outputs/models/re_pair_classifier_gold_silver_silver_2025 \
+  RE_PAIR_MODEL_DIR=outputs/models/re_pair_classifier_biolinkbert_gold_silver \
   ARTICLES=data/gutbrainie2026/Articles/csv_format/articles_dev.csv \
-  RE_ENTITIES=outputs/predictions/dev_t611_pubmedbert_gold_silver_silver_2025.json \
-  RE_PAIR_OUTPUT=outputs/predictions/dev_t621_pair_classifier_pubmedbert_entities.json
+  RE_ENTITIES=outputs/predictions/dev_t611_pubmedbert_gold_silver.json \
+  RE_PAIR_OUTPUT=outputs/predictions/dev_t621_pair_classifier_biolinkbert_gold_silver_pubmedbert_gold_silver_entities.json
 
 make evaluate EVAL_TASK=re \
   GOLD=data/gutbrainie2026/Annotations/Dev/csv_format/dev_mention_level_relations.csv \
-  PREDICTION=outputs/predictions/dev_t621_pair_classifier_pubmedbert_entities.json \
-  METRICS_OUTPUT=outputs/reports/metrics_dev_re_pair_classifier_pubmedbert_entities.json
+  PREDICTION=outputs/predictions/dev_t621_pair_classifier_biolinkbert_gold_silver_pubmedbert_gold_silver_entities.json \
+  METRICS_OUTPUT=outputs/reports/metrics_dev_re_pair_classifier_biolinkbert_gold_silver_pubmedbert_gold_silver_entities.json
 ```
 
 ## End-to-End Prediction Pipeline
 
 The pipeline command runs NER, feeds the predicted T611 entities into RE candidate generation, runs the RE model, writes T611/T621 JSON files, logs the full run configuration, and evaluates automatically when `--split dev` has gold annotations.
 
-Default Makefile settings assume the strongest current local path: PubMedBERT-style token-classifier NER plus the PubMedBERT RE pair classifier.
+The final report path uses the best standalone T611 model, `pubmedbert_gold_silver_silver_2025`, and the best end-to-end T621 pair classifier, `re_pair_classifier_biolinkbert_gold_silver`.
 
 ```bash
 make run-pipeline \
   PIPELINE_SPLIT=dev \
   PIPELINE_NER_MODEL=outputs/models/pubmedbert_gold_silver_silver_2025 \
-  PIPELINE_RE_MODEL=outputs/models/re_pair_classifier_gold_silver_silver_2025 \
+  PIPELINE_RE_MODEL=outputs/models/re_pair_classifier_biolinkbert_gold_silver \
   PIPELINE_OUTPUT_DIR=outputs/predictions/pipeline_dev \
   PIPELINE_METRICS_OUTPUT=outputs/reports/pipeline_dev_metrics.json
 ```
@@ -462,7 +543,7 @@ python -m gutbrainie.cli run-pipeline \
   --ner-backend token-classifier \
   --re-backend pair-classifier \
   --ner-model outputs/models/pubmedbert_gold_silver_silver_2025 \
-  --re-model outputs/models/re_pair_classifier_gold_silver_silver_2025 \
+  --re-model outputs/models/re_pair_classifier_biolinkbert_gold_silver \
   --output-dir outputs/predictions/pipeline_dev \
   --metrics-output outputs/reports/pipeline_dev_metrics.json
 ```
@@ -482,7 +563,7 @@ For test articles, switch the split. The command writes predictions and config, 
 make run-pipeline \
   PIPELINE_SPLIT=test \
   PIPELINE_NER_MODEL=outputs/models/pubmedbert_gold_silver_silver_2025 \
-  PIPELINE_RE_MODEL=outputs/models/re_pair_classifier_gold_silver_silver_2025 \
+  PIPELINE_RE_MODEL=outputs/models/re_pair_classifier_biolinkbert_gold_silver \
   PIPELINE_OUTPUT_DIR=outputs/predictions/pipeline_test \
   PIPELINE_METRICS_OUTPUT=outputs/reports/pipeline_test_metrics.json
 ```
